@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> SATİŞ RAPORU </title>
+  <title>Otel Satış Raporu Analizi | Kanal ve Oda Tipi Dağılımı</title>
+  <meta name="description" content="Detaylı otel satış raporu. Rezervasyonların kanal dağılımı, aylara göre gelir ve ADR, oda tiplerine göre analizler. Otel performansınızı optimize edin.">
+  <meta name="keywords" content="otel satış raporu, otel rezervasyon analizi, otel kanal dağılımı, aylık otel gelir, ADR analizi, oda tipi performansı, otel performans raporu">
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -53,7 +55,13 @@
       padding: 15px;
       border-radius: 4px;
     }
-    h2 {
+    h1 { /* Changed from h2 to h1 for the main title */
+      margin-top: 0;
+      border-bottom: 1px solid var(--cerulean);
+      padding-bottom: 5px;
+      font-size: 1.8em; /* Adjusted size for H1 */
+    }
+    h2 { /* Styling for other H2s if needed */
       margin-top: 0;
       border-bottom: 1px solid var(--cerulean);
       padding-bottom: 5px;
@@ -98,7 +106,7 @@
 </head>
 <body>
   <header>
-    <h1>SATİŞ RAPORU</h1>
+    <h1>OTEL SATIŞ RAPORU</h1>
     <nav>
       <ul>
         <li><a href="#genel-bakis">Genel Bakış</a></li>
@@ -112,21 +120,21 @@
   <div class="container">
     <!-- Genel Bakış Section -->
     <section id="genel-bakis">
-      <h2>Genel Bakış</h2>
+      <h2>Genel Satış Performansı Özeti</h2>
       <div class="description-card">
-        Bu bölümde, 13-16 Mart'ta alınan rezervasyonların özet bilgisi; toplam rezervasyon, toplam gelir ve ortalama fiyat yer almaktadır.
+        Bu bölümde, 13-16 Mart'ta alınan rezervasyonların özet bilgisi; toplam rezervasyon, toplam gelir ve ortalama fiyat yer almaktadır. Otelinizin genel satış performansını buradan takip edebilirsiniz.
       </div>
       <div class="cards">
         <div class="card">
-          <h3>Toplam Rezervasyon</h3>
+          <h3>Toplam Rezervasyon Sayısı</h3>
           <p id="totalReservations">0</p>
         </div>
         <div class="card">
-          <h3>Toplam Gelir (€)</h3>
+          <h3>Toplam Satış Geliri (€)</h3>
           <p id="totalRevenue">0</p>
         </div>
         <div class="card">
-          <h3>Ortalama Fiyat (€)</h3>
+          <h3>Ortalama Rezervasyon Fiyatı (€)</h3>
           <p id="averagePrice">0</p>
         </div>
       </div>
@@ -134,36 +142,36 @@
 
     <!-- Kanal Dağılımı Section -->
     <section id="kanal-dagilimi">
-      <h2>Kanal Dağılımı</h2>
+      <h2>Rezervasyonların Satış Kanalı Dağılımı</h2>
       <div class="description-card">
-        Bu bölümde, rezervasyonların hangi OTA kanalı üzerinden geldiği grafiksel olarak sunulmaktadır.
+        Bu bölümde, rezervasyonların hangi OTA (Online Seyahat Acentası) kanalı veya diğer satış kanalları üzerinden geldiği grafiksel olarak sunulmaktadır. Kanal performansını analiz ederek pazarlama stratejilerinizi optimize edin.
       </div>
       <canvas id="channelChart"></canvas>
     </section>
 
     <!-- Aylara Göre Dağılım Section -->
     <section id="aylara-dagilim">
-      <h2>Aylara Göre Dağılım</h2>
+      <h2>Aylara Göre Satış ve Gelir Dağılımı</h2>
       <div class="description-card">
-        Rezervasyonların check-in tarihine göre aylara dağılımı; her ayın toplam gelir ve ortalama günlük fiyat (ADR) bilgisi burada gösterilmektedir.
+        Rezervasyonların check-in tarihine göre aylara dağılımı; her ayın toplam gelir ve ortalama günlük fiyat (ADR) bilgisi burada gösterilmektedir. Sezonluk trendleri ve gelir optimizasyon fırsatlarını belirleyin.
       </div>
       <canvas id="monthChart"></canvas>
     </section>
 
     <!-- Oda Tiplerine Göre Dağılım Section -->
     <section id="oda-tipleri">
-      <h2>Oda Tiplerine Göre Dağılım</h2>
+      <h2>Oda Tiplerine Göre Rezervasyon Dağılımı</h2>
       <div class="description-card">
-        Bu bölümde, alınan rezervasyonların oda tiplerine göre dağılımı gösterilmekte, hangi oda tipinden ne kadar rezervasyon alındığına dair bilgiler sunulmaktadır.
+        Bu bölümde, alınan rezervasyonların oda tiplerine göre dağılımı gösterilmekte, hangi oda tipinden ne kadar rezervasyon alındığına dair bilgiler sunulmaktadır. Popüler oda tiplerini ve gelir katkılarını analiz edin.
       </div>
       <canvas id="roomTypeChart"></canvas>
     </section>
 
     <!-- Rezervasyon Listesi Section -->
     <section id="rezervasyon-listesi">
-      <h2>Rezervasyon Listesi</h2>
+      <h2>Detaylı Rezervasyon Listesi</h2>
       <div class="description-card">
-        Tüm rezervasyon detaylarını tablo halinde görebilirsiniz. Her rezervasyon için fiyat, kanal, oda tipi ve tarih bilgileri yer almaktadır.
+        Tüm rezervasyon detaylarını tablo halinde görebilirsiniz. Her rezervasyon için fiyat, kanal, oda tipi ve tarih bilgileri yer almaktadır. Detaylı inceleme için bu listeyi kullanabilirsiniz.
       </div>
       <table id="reservationsTable">
         <thead>

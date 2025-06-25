@@ -2,7 +2,9 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Taksim Nis Hotel - 2025 Dashboard</title>
+    <title>Taksim Nis Hotel 2025 Performans Paneli | Gelir ve Doluluk Tahmini</title>
+    <meta name="description" content="Taksim Nis Hotel için 2025 yılı detaylı gelir, doluluk ve ADR tahminleri. 2024 ve 2025 performans verilerini karşılaştırın ve otel stratejinizi optimize edin.">
+    <meta name="keywords" content="Taksim Nis Hotel, otel performans paneli, 2025 otel tahmini, otel gelir analizi, otel doluluk oranı, ADR tahmini, Taksim otel performansı, otel bütçe planlama">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
@@ -16,6 +18,20 @@
             color: #333;
             text-align: center;
         }
+        h1 { /* Main page title */
+            font-size: 1.8em;
+            margin-bottom: 0.5em;
+        }
+        h2 { /* Sub-title for comparison years */
+            font-size: 1.4em;
+            margin-top: 0;
+            margin-bottom: 1.5em;
+        }
+        h3 { /* Section titles like Table and Chart titles */
+            font-size: 1.2em;
+            margin-bottom: 1em;
+        }
+
 
         .dashboard-container {
             display: flex;
@@ -29,14 +45,26 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            width: 45%;
+            width: 100%; /* Make cards full width on small screens */
         }
+
+        @media (min-width: 768px) { /* Apply for medium screens and up */
+            .chart-card, .analysis-card {
+                width: 45%; /* Two cards per row */
+            }
+        }
+
 
         .analysis-card {
             font-size: 16px;
             line-height: 1.5;
             color: #555;
         }
+         .analysis-card h3 { /* Title inside analysis card */
+            font-size: 1.1em;
+            color: #007bff;
+            margin-bottom: 0.5em;
+         }
 
         canvas {
             max-width: 100%;
@@ -50,10 +78,11 @@
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-size: 0.9em; /* Slightly smaller font for table */
         }
 
         th, td {
-            padding: 10px;
+            padding: 8px; /* Adjusted padding */
             text-align: center;
             border: 1px solid #ddd;
         }
@@ -61,6 +90,7 @@
         th {
             background-color: #007bff;
             color: white;
+            font-weight: bold;
         }
 
         .kpi-card {
@@ -71,11 +101,25 @@
             margin: 10px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            font-size: 18px;
+            font-size: 1em; /* Adjusted font size */
+            flex-basis: 200px; /* Ensure cards have a base width */
+            flex-grow: 1; /* Allow cards to grow */
         }
+         .kpi-card h3 { /* Title inside KPI card */
+             font-size: 0.9em;
+             margin-bottom: 5px;
+             color: white;
+         }
+         .kpi-card p { /* Value inside KPI card */
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 0;
+         }
+
 
         .kpi-container {
             display: flex;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
             justify-content: space-around;
             margin-bottom: 30px;
         }
@@ -83,22 +127,31 @@
 </head>
 <body>
     <h1>Taksim Nis Hotel - 2025 Yılı Gelir ve Doluluk Tahmini</h1>
-    <h2>2024 ve 2025 Karşılaştırmalı Performans</h2>
+    <h2>2024 ve 2025 Karşılaştırmalı Performans Analizi</h2>
 
     <!-- KPI Cards -->
     <div class="kpi-container">
-        <div class="kpi-card">2025 YTD Gelir: €48,522</div>
-        <div class="kpi-card">2025 Hedef Doluluk: %70</div>
-        <div class="kpi-card">2025 Hedef ADR: €63.10</div>
+        <div class="kpi-card">
+            <h3>2025 YTD Gelir</h3>
+            <p>€48,522</p>
+        </div>
+        <div class="kpi-card">
+            <h3>2025 Hedef Doluluk</h3>
+            <p>%70</p>
+        </div>
+        <div class="kpi-card">
+            <h3>2025 Hedef ADR</h3>
+            <p>€63.10</p>
+        </div>
     </div>
 
     <!-- Full Comparison Table -->
-    <h3>2024 ve 2025 Karşılaştırmalı Veriler</h3>
+    <h3>2024 ve 2025 Karşılaştırmalı Otel Performans Verileri</h3>
     <table>
         <thead>
             <tr>
                 <th>Ay</th>
-                <th>2024 ADR</th>
+                <th>2024 ADR (€)</th>
                 <th>2024 Doluluk (%)</th>
                 <th>2024 Toplam Gelir (€)</th>
                 <th>2025 OTB Gelir (€)</th>
@@ -108,19 +161,19 @@
             </tr>
         </thead>
         <tbody>
-            <tr><td>Ocak</td><td>€50,84</td><td>52,18%</td><td>€13.980</td><td>€9.644 (gerçekleşen)</td><td>(kapanış)</td><td>(kapanış)</td><td>€9.644</td></tr>
-            <tr><td>Şubat</td><td>€47,11</td><td>62,07%</td><td>€14.417</td><td>€9.412</td><td>65%</td><td>€49,47</td><td>€15.138</td></tr>
-            <tr><td>Mart</td><td>€48,93</td><td>47,44%</td><td>€12.232</td><td>€5.185</td><td>68%</td><td>€51,38</td><td>€15.929</td></tr>
-            <tr><td>Nisan</td><td>€62,16</td><td>59,80%</td><td>€18.958</td><td>€11.625</td><td>67%</td><td>€65,27</td><td>€23.005</td></tr>
-            <tr><td>Mayıs</td><td>€70,29</td><td>82,16%</td><td>€30.436</td><td>€4.903</td><td>85%</td><td>€73,80</td><td>€33.480</td></tr>
-            <tr><td>Haziran</td><td>€62,25</td><td>71,76%</td><td>€22.784</td><td>€3.335</td><td>75%</td><td>€65,36</td><td>€25.062</td></tr>
-            <tr><td>Temmuz</td><td>€63,68</td><td>67,36%</td><td>€22.607</td><td>€2.062</td><td>70%</td><td>€66,86</td><td>€24.868</td></tr>
-            <tr><td>Ağustos</td><td>€62,32</td><td>76,28%</td><td>€25.051</td><td>€2.356</td><td>78%</td><td>€65,44</td><td>€27.556</td></tr>
-            <tr><td>Eylül</td><td>€60,92</td><td>84,31%</td><td>€26.194</td><td>€0</td><td>87%</td><td>€63,97</td><td>€28.813</td></tr>
-            <tr><td>Ekim</td><td>€57,38</td><td>84,44%</td><td>€25.534</td><td>€0</td><td>86%</td><td>€60,25</td><td>€28.087</td></tr>
-            <tr><td>Kasım</td><td>€58,09</td><td>66,27%</td><td>€19.635</td><td>€0</td><td>70%</td><td>€60,99</td><td>€21.599</td></tr>
-            <tr><td>Aralık</td><td>€61,73</td><td>55,60%</td><td>€18.086</td><td>€0</td><td>60%</td><td>€64,82</td><td>€19.895</td></tr>
-            <tr><td><strong>TOPLAM</strong></td><td>€59,53</td><td>67,47%</td><td>€249.913</td><td>€48.522</td><td>–</td><td>–</td><td>€287.176</td></tr>
+            <tr><td>Ocak</td><td>50,84</td><td>52,18%</td><td>13.980</td><td>9.644 (gerçekleşen)</td><td>(kapanış)</td><td>(kapanış)</td><td>9.644</td></tr>
+            <tr><td>Şubat</td><td>47,11</td><td>62,07%</td><td>14.417</td><td>9.412</td><td>65%</td><td>49,47</td><td>15.138</td></tr>
+            <tr><td>Mart</td><td>48,93</td><td>47,44%</td><td>12.232</td><td>5.185</td><td>68%</td><td>51,38</td><td>15.929</td></tr>
+            <tr><td>Nisan</td><td>62,16</td><td>59,80%</td><td>18.958</td><td>11.625</td><td>67%</td><td>65,27</td><td>23.005</td></tr>
+            <tr><td>Mayıs</td><td>70,29</td><td>82,16%</td><td>30.436</td><td>4.903</td><td>85%</td><td>73,80</td><td>33.480</td></tr>
+            <tr><td>Haziran</td><td>62,25</td><td>71,76%</td><td>22.784</td><td>3.335</td><td>75%</td><td>65,36</td><td>25.062</td></tr>
+            <tr><td>Temmuz</td><td>63,68</td><td>67,36%</td><td>22.607</td><td>2.062</td><td>70%</td><td>66,86</td><td>24.868</td></tr>
+            <tr><td>Ağustos</td><td>62,32</td><td>76,28%</td><td>25.051</td><td>2.356</td><td>78%</td><td>65,44</td><td>27.556</td></tr>
+            <tr><td>Eylül</td><td>60,92</td><td>84,31%</td><td>26.194</td><td>0</td><td>87%</td><td>63,97</td><td>28.813</td></tr>
+            <tr><td>Ekim</td><td>57,38</td><td>84,44%</td><td>25.534</td><td>0</td><td>86%</td><td>60,25</td><td>28.087</td></tr>
+            <tr><td>Kasım</td><td>58,09</td><td>66,27%</td><td>19.635</td><td>0</td><td>70%</td><td>60,99</td><td>21.599</td></tr>
+            <tr><td>Aralık</td><td>61,73</td><td>55,60%</td><td>18.086</td><td>0</td><td>60%</td><td>64,82</td><td>19.895</td></tr>
+            <tr><td><strong>TOPLAM</strong></td><td><strong>59,53</strong></td><td><strong>67,47%</strong></td><td><strong>249.913</strong></td><td><strong>48.522</strong></td><td><strong>–</strong></td><td><strong>–</strong></td><td><strong>287.176</strong></td></tr>
         </tbody>
     </table>
 
@@ -128,32 +181,32 @@
     <div class="dashboard-container">
         <!-- Revenue Comparison Chart -->
         <div class="chart-card">
-            <h3>Aylık Gelir Karşılaştırması</h3>
+            <h3>Aylık Gelir Karşılaştırması (2024 vs 2025 Tahmini)</h3>
             <canvas id="revenueChart"></canvas>
         </div>
         <div class="analysis-card">
-            <h3>Gelir Analizi</h3>
-            2025 yılında hedeflenen gelir, özellikle Mayıs ve Ağustos gibi yüksek sezonda büyük bir artış beklenmektedir. Ocak ve Şubat aylarında ise toparlanma daha yavaş gerçekleşmiştir.
+            <h3>Gelir Analizi ve Stratejileri</h3>
+            <p>2025 yılında Taksim Nis Hotel için hedeflenen toplam gelir €287.176'dır. Bu, 2024 yılı geliri olan €249.913'e kıyasla önemli bir artış öngörmektedir. Özellikle Mayıs ve Ağustos gibi yüksek sezon aylarında büyük bir gelir artışı beklenmektedir. Ocak ve Şubat aylarında ise gerçekleşen gelir, hedeflere ulaşmak için ek stratejiler gerektirebilir. Dinamik fiyatlandırma, promosyon yönetimi ve kanal optimizasyonu bu hedeflere ulaşmada kilit rol oynayacaktır.</p>
         </div>
 
         <!-- Occupancy Rate Chart -->
         <div class="chart-card">
-            <h3>Doluluk Oranı Karşılaştırması</h3>
+            <h3>Aylık Doluluk Oranı Karşılaştırması (2024 vs 2025 Tahmini)</h3>
             <canvas id="occupancyChart"></canvas>
         </div>
         <div class="analysis-card">
-            <h3>Doluluk Analizi</h3>
-            2025 yılında Mart ve Nisan aylarında doluluk hedefleri %65’in üzerine çıkmıştır. Bu, önceki yıllara kıyasla daha yüksek bir talebi göstermektedir.
+            <h3>Doluluk Oranı Analizi ve Optimizasyonu</h3>
+           <p>2025 yılı için ortalama %70 doluluk hedeflenmektedir. Mart ve Nisan aylarında doluluk hedefleri %65’in üzerine çıkmıştır, bu da önceki yıla göre artan bir talebi işaret etmektedir. Yüksek sezon olan Eylül ve Ekim aylarında ise %85 üzeri doluluk beklenmektedir. Doluluk oranlarını artırmak için hedefli pazarlama kampanyaları ve erken rezervasyon teşvikleri uygulanacaktır.</p>
         </div>
 
         <!-- ADR Comparison Chart -->
         <div class="chart-card">
-            <h3>Ortalama Oda Fiyatı (ADR) Karşılaştırması</h3>
+            <h3>Ortalama Günlük Fiyat (ADR) Karşılaştırması (2024 vs 2025 Tahmini)</h3>
             <canvas id="adrChart"></canvas>
         </div>
         <div class="analysis-card">
-            <h3>ADR Analizi</h3>
-            Ortalama oda fiyatı, özellikle Mayıs ve Haziran gibi sezonluk talep artışları ile yükselmiştir. Dinamik fiyatlama stratejileri ile bu artış sürdürülmektedir.
+            <h3>ADR (Ortalama Günlük Fiyat) Analizi ve Yönetimi</h3>
+            <p>Taksim Nis Hotel için 2025 yılı hedef ADR'si €63.10 olarak belirlenmiştir. Ortalama oda fiyatının, özellikle Mayıs (€73,80) ve Nisan (€65,27) gibi aylarda talep artışıyla birlikte yükselmesi hedeflenmektedir. Dinamik fiyatlandırma stratejileri, rakip analizi ve pazar koşullarına göre ADR ayarlamaları yapılarak gelir maksimizasyonu sağlanacaktır.</p>
         </div>
     </div>
 
@@ -163,12 +216,12 @@
             labels: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
             datasets: [
                 {
-                    label: '2024',
+                    label: '2024 Gelir (€)',
                     backgroundColor: '#007bff',
                     data: [13980, 14417, 12232, 18958, 30436, 22784, 22607, 25051, 26194, 25534, 19635, 18086]
                 },
                 {
-                    label: '2025 (Tahmini)',
+                    label: '2025 Tahmini Gelir (€)',
                     backgroundColor: '#ffc107',
                     data: [9644, 15138, 15929, 23005, 33480, 25062, 24868, 27556, 28813, 28087, 21599, 19895]
                 }
@@ -180,16 +233,18 @@
             labels: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
             datasets: [
                 {
-                    label: '2024',
+                    label: '2024 Doluluk (%)',
                     borderColor: '#007bff',
                     fill: false,
-                    data: [52.18, 62.07, 47.44, 59.80, 82.16, 71.76, 67.36, 76.28, 84.31, 84.44, 66.27, 55.60]
+                    data: [52.18, 62.07, 47.44, 59.80, 82.16, 71.76, 67.36, 76.28, 84.31, 84.44, 66.27, 55.60],
+                    tension: 0.1
                 },
                 {
-                    label: '2025 (Tahmini)',
+                    label: '2025 Hedef Doluluk (%)',
                     borderColor: '#ffc107',
                     fill: false,
-                    data: [29.41, 65.00, 68.00, 67.00, 85.00, 75.00, 70.00, 78.00, 87.00, 86.00, 70.00, 60.00]
+                    data: [52.18, 65.00, 68.00, 67.00, 85.00, 75.00, 70.00, 78.00, 87.00, 86.00, 70.00, 60.00], // Ocak verisi 2024 ile aynı, kapanış olduğu için
+                    tension: 0.1
                 }
             ]
         };
@@ -199,24 +254,26 @@
             labels: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
             datasets: [
                 {
-                    label: '2024',
+                    label: '2024 ADR (€)',
                     borderColor: '#007bff',
                     fill: false,
-                    data: [50.84, 47.11, 48.93, 62.16, 70.29, 62.25, 63.68, 62.32, 60.92, 57.38, 58.09, 61.73]
+                    data: [50.84, 47.11, 48.93, 62.16, 70.29, 62.25, 63.68, 62.32, 60.92, 57.38, 58.09, 61.73],
+                    tension: 0.1
                 },
                 {
-                    label: '2025 (Tahmini)',
+                    label: '2025 Hedef ADR (€)',
                     borderColor: '#ffc107',
                     fill: false,
-                    data: [62.22, 57.74, 67.34, 75.98, 73.80, 65.36, 66.86, 65.44, 63.97, 60.25, 60.99, 64.82]
+                    data: [50.84, 49.47, 51.38, 65.27, 73.80, 65.36, 66.86, 65.44, 63.97, 60.25, 60.99, 64.82], // Ocak verisi 2024 ile aynı
+                    tension: 0.1
                 }
             ]
         };
 
         // Render Charts
-        new Chart(document.getElementById('revenueChart'), { type: 'bar', data: revenueData });
-        new Chart(document.getElementById('occupancyChart'), { type: 'line', data: occupancyData });
-        new Chart(document.getElementById('adrChart'), { type: 'line', data: adrData });
+        new Chart(document.getElementById('revenueChart'), { type: 'bar', data: revenueData, options: {responsive: true, maintainAspectRatio: false} });
+        new Chart(document.getElementById('occupancyChart'), { type: 'line', data: occupancyData, options: {responsive: true, maintainAspectRatio: false} });
+        new Chart(document.getElementById('adrChart'), { type: 'line', data: adrData, options: {responsive: true, maintainAspectRatio: false} });
     </script>
 </body>
 </html>
