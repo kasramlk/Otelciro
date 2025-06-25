@@ -2,7 +2,9 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Petrion Hotel Balat - 2025 Dashboard</title>
+    <title>Petrion Hotel Balat 2025 Performans Paneli | Gelir, Doluluk ve ADR Tahmini</title>
+    <meta name="description" content="Petrion Hotel Balat için 2025 yılı detaylı gelir, doluluk ve ADR (Ortalama Günlük Fiyat) tahminleri. 2023, 2024 ve 2025 performans verilerini karşılaştırın. OtelCiro analizleriyle stratejinizi güçlendirin.">
+    <meta name="keywords" content="Petrion Hotel Balat, otel performans paneli, 2025 otel tahmini, Balat otel gelir, otel doluluk oranı, ADR tahmini, Petrion Hotel analiz, OtelCiro, İstanbul Balat otel">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
@@ -15,6 +17,19 @@
         h1, h2, h3 {
             color: #333;
             text-align: center;
+        }
+        h1 { /* Main page title */
+            font-size: 1.8em;
+            margin-bottom: 0.5em;
+        }
+        h2 { /* Sub-title for comparison years */
+            font-size: 1.4em;
+            margin-top: 0;
+            margin-bottom: 1.5em;
+        }
+        h3 { /* Section titles like Table and Chart titles */
+            font-size: 1.2em;
+            margin-bottom: 1em;
         }
 
         .dashboard-container {
@@ -29,7 +44,13 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            width: 45%;
+            width: 100%; /* Make cards full width on small screens */
+        }
+
+        @media (min-width: 768px) { /* Apply for medium screens and up */
+            .chart-card, .analysis-card {
+                width: 45%; /* Two cards per row */
+            }
         }
 
         .analysis-card {
@@ -37,6 +58,12 @@
             line-height: 1.5;
             color: #555;
         }
+         .analysis-card h3 { /* Title inside analysis card */
+            font-size: 1.1em;
+            color: #007bff;
+            margin-bottom: 0.5em;
+         }
+
 
         canvas {
             max-width: 100%;
@@ -50,10 +77,11 @@
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-size: 0.9em; /* Slightly smaller font for table */
         }
 
         th, td {
-            padding: 10px;
+            padding: 8px; /* Adjusted padding */
             text-align: center;
             border: 1px solid #ddd;
         }
@@ -61,6 +89,7 @@
         th {
             background-color: #007bff;
             color: white;
+            font-weight: bold;
         }
 
         .kpi-card {
@@ -71,29 +100,51 @@
             margin: 10px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            font-size: 18px;
+            font-size: 1em; /* Adjusted font size */
+            flex-basis: 200px; /* Ensure cards have a base width */
+            flex-grow: 1; /* Allow cards to grow */
         }
+         .kpi-card h3 { /* Title inside KPI card */
+             font-size: 0.9em;
+             margin-bottom: 5px;
+             color: white;
+         }
+         .kpi-card p { /* Value inside KPI card */
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 0;
+         }
 
         .kpi-container {
             display: flex;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
             justify-content: space-around;
             margin-bottom: 30px;
         }
     </style>
 </head>
 <body>
-    <h1>Petrion Hotel Balat - 2025 Tahmini Gelir ve Performans Analizi</h1>
-    <h2>2023, 2024 ve 2025 Karşılaştırmalı Performans</h2>
+    <h1>Petrion Hotel Balat - 2025 Yılı Gelir ve Performans Analizi</h1>
+    <h2>2023, 2024 ve 2025 Karşılaştırmalı Otel Performansı</h2>
 
     <!-- KPI Cards -->
     <div class="kpi-container">
-        <div class="kpi-card">2025 YTD Gelir: €47,180</div>
-        <div class="kpi-card">2025 Hedef Doluluk: %70</div>
-        <div class="kpi-card">2025 Hedef ADR: €85.60</div>
+        <div class="kpi-card">
+            <h3>2025 YTD Gelir</h3>
+            <p>€47,180</p>
+        </div>
+        <div class="kpi-card">
+            <h3>2025 Hedef Doluluk</h3>
+            <p>%70</p>
+        </div>
+        <div class="kpi-card">
+            <h3>2025 Hedef ADR</h3>
+            <p>€85.60</p>
+        </div>
     </div>
 
     <!-- Full Projection Table -->
-    <h3>2025 Projeksiyon Verileri</h3>
+    <h3>Petrion Hotel Balat 2025 Projeksiyon Verileri</h3>
     <table>
         <thead>
             <tr>
@@ -107,18 +158,18 @@
             </tr>
         </thead>
         <tbody>
-            <tr><td>Ocak</td><td>228</td><td>23.34</td><td>75.92</td><td>26.84</td><td>87.31</td><td>€12,349.90</td></tr>
-            <tr><td>Şubat</td><td>226</td><td>31.24</td><td>70.28</td><td>35.93</td><td>80.82</td><td>€15,302.03</td></tr>
-            <tr><td>Mart</td><td>224</td><td>27.32</td><td>67.84</td><td>31.42</td><td>78.02</td><td>€12,917.33</td></tr>
-            <tr><td>Nisan</td><td>524</td><td>64.71</td><td>82.72</td><td>74.42</td><td>95.13</td><td>€37,306.82</td></tr>
-            <tr><td>Mayıs</td><td>637</td><td>67.93</td><td>89.40</td><td>78.12</td><td>102.81</td><td>€42,325.82</td></tr>
-            <tr><td>Haziran</td><td>274</td><td>33.73</td><td>90.75</td><td>38.79</td><td>103.86</td><td>€19,839.22</td></tr>
-            <tr><td>Temmuz</td><td>270</td><td>34.16</td><td>86.73</td><td>39.68</td><td>99.74</td><td>€18,762.47</td></tr>
-            <tr><td>Ağustos</td><td>392</td><td>45.73</td><td>79.24</td><td>50.00</td><td>91.12</td><td>€24,553.61</td></tr>
-            <tr><td>Eylül</td><td>530</td><td>63.92</td><td>79.94</td><td>69.31</td><td>87.93</td><td>€30,142.90</td></tr>
-            <tr><td>Ekim</td><td>663</td><td>72.87</td><td>74.73</td><td>79.09</td><td>82.20</td><td>€32,940.23</td></tr>
-            <tr><td>Kasım</td><td>531</td><td>56.08</td><td>74.69</td><td>61.69</td><td>82.05</td><td>€26,961.78</td></tr>
-            <tr><td>Aralık</td><td>495</td><td>48.39</td><td>74.33</td><td>52.80</td><td>81.76</td><td>€21,436.94</td></tr>
+            <tr><td>Ocak</td><td>228</td><td>23.34</td><td>75.92</td><td>26.84</td><td>87.31</td><td>12,349.90</td></tr>
+            <tr><td>Şubat</td><td>226</td><td>31.24</td><td>70.28</td><td>35.93</td><td>80.82</td><td>15,302.03</td></tr>
+            <tr><td>Mart</td><td>224</td><td>27.32</td><td>67.84</td><td>31.42</td><td>78.02</td><td>12,917.33</td></tr>
+            <tr><td>Nisan</td><td>524</td><td>64.71</td><td>82.72</td><td>74.42</td><td>95.13</td><td>37,306.82</td></tr>
+            <tr><td>Mayıs</td><td>637</td><td>67.93</td><td>89.40</td><td>78.12</td><td>102.81</td><td>42,325.82</td></tr>
+            <tr><td>Haziran</td><td>274</td><td>33.73</td><td>90.75</td><td>38.79</td><td>103.86</td><td>19,839.22</td></tr>
+            <tr><td>Temmuz</td><td>270</td><td>34.16</td><td>86.73</td><td>39.68</td><td>99.74</td><td>18,762.47</td></tr>
+            <tr><td>Ağustos</td><td>392</td><td>45.73</td><td>79.24</td><td>50.00</td><td>91.12</td><td>24,553.61</td></tr>
+            <tr><td>Eylül</td><td>530</td><td>63.92</td><td>79.94</td><td>69.31</td><td>87.93</td><td>30,142.90</td></tr>
+            <tr><td>Ekim</td><td>663</td><td>72.87</td><td>74.73</td><td>79.09</td><td>82.20</td><td>32,940.23</td></tr>
+            <tr><td>Kasım</td><td>531</td><td>56.08</td><td>74.69</td><td>61.69</td><td>82.05</td><td>26,961.78</td></tr>
+            <tr><td>Aralık</td><td>495</td><td>48.39</td><td>74.33</td><td>52.80</td><td>81.76</td><td>21,436.94</td></tr>
         </tbody>
     </table>
 
@@ -126,32 +177,32 @@
     <div class="dashboard-container">
         <!-- Revenue Comparison Chart -->
         <div class="chart-card">
-            <h3>Aylık Gelir Karşılaştırması</h3>
+            <h3>Aylık Gelir Karşılaştırması (2024 vs 2025 Tahmini)</h3>
             <canvas id="revenueChart"></canvas>
         </div>
         <div class="analysis-card">
-            <h3>Gelir Analizi</h3>
-            2025 yılında gelir hedefleri, özellikle Mayıs ve Ekim aylarında yüksek doluluk ve artan ADR ile desteklenmiştir.
+            <h3>Gelir Analizi ve Stratejiler</h3>
+            <p>Petrion Hotel Balat için 2025 yılında hedeflenen gelirlerde, özellikle turizm sezonunun yoğunlaştığı Mayıs (€42,325) ve Ekim (€32,940) aylarında önemli artışlar öngörülmektedir. Bu artışlar, geliştirilmiş doluluk oranları ve optimize edilmiş ADR (Ortalama Günlük Fiyat) stratejileriyle desteklenecektir. Gelir maksimizasyonu için dinamik fiyatlandırma ve hedefli pazarlama kampanyaları uygulanacaktır.</p>
         </div>
 
         <!-- Occupancy Rate Chart -->
         <div class="chart-card">
-            <h3>Doluluk Oranı Karşılaştırması</h3>
+            <h3>Aylık Doluluk Oranı Karşılaştırması (2024 vs 2025 Tahmini)</h3>
             <canvas id="occupancyChart"></canvas>
         </div>
         <div class="analysis-card">
-            <h3>Doluluk Analizi</h3>
-            Hedef doluluk oranları, özellikle Nisan ve Eylül aylarında %70'e yaklaşacak şekilde belirlenmiştir.
+            <h3>Doluluk Oranı Analizi ve Optimizasyonu</h3>
+            <p>2025 yılı için Petrion Hotel Balat'ın hedef doluluk oranları, özellikle bahar ve sonbahar aylarında belirgin bir artış göstermektedir. Nisan (%74.42) ve Ekim (%79.09) ayları en yüksek doluluk hedeflerine sahiptir. Bu hedeflere ulaşmak için özel promosyonlar, erken rezervasyon indirimleri ve sadakat programları gibi stratejiler devreye alınacaktır.</p>
         </div>
 
         <!-- ADR Comparison Chart -->
         <div class="chart-card">
-            <h3>Ortalama Oda Fiyatı (ADR) Karşılaştırması</h3>
+            <h3>Ortalama Günlük Fiyat (ADR) Karşılaştırması (2024 vs 2025 Tahmini)</h3>
             <canvas id="adrChart"></canvas>
         </div>
         <div class="analysis-card">
-            <h3>ADR Analizi</h3>
-            Ortalama oda fiyatları, yüksek sezonda %10 ila %20'lik bir artışla hedeflenmiştir.
+            <h3>ADR (Ortalama Günlük Fiyat) Analizi ve Yönetimi</h3>
+            <p>Petrion Hotel Balat'ın 2025 yılı ADR hedefleri, pazar koşulları ve talep yoğunluğuna göre ayarlanmıştır. Özellikle Mayıs (€102.81) ve Haziran (€103.86) aylarında en yüksek ADR seviyelerine ulaşılması hedeflenmektedir. Rekabet analizi ve katma değerli hizmetler sunarak ADR'ın artırılması planlanmaktadır.</p>
         </div>
     </div>
 
@@ -161,12 +212,12 @@
             labels: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
             datasets: [
                 {
-                    label: '2024',
+                    label: '2024 Gelir (€)',
                     backgroundColor: '#007bff',
                     data: [9843.87, 11077.59, 9950.16, 27816.39, 32670.56, 16074.29, 16131.56, 19446.75, 26834.71, 29695.78, 22002.63, 20469.15]
                 },
                 {
-                    label: '2025 (Tahmini)',
+                    label: '2025 Hedef Gelir (€)',
                     backgroundColor: '#ffc107',
                     data: [12349.90, 15302.03, 12917.33, 37306.82, 42325.82, 19839.22, 18762.47, 24553.61, 30142.90, 32940.23, 26961.78, 21436.94]
                 }
@@ -178,16 +229,18 @@
             labels: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
             datasets: [
                 {
-                    label: '2024',
+                    label: '2024 Doluluk (%)',
                     borderColor: '#007bff',
                     fill: false,
-                    data: [23.34, 31.24, 27.32, 64.71, 67.93, 33.73, 34.16, 45.73, 63.92, 72.87, 56.08, 48.39]
+                    data: [23.34, 31.24, 27.32, 64.71, 67.93, 33.73, 34.16, 45.73, 63.92, 72.87, 56.08, 48.39],
+                    tension: 0.1
                 },
                 {
-                    label: '2025 (Tahmini)',
+                    label: '2025 Hedef Doluluk (%)',
                     borderColor: '#ffc107',
                     fill: false,
-                    data: [26.84, 35.93, 31.42, 74.42, 78.12, 38.79, 39.68, 50.00, 69.31, 79.09, 61.69, 52.80]
+                    data: [26.84, 35.93, 31.42, 74.42, 78.12, 38.79, 39.68, 50.00, 69.31, 79.09, 61.69, 52.80],
+                    tension: 0.1
                 }
             ]
         };
@@ -197,24 +250,26 @@
             labels: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
             datasets: [
                 {
-                    label: '2024',
+                    label: '2024 ADR (€)',
                     borderColor: '#007bff',
                     fill: false,
-                    data: [75.92, 70.28, 67.84, 82.72, 89.40, 90.75, 86.73, 79.24, 79.94, 74.73, 74.69, 74.33]
+                    data: [75.92, 70.28, 67.84, 82.72, 89.40, 90.75, 86.73, 79.24, 79.94, 74.73, 74.69, 74.33],
+                    tension: 0.1
                 },
                 {
-                    label: '2025 (Tahmini)',
+                    label: '2025 Hedef ADR (€)',
                     borderColor: '#ffc107',
                     fill: false,
-                    data: [87.31, 80.82, 78.02, 95.13, 102.81, 103.86, 99.74, 91.12, 87.93, 82.20, 82.05, 81.76]
+                    data: [87.31, 80.82, 78.02, 95.13, 102.81, 103.86, 99.74, 91.12, 87.93, 82.20, 82.05, 81.76],
+                    tension: 0.1
                 }
             ]
         };
 
         // Render Charts
-        new Chart(document.getElementById('revenueChart'), { type: 'bar', data: revenueData });
-        new Chart(document.getElementById('occupancyChart'), { type: 'line', data: occupancyData });
-        new Chart(document.getElementById('adrChart'), { type: 'line', data: adrData });
+        new Chart(document.getElementById('revenueChart'), { type: 'bar', data: revenueData, options: {responsive: true, maintainAspectRatio: false} });
+        new Chart(document.getElementById('occupancyChart'), { type: 'line', data: occupancyData, options: {responsive: true, maintainAspectRatio: false} });
+        new Chart(document.getElementById('adrChart'), { type: 'line', data: adrData, options: {responsive: true, maintainAspectRatio: false} });
     </script>
 </body>
 </html>
