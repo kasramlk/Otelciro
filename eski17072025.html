@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eskiciler Konağı Rezervasyon Raporu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        .logo-text {
+            background: linear-gradient(135deg, #003580, #009fe3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="bg-white min-h-screen">
+    <!-- Header with Logo -->
+    <div class="bg-gradient-to-r from-blue-900 to-blue-600 py-4 px-6 shadow-lg">
+        <div class="max-w-7xl mx-auto flex items-center justify-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white rounded-lg p-2 shadow-md">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="40" height="40" rx="8" fill="url(#gradient)"/>
+                        <path d="M12 16h16v2H12v-2zm0 4h16v2H12v-2zm0 4h12v2H12v-2z" fill="white"/>
+                        <circle cx="20" cy="12" r="3" fill="white"/>
+                        <defs>
+                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#003580"/>
+                                <stop offset="100%" style="stop-color:#009fe3"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <span class="text-white text-2xl font-bold">otelciro.com</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Hero Section -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                Eskiciler Konağı Rezervasyon Raporu
+            </h1>
+            <p class="text-xl text-gray-600 font-medium">
+                Dönem: 07 Tem 2025 – 09 Eki 2025
+            </p>
+        </div>
+
+        <!-- Cards Container -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Card 1: Monthly Summary -->
+            <div class="bg-gray-50 rounded-xl shadow-md p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Aylık Rezervasyon Özeti</h2>
+                
+                <!-- Table -->
+                <div class="overflow-x-auto mb-8">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="bg-white">
+                                <th class="text-left py-3 px-4 font-semibold text-gray-700">Ay</th>
+                                <th class="text-left py-3 px-4 font-semibold text-gray-700">Rezervasyon Sayısı</th>
+                                <th class="text-left py-3 px-4 font-semibold text-gray-700">Toplam Gelir (TRY)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-gray-100">
+                                <td class="py-3 px-4 font-medium">2025-07</td>
+                                <td class="py-3 px-4">50</td>
+                                <td class="py-3 px-4">261.695,54</td>
+                            </tr>
+                            <tr class="bg-white">
+                                <td class="py-3 px-4 font-medium">2025-08</td>
+                                <td class="py-3 px-4">9</td>
+                                <td class="py-3 px-4">63.864,62</td>
+                            </tr>
+                            <tr class="bg-gray-100">
+                                <td class="py-3 px-4 font-medium">2025-09</td>
+                                <td class="py-3 px-4">3</td>
+                                <td class="py-3 px-4">9.472,19</td>
+                            </tr>
+                            <tr class="bg-white">
+                                <td class="py-3 px-4 font-medium">2025-10</td>
+                                <td class="py-3 px-4">6</td>
+                                <td class="py-3 px-4">19.857,07</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Line Chart -->
+                <div class="chart-container">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Card 2: Agency Performance -->
+            <div class="bg-gray-50 rounded-xl shadow-md p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Acenta Bazlı Performans</h2>
+                
+                <!-- Table -->
+                <div class="overflow-x-auto mb-8">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="bg-white">
+                                <th class="text-left py-3 px-4 font-semibold text-gray-700">İş Ortağı</th>
+                                <th class="text-left py-3 px-4 font-semibold text-gray-700">Rezervasyon Sayısı</th>
+                                <th class="text-left py-3 px-4 font-semibold text-gray-700">Toplam Gelir (TRY)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-gray-100">
+                                <td class="py-3 px-4 font-medium">munferit</td>
+                                <td class="py-3 px-4">31</td>
+                                <td class="py-3 px-4">158.791,79</td>
+                            </tr>
+                            <tr class="bg-white">
+                                <td class="py-3 px-4 font-medium">Booking.Com (%15)</td>
+                                <td class="py-3 px-4">18</td>
+                                <td class="py-3 px-4">87.219,00</td>
+                            </tr>
+                            <tr class="bg-gray-100">
+                                <td class="py-3 px-4 font-medium">SabeeApp Booking Engine</td>
+                                <td class="py-3 px-4">8</td>
+                                <td class="py-3 px-4">42.766,80</td>
+                            </tr>
+                            <tr class="bg-white">
+                                <td class="py-3 px-4 font-medium">Expedia (%18)</td>
+                                <td class="py-3 px-4">6</td>
+                                <td class="py-3 px-4">41.218,21</td>
+                            </tr>
+                            <tr class="bg-gray-100">
+                                <td class="py-3 px-4 font-medium">Ets / Odamax (%15)</td>
+                                <td class="py-3 px-4">4</td>
+                                <td class="py-3 px-4">22.425,94</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Bar Chart -->
+                <div class="chart-container">
+                    <canvas id="agencyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Monthly Revenue Line Chart
+        const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+        new Chart(monthlyCtx, {
+            type: 'line',
+            data: {
+                labels: ['2025-07', '2025-08', '2025-09', '2025-10'],
+                datasets: [{
+                    label: 'Toplam Gelir (TRY)',
+                    data: [261695.54, 63864.62, 9472.19, 19857.07],
+                    borderColor: '#B57EDC',
+                    backgroundColor: 'rgba(181, 126, 220, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#B57EDC',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: 'white',
+                        bodyColor: 'white',
+                        borderColor: '#B57EDC',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                return 'Gelir: ₺' + context.parsed.y.toLocaleString('tr-TR', {minimumFractionDigits: 2});
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Ay',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Toplam Gelir (TRY)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return '₺' + value.toLocaleString('tr-TR');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Agency Performance Bar Chart
+        const agencyCtx = document.getElementById('agencyChart').getContext('2d');
+        new Chart(agencyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['munferit', 'Booking.Com', 'SabeeApp', 'Expedia', 'Ets/Odamax'],
+                datasets: [{
+                    label: 'Rezervasyon Sayısı',
+                    data: [31, 18, 8, 6, 4],
+                    backgroundColor: [
+                        '#B57EDC',
+                        '#F4A0C3',
+                        '#8ED0F9',
+                        '#B57EDC',
+                        '#F4A0C3'
+                    ],
+                    borderColor: [
+                        '#9B5FC7',
+                        '#E88BB0',
+                        '#7BC3E6',
+                        '#9B5FC7',
+                        '#E88BB0'
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: 'white',
+                        bodyColor: 'white',
+                        borderColor: '#B57EDC',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                return 'Rezervasyon: ' + context.parsed.x + ' adet';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Rezervasyon Sayısı',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        beginAtZero: true
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'İş Ortağı',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9609a233b430b3c4',t:'MTc1Mjc1NDE5OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
