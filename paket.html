@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otelciro - Otel Gelirinizi Maksimize Edin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'booking-blue': '#003580',
+                        'booking-cerulean': '#009fe3',
+                        'booking-yellow': '#feba02',
+                        'booking-gray': '#666666',
+                        'booking-light': '#f2f6fa'
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .hero-bg {
+            background: linear-gradient(rgba(0, 53, 128, 0.7), rgba(0, 53, 128, 0.7)), 
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23003580" width="1200" height="600"/><rect fill="%23004080" x="0" y="400" width="1200" height="200"/><rect fill="%23feba02" x="100" y="100" width="80" height="120" rx="4"/><rect fill="%23feba02" x="200" y="80" width="80" height="140" rx="4"/><rect fill="%23feba02" x="300" y="120" width="80" height="100" rx="4"/><circle fill="%23009fe3" cx="600" cy="150" r="30"/><circle fill="%23009fe3" cx="700" cy="180" r="20"/><circle fill="%23009fe3" cx="800" cy="160" r="25"/></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-content.active {
+            max-height: 1000px;
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .floating-card {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #009fe3, #feba02);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <!-- Language Toggle -->
+    <div class="fixed top-4 right-4 z-50">
+        <button onclick="toggleLanguage()" class="bg-white shadow-lg rounded-full px-4 py-2 text-booking-blue font-medium hover:bg-booking-light transition-all">
+            <span id="lang-toggle">EN</span>
+        </button>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-bg min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-booking-blue/20 to-booking-cerulean/20"></div>
+        <div class="text-center text-white max-w-5xl mx-auto relative z-10">
+            <div class="mb-8">
+                <span class="inline-block bg-booking-yellow text-booking-blue px-6 py-2 rounded-full font-semibold text-lg mb-6" data-tr="🏨 Profesyonel Otel Yönetimi" data-en="🏨 Professional Hotel Management">
+                    🏨 Profesyonel Otel Yönetimi
+                </span>
+            </div>
+            <h1 class="text-6xl md:text-8xl font-bold mb-8 leading-tight gradient-text" data-tr="Gelirinizi Maksimize Edin" data-en="Maximize Your Revenue">
+                Gelirinizi Maksimize Edin
+            </h1>
+            <p class="text-xl md:text-3xl mb-12 opacity-95 font-light" data-tr="Otel işletmenizi dijital çağa taşıyın ve gelirinizi %35'e kadar artırın" data-en="Transform your hotel business to the digital age and increase your revenue up to 35%">
+                Otel işletmenizi dijital çağa taşıyın ve gelirinizi %35'e kadar artırın
+            </p>
+            <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <button onclick="scrollToPackages()" class="bg-booking-yellow hover:bg-yellow-500 text-booking-blue font-bold py-5 px-10 rounded-full text-xl transition-all transform hover:scale-105 shadow-2xl" data-tr="Paketleri İncele" data-en="Explore Packages">
+                    Paketleri İncele
+                </button>
+                <button onclick="scrollToCalculator()" class="border-2 border-white text-white hover:bg-white hover:text-booking-blue font-bold py-5 px-10 rounded-full text-xl transition-all transform hover:scale-105" data-tr="Fiyat Hesapla" data-en="Calculate Price">
+                    Fiyat Hesapla
+                </button>
+            </div>
+        </div>
+        
+        <!-- Floating Elements -->
+        <div class="absolute top-20 left-10 floating-card">
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-white">
+                <div class="text-2xl font-bold text-booking-yellow">+35%</div>
+                <div class="text-sm" data-tr="Gelir Artışı" data-en="Revenue Increase">Gelir Artışı</div>
+            </div>
+        </div>
+        
+        <div class="absolute bottom-32 right-10 floating-card" style="animation-delay: -2s;">
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-white">
+                <div class="text-2xl font-bold text-booking-cerulean">24/7</div>
+                <div class="text-sm" data-tr="Destek" data-en="Support">Destek</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results & Guarantees -->
+    <section class="py-24 bg-gradient-to-br from-booking-light to-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-bold text-booking-blue mb-6" data-tr="Kanıtlanmış Sonuçlar" data-en="Proven Results">
+                    Kanıtlanmış Sonuçlar
+                </h2>
+                <p class="text-xl text-booking-gray max-w-3xl mx-auto" data-tr="Müşterilerimizin elde ettiği gerçek sonuçlar" data-en="Real results achieved by our customers">
+                    Müşterilerimizin elde ettiği gerçek sonuçlar
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+                <div class="text-center bg-white p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-2 fade-in">
+                    <div class="w-20 h-20 bg-gradient-to-br from-booking-cerulean to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-chart-line text-3xl text-white"></i>
+                    </div>
+                    <div class="text-5xl font-bold text-booking-cerulean mb-3">+25-35%</div>
+                    <div class="text-booking-blue font-semibold text-lg" data-tr="Gelir Artışı" data-en="Revenue Increase">Gelir Artışı</div>
+                    <p class="text-sm text-booking-gray mt-2" data-tr="İlk 12 ay içinde" data-en="Within first 12 months">İlk 12 ay içinde</p>
+                </div>
+                
+                <div class="text-center bg-white p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-2 fade-in">
+                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-arrow-down text-3xl text-white"></i>
+                    </div>
+                    <div class="text-5xl font-bold text-green-500 mb-3">-15-20%</div>
+                    <div class="text-booking-blue font-semibold text-lg" data-tr="Maliyet Düşüşü" data-en="Cost Reduction">Maliyet Düşüşü</div>
+                    <p class="text-sm text-booking-gray mt-2" data-tr="Operasyonel giderler" data-en="Operational expenses">Operasyonel giderler</p>
+                </div>
+                
+                <div class="text-center bg-white p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-2 fade-in">
+                    <div class="w-20 h-20 bg-gradient-to-br from-booking-yellow to-orange-400 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-users text-3xl text-white"></i>
+                    </div>
+                    <div class="text-5xl font-bold text-booking-yellow mb-3">+40%</div>
+                    <div class="text-booking-blue font-semibold text-lg" data-tr="Sosyal Medya Büyümesi" data-en="Social Media Growth">Sosyal Medya Büyümesi</div>
+                    <p class="text-sm text-booking-gray mt-2" data-tr="Organik takipçi artışı" data-en="Organic follower growth">Organik takipçi artışı</p>
+                </div>
+                
+                <div class="text-center bg-white p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-2 fade-in">
+                    <div class="w-20 h-20 bg-gradient-to-br from-booking-blue to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-heart text-3xl text-white"></i>
+                    </div>
+                    <div class="text-5xl font-bold text-booking-blue mb-3">+90%</div>
+                    <div class="text-booking-blue font-semibold text-lg" data-tr="Müşteri Memnuniyeti" data-en="Customer Satisfaction">Müşteri Memnuniyeti</div>
+                    <p class="text-sm text-booking-gray mt-2" data-tr="Misafir değerlendirmeleri" data-en="Guest reviews">Misafir değerlendirmeleri</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service Packages -->
+    <section id="packages" class="py-24 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-20">
+                <h2 class="text-5xl font-bold text-booking-blue mb-6" data-tr="Hizmet Paketleri" data-en="Service Packages">
+                    Hizmet Paketleri
+                </h2>
+                <p class="text-xl text-booking-gray max-w-3xl mx-auto" data-tr="İhtiyacınıza uygun profesyonel çözümler" data-en="Professional solutions tailored to your needs">
+                    İhtiyacınıza uygun profesyonel çözümler
+                </p>
+            </div>
+            
+            <div class="grid lg:grid-cols-3 gap-10 max-w-7xl mx-auto">
+                <!-- Digital Starter Package -->
+                <div class="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden fade-in hover:shadow-3xl transition-all transform hover:-translate-y-2">
+                    <div class="bg-gradient-to-br from-booking-cerulean to-blue-500 text-white p-8">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-rocket text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold" data-tr="Dijital Başlangıç" data-en="Digital Starter">Dijital Başlangıç</h3>
+                                <p class="opacity-90" data-tr="Online Performans Paketi" data-en="Online Performance Package">Online Performans Paketi</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-3xl font-bold">€200 + €10/oda</div>
+                            <div class="text-sm opacity-80" data-tr="Aylık başlangıç fiyatı" data-en="Monthly starting price">Aylık başlangıç fiyatı</div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-8">
+                        <button class="w-full text-left font-semibold text-booking-blue mb-6 flex items-center justify-between accordion-trigger border-b border-gray-200 pb-4" onclick="toggleAccordion('starter')">
+                            <span data-tr="Dijital Satış Optimizasyonu & Gelir Maksimizasyonu" data-en="Digital Sales Optimization & Revenue Maximization">Dijital Satış Optimizasyonu & Gelir Maksimizasyonu</span>
+                            <i class="fas fa-chevron-down transition-transform text-booking-cerulean" id="starter-icon"></i>
+                        </button>
+                        <div class="accordion-content" id="starter-content">
+                            <ul class="space-y-3 text-booking-gray mb-8">
+                                <li class="flex items-start"><i class="fas fa-check text-booking-cerulean mr-3 mt-1 flex-shrink-0"></i><span data-tr="OTA Kanal Yönetimi & Optimizasyonu" data-en="OTA Channel Management & Optimization">OTA Kanal Yönetimi & Optimizasyonu</span></li>
+                                <li class="flex items-start"><i class="fas fa-check text-booking-cerulean mr-3 mt-1 flex-shrink-0"></i><span data-tr="Profesyonel fotoğraf düzenleme ve yükleme hizmeti" data-en="Professional photo editing and upload service">Profesyonel fotoğraf düzenleme ve yükleme hizmeti</span></li>
+                                <li class="flex items-start"><i class="fas fa-check text-booking-cerulean mr-3 mt-1 flex-shrink-0"></i><span data-tr="SEO uyumlu oda açıklamaları ve özellik güncellemeleri" data-en="SEO-friendly room descriptions and feature updates">SEO uyumlu oda açıklamaları ve özellik güncellemeleri</span></li>
+                                <li class="flex items-start"><i class="fas fa-check text-booking-cerulean mr-3 mt-1 flex-shrink-0"></i><span data-tr="Booking.com, Expedia algoritma optimizasyonu" data-en="Booking.com, Expedia algorithm optimization">Booking.com, Expedia algoritma optimizasyonu</span></li>
+                                <li class="flex items-start"><i class="fas fa-check text-booking-cerulean mr-3 mt-1 flex-shrink-0"></i><span data-tr="Dinamik fiyatlandırma sistemi" data-en="Dynamic pricing system">Dinamik fiyatlandırma sistemi</span></li>
+                                <li class="flex items-start"><i class="fas fa-check text-booking-cerulean mr-3 mt-1 flex-shrink-0"></i><span data-tr="Haftalık performans raporları" data-en="Weekly performance reports">Haftalık performans raporları</span></li>
+                            </ul>
+                            
+                            <button class="w-full bg-booking-cerulean hover:bg-blue-600 text-white font-bold py-4 rounded-xl transition-all transform hover:scale-105">
+                                <span data-tr="Bu Paketi Seç" data-en="Choose This Package">Bu Paketi Seç</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B2B & Corporate Package -->
+                <div class="bg-white rounded-3xl shadow-2xl border-2 border-booking-yellow overflow-hidden fade-in hover:shadow-3xl transition-all transform hover:-translate-y-2 relative">
+                    <div class="absolute top-0 right-0 bg-booking-yellow text-booking-blue px-4 py-2 rounded-bl-2xl font-bold text-sm" data-tr="EN POPÜLER" data-en="MOST POPULAR">
+                        EN POPÜLER
+                    </div>
+                    <div class="bg-gradient-to-br from-booking-blue to-indigo-600 text-white p-8">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-trophy text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold" data-tr="B2B & Kurumsal" data-en="B2B & Corporate">B2B & Kurumsal</h3>
+                                <p class="opacity-90" data-tr="Kapsamlı Acenta Ağı Yönetimi" data-en="Comprehensive Agency Network Management">Kapsamlı Acenta Ağı Yönetimi</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-3xl font-bold">€380 + €10/oda</div>
+                            <div class="text-sm opacity-80" data-tr="Aylık başlangıç fiyatı" data-en="Monthly starting price">Aylık başlangıç fiyatı</div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-8">
+                        <button class="w-full text-left font-semibold text-booking-blue mb-6 flex items-center justify-between accordion-trigger border-b border-gray-200 pb-4" onclick="toggleAccordion('b2b')">
+                            <span data-tr="Kapsamlı B2B Acenta Ağı Yönetimi + Dijital Paket" data-en="Comprehensive B2B Agency Network Management + Digital Package">Kapsamlı B2B Acenta Ağı Yönetimi + Dijital Paket</span>
+                            <i class="fas fa-chevron-down transition-transform text-booking-blue" id="b2b-icon"></i>
+                        </button>
+                        <div class="accordion-content" id="b2b-content">
+                            <div class="bg-booking-light p-4 rounded-xl mb-6">
+                                <p class="text-sm text-booking-blue font-semibold" data-tr="✨ Dijital Başlangıç paketinin tüm özellikleri dahil" data-en="✨ All features of Digital Starter package included">
+                                    ✨ Dijital Başlangıç paketinin tüm özellikleri dahil
+                                </p>
+                            </div>
+                            
+                            <ul class="space-y-3 text-booking-gray mb-8">
+                                <li class="flex items-start"><i class="fas fa-check text-booking-blue mr-3 mt-1 flex-shrink-0"></i><span data-tr="100+ seyahat acentesiyle aktif iş ortaklığı" data-en="Active partnerships with 100+ travel agencies">100+ seyahat acentesiyle aktif iş ortaklığı</span></li>
+                                <li class="flex items-start"><i class="fas fa-check text-booking-blue mr-3 mt-1 flex-shrink-0"></i><span data-tr="Özel acenta portalı ve rezervasyon sistemi" data-en="Dedicated agency portal and reservation system">Özel acenta portalı ve rezervasyon sistemi</span></li>
+                                <li class="flex items-start"><i class="fas fa-check text-booking-blue mr-3 mt-1 flex-shrink-0"></i><span data-tr="Kurumsal satış ve sözleşme yönetimi" data-en="Corporate sales and contract management">Kurumsal satış ve sözleşme yönetimi</span></li>
+                                <li class="flex items-start"><i class="fas fa-check text-booking-blue mr-3 mt-1 flex-shrink-0"></i><span data-tr="Grup rezervasyonları için özel paketler" data-en="Special packages for group reservations">Grup rezervasyonları için özel paketler</span></li>
+                                <li class="flex items-start"><i class="fas fa-check text-booking-blue mr-3 mt-1 flex-shrink-0"></i><span data-tr="Finansal süreç yönetimi ve risk analizi" data-en="Financial process management and risk analysis">Finansal süreç yönetimi ve risk analizi</span></li>
+                                <li class="flex items-start"><i class="fas fa-check text-booking-blue mr-3 mt-1 flex-shrink-0"></i><span data-tr="Haftalık strateji toplantıları" data-en="Weekly strategy meetings">Haftalık strateji toplantıları</span></li>
+                            </ul>
+                            
+                            <button class="w-full bg-booking-blue hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all transform hover:scale-105">
+                                <span data-tr="Bu Paketi Seç" data-en="Choose This Package">Bu Paketi Seç</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Premium Elite Package -->
+                <div class="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden fade-in hover:shadow-3xl transition-all transform hover:-translate-y-2">
+                    <div class="bg-gradient-to-br from-booking-yellow to-orange-400 text-booking-blue p-8">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-gem text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold" data-tr="Premium Elite" data-en="Premium Elite">Premium Elite</h3>
+                                <p class="opacity-90" data-tr="360° Tam Yönetim Paketi" data-en="360° Full Management Package">360° Tam Yönetim Paketi</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-3xl font-bold">€1000 + €10/oda</div>
+                            <div class="text-sm opacity-80" data-tr="Aylık başlangıç fiyatı" data-en="Monthly starting price">Aylık başlangıç fiyatı</div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-8">
+                        <button class="w-full text-left font-semibold text-booking-blue mb-6 flex items-center justify-between accordion-trigger border-b border-gray-200 pb-4" onclick="toggleAccordion('premium')">
+                            <span data-tr="360° Tam Yönetim + Tüm Önceki Paket Özellikleri" data-en="360° Full Management + All Previous Package Features">360° Tam Yönetim + Tüm Önceki Paket Özellikleri</span>
+                            <i class="fas fa-chevron-down transition-transform text-booking-yellow" id="premium-icon"></i>
+                        </button>
+                        <div class="accordion-content" id="premium-content">
+                            <div class="bg-gradient-to-r from-booking-yellow/10 to-orange-100 p-4 rounded-xl mb-6">
+                                <p class="text-sm text-booking-blue font-semibold" data-tr="🌟 B2B & Kurumsal paketinin tüm özellikleri dahil" data-en="🌟 All features of B2B & Corporate package included">
+                                    🌟 B2B & Kurumsal paketinin tüm özellikleri dahil
+                                </p>
+                            </div>
+                            
+                            <ul class="space-y-3 text-booking-gray mb-8">
+                                <li class="flex items-start"><i class="fas fa-check text-booking-yellow mr-3 mt-1 flex-shrink-0"></i><span data-tr="Profesyonel sosyal medya yönetimi (Instagram, Facebook, TikTok)" data-en="Professional social media management (Instagram, Facebook, TikTok)">Profesyonel sosyal medya yönetimi (Instagram, Facebook, TikTok)</span></li>
+                                <li class="flex items-start"><i class="fas fa-check text-booking-yellow mr-3 mt-1 flex-shrink-0"></i><span data-tr="Günlük içerik üretimi ve influencer iş birlikleri" data-en="Daily content production and influencer collaborations">Günlük içerik üretimi ve influencer iş birlikleri</span></li>
+                                <li class="flex items-start"><i class="fas fa-check text-booking-yellow mr-3 mt-1 flex-shrink-0"></i><span data-tr="Kapsamlı maliyet yönetimi ve optimizasyon" data-en="Comprehensive cost management and optimization">Kapsamlı maliyet yönetimi ve optimizasyon</span></li>
+                                <li class="flex items-start"><i class="fas fa-check text-booking-yellow mr-3 mt-1 flex-shrink-0"></i><span data-tr="Operasyonel mükemmellik ve kalite yönetimi" data-en="Operational excellence and quality management">Operasyonel mükemmellik ve kalite yönetimi</span></li>
+                                <li class="flex items-start"><i class="fas fa-check text-booking-yellow mr-3 mt-1 flex-shrink-0"></i><span data-tr="Stratejik iş geliştirme ve büyüme planlaması" data-en="Strategic business development and growth planning">Stratejik iş geliştirme ve büyüme planlaması</span></li>
+                                <li class="flex items-start"><i class="fas fa-check text-booking-yellow mr-3 mt-1 flex-shrink-0"></i><span data-tr="7/24 VIP destek ve acil durum hattı" data-en="24/7 VIP support and emergency line">7/24 VIP destek ve acil durum hattı</span></li>
+                            </ul>
+                            
+                            <div class="bg-gradient-to-r from-booking-yellow to-orange-400 text-booking-blue p-6 rounded-xl mb-6">
+                                <h4 class="font-bold mb-3 text-center" data-tr="Premium Paket Garantileri" data-en="Premium Package Guarantees">Premium Paket Garantileri</h4>
+                                <div class="grid grid-cols-2 gap-4 text-sm">
+                                    <div class="flex items-center"><i class="fas fa-star mr-2"></i><span data-tr="%25-35 gelir artışı" data-en="25-35% revenue increase">%25-35 gelir artışı</span></div>
+                                    <div class="flex items-center"><i class="fas fa-star mr-2"></i><span data-tr="%15-20 maliyet düşüşü" data-en="15-20% cost reduction">%15-20 maliyet düşüşü</span></div>
+                                    <div class="flex items-center"><i class="fas fa-star mr-2"></i><span data-tr="%40+ sosyal medya büyümesi" data-en="40%+ social media growth">%40+ sosyal medya büyümesi</span></div>
+                                    <div class="flex items-center"><i class="fas fa-star mr-2"></i><span data-tr="%90+ müşteri memnuniyeti" data-en="90%+ customer satisfaction">%90+ müşteri memnuniyeti</span></div>
+                                </div>
+                            </div>
+                            
+                            <button class="w-full bg-gradient-to-r from-booking-yellow to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-booking-blue font-bold py-4 rounded-xl transition-all transform hover:scale-105">
+                                <span data-tr="Bu Paketi Seç" data-en="Choose This Package">Bu Paketi Seç</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fee Calculator Widget -->
+    <section id="calculator" class="py-24 bg-gradient-to-br from-booking-light to-blue-50">
+        <div class="container mx-auto px-4">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-5xl font-bold text-booking-blue mb-6" data-tr="Ücret Hesaplayıcı" data-en="Fee Calculator">
+                        Ücret Hesaplayıcı
+                    </h2>
+                    <p class="text-xl text-booking-gray" data-tr="Otel büyüklüğünüze göre aylık ve yıllık fiyatları hesaplayın" data-en="Calculate monthly and yearly prices according to your hotel size">
+                        Otel büyüklüğünüze göre aylık ve yıllık fiyatları hesaplayın
+                    </p>
+                </div>
+                
+                <div class="glass-card rounded-3xl p-10 shadow-2xl">
+                    <div class="grid md:grid-cols-2 gap-10 mb-10">
+                        <div>
+                            <label class="block text-booking-blue font-bold mb-4 text-xl" data-tr="Oda Sayısı" data-en="Number of Rooms">
+                                Oda Sayısı
+                            </label>
+                            <input type="number" id="roomCount" value="10" min="1" max="500" 
+                                   class="w-full p-5 border-2 border-booking-cerulean rounded-2xl text-xl focus:outline-none focus:ring-4 focus:ring-booking-blue/20 focus:border-booking-blue transition-all"
+                                   oninput="calculateFees()">
+                            <p class="text-sm text-booking-gray mt-2" data-tr="Otelinizdeki toplam oda sayısını girin" data-en="Enter the total number of rooms in your hotel">
+                                Otelinizdeki toplam oda sayısını girin
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-booking-blue font-bold mb-4 text-xl" data-tr="Ödeme Dönemi" data-en="Payment Period">
+                                Ödeme Dönemi
+                            </label>
+                            <div class="space-y-4">
+                                <label class="flex items-center cursor-pointer bg-white p-4 rounded-xl border-2 border-gray-200 hover:border-booking-cerulean transition-all">
+                                    <input type="radio" name="billing" value="monthly" checked class="mr-4 w-6 h-6 text-booking-blue" onchange="calculateFees()">
+                                    <div>
+                                        <span class="text-lg font-semibold" data-tr="Aylık Ödeme" data-en="Monthly Payment">Aylık Ödeme</span>
+                                        <p class="text-sm text-booking-gray" data-tr="Standart fiyatlandırma" data-en="Standard pricing">Standart fiyatlandırma</p>
+                                    </div>
+                                </label>
+                                <label class="flex items-center cursor-pointer bg-white p-4 rounded-xl border-2 border-gray-200 hover:border-booking-cerulean transition-all">
+                                    <input type="radio" name="billing" value="yearly" class="mr-4 w-6 h-6 text-booking-blue" onchange="calculateFees()">
+                                    <div>
+                                        <span class="text-lg font-semibold" data-tr="Yıllık Ödeme" data-en="Yearly Payment">Yıllık Ödeme</span>
+                                        <p class="text-sm text-green-600 font-semibold" data-tr="20% indirim kazanın!" data-en="Save 20%!">20% indirim kazanın!</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-8 mb-8">
+                        <div class="bg-gradient-to-br from-booking-cerulean to-blue-500 text-white p-8 rounded-2xl shadow-xl transform hover:scale-105 transition-all">
+                            <div class="flex items-center mb-4">
+                                <i class="fas fa-rocket text-3xl mr-4"></i>
+                                <h3 class="font-bold text-xl" data-tr="Dijital Başlangıç" data-en="Digital Starter">Dijital Başlangıç</h3>
+                            </div>
+                            <div class="text-4xl font-bold mb-2" id="price-starter">€300</div>
+                            <div class="text-sm opacity-80" data-tr="aylık" data-en="monthly">aylık</div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-booking-blue to-indigo-600 text-white p-8 rounded-2xl shadow-xl transform hover:scale-105 transition-all border-4 border-booking-yellow">
+                            <div class="flex items-center mb-4">
+                                <i class="fas fa-trophy text-3xl mr-4"></i>
+                                <h3 class="font-bold text-xl" data-tr="B2B & Kurumsal" data-en="B2B & Corporate">B2B & Kurumsal</h3>
+                            </div>
+                            <div class="text-4xl font-bold mb-2" id="price-b2b">€480</div>
+                            <div class="text-sm opacity-80" data-tr="aylık" data-en="monthly">aylık</div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-booking-yellow to-orange-400 text-booking-blue p-8 rounded-2xl shadow-xl transform hover:scale-105 transition-all">
+                            <div class="flex items-center mb-4">
+                                <i class="fas fa-gem text-3xl mr-4"></i>
+                                <h3 class="font-bold text-xl" data-tr="Premium Elite" data-en="Premium Elite">Premium Elite</h3>
+                            </div>
+                            <div class="text-4xl font-bold mb-2" id="price-premium">€1100</div>
+                            <div class="text-sm opacity-80" data-tr="aylık" data-en="monthly">aylık</div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <p class="text-booking-gray mb-6" data-tr="Fiyatlara KDV dâhil değildir. Yıllık ödemede %20 indirim uygulanır." data-en="Prices do not include VAT. 20% discount applies to annual payments.">
+                            Fiyatlara KDV dâhil değildir. Yıllık ödemede %20 indirim uygulanır.
+                        </p>
+                        <button onclick="scrollToContact()" class="bg-booking-blue hover:bg-blue-700 text-white font-bold py-5 px-12 rounded-full text-xl transition-all transform hover:scale-105 shadow-xl" data-tr="Teklif Al" data-en="Get Quote">
+                            Teklif Al
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section id="contact" class="py-24 bg-gradient-to-br from-booking-blue to-indigo-800">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-5xl font-bold text-white mb-6" data-tr="Bizimle İletişime Geçin" data-en="Contact Us">
+                        Bizimle İletişime Geçin
+                    </h2>
+                    <p class="text-xl text-white/80" data-tr="Otel işletmenizi bir sonraki seviyeye taşımak için bugün bizimle iletişime geçin" data-en="Contact us today to take your hotel business to the next level">
+                        Otel işletmenizi bir sonraki seviyeye taşımak için bugün bizimle iletişime geçin
+                    </p>
+                </div>
+                
+                <div class="grid lg:grid-cols-2 gap-16">
+                    <div class="bg-white/10 backdrop-blur-sm p-10 rounded-3xl shadow-2xl">
+                        <form class="space-y-6">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-white font-semibold mb-3 text-lg" data-tr="Ad" data-en="First Name">Ad</label>
+                                    <input type="text" class="w-full p-4 bg-white/20 border border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-booking-yellow focus:border-transparent" placeholder="Adınız" required>
+                                </div>
+                                <div>
+                                    <label class="block text-white font-semibold mb-3 text-lg" data-tr="Soyad" data-en="Last Name">Soyad</label>
+                                    <input type="text" class="w-full p-4 bg-white/20 border border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-booking-yellow focus:border-transparent" placeholder="Soyadınız" required>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-white font-semibold mb-3 text-lg" data-tr="E-posta" data-en="Email">E-posta</label>
+                                <input type="email" class="w-full p-4 bg-white/20 border border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-booking-yellow focus:border-transparent" placeholder="ornek@email.com" required>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-white font-semibold mb-3 text-lg" data-tr="Telefon" data-en="Phone">Telefon</label>
+                                <input type="tel" class="w-full p-4 bg-white/20 border border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-booking-yellow focus:border-transparent" placeholder="+90 5XX XXX XX XX" required>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-white font-semibold mb-3 text-lg" data-tr="Otel Adı" data-en="Hotel Name">Otel Adı</label>
+                                <input type="text" class="w-full p-4 bg-white/20 border border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-booking-yellow focus:border-transparent" placeholder="Otel adınız" required>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-white font-semibold mb-3 text-lg" data-tr="Mesaj" data-en="Message">Mesaj</label>
+                                <textarea rows="4" class="w-full p-4 bg-white/20 border border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-booking-yellow focus:border-transparent resize-none" placeholder="Mesajınızı buraya yazın..." required></textarea>
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-booking-yellow hover:bg-yellow-500 text-booking-blue font-bold py-5 rounded-xl text-xl transition-all transform hover:scale-105 shadow-xl">
+                                <span data-tr="Mesaj Gönder" data-en="Send Message">Mesaj Gönder</span>
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <div class="text-white space-y-8">
+                        <div>
+                            <h3 class="text-3xl font-bold mb-6" data-tr="Hemen Başlayalım!" data-en="Let's Get Started!">Hemen Başlayalım!</h3>
+                            <p class="text-xl mb-8 text-white/90" data-tr="Uzman ekibimiz size en uygun çözümü sunmak için hazır. Ücretsiz danışmanlık için bugün iletişime geçin." data-en="Our expert team is ready to offer you the most suitable solution. Contact us today for free consultation.">
+                                Uzman ekibimiz size en uygun çözümü sunmak için hazır. Ücretsiz danışmanlık için bugün iletişime geçin.
+                            </p>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-center bg-white/10 p-6 rounded-2xl backdrop-blur-sm">
+                                <div class="w-16 h-16 bg-booking-yellow rounded-full flex items-center justify-center mr-6 flex-shrink-0">
+                                    <i class="fas fa-phone text-2xl text-booking-blue"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-lg mb-1" data-tr="Telefon" data-en="Phone">Telefon</h4>
+                                    <p class="text-white/80">+90 501 332 43 00</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center bg-white/10 p-6 rounded-2xl backdrop-blur-sm">
+                                <div class="w-16 h-16 bg-booking-yellow rounded-full flex items-center justify-center mr-6 flex-shrink-0">
+                                    <i class="fas fa-envelope text-2xl text-booking-blue"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-lg mb-1" data-tr="E-posta" data-en="Email">E-posta</h4>
+                                    <p class="text-white/80">info@otelciro.com</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center bg-white/10 p-6 rounded-2xl backdrop-blur-sm">
+                                <div class="w-16 h-16 bg-booking-yellow rounded-full flex items-center justify-center mr-6 flex-shrink-0">
+                                    <i class="fas fa-map-marker-alt text-2xl text-booking-blue"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-lg mb-1" data-tr="Adres" data-en="Address">Adres</h4>
+                                    <p class="text-white/80" data-tr="İstanbul, Türkiye" data-en="Istanbul, Turkey">İstanbul, Türkiye</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-8">
+                            <a href="https://wa.me/905013324300" target="_blank" class="inline-flex items-center bg-green-500 hover:bg-green-600 text-white font-bold py-5 px-8 rounded-2xl transition-all transform hover:scale-105 shadow-xl">
+                                <i class="fab fa-whatsapp text-3xl mr-4"></i>
+                                <div>
+                                    <div class="text-lg" data-tr="WhatsApp ile İletişim" data-en="Contact via WhatsApp">WhatsApp ile İletişim</div>
+                                    <div class="text-sm opacity-80" data-tr="Anında yanıt alın" data-en="Get instant response">Anında yanıt alın</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-booking-blue text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-12">
+                <div>
+                    <h3 class="text-3xl font-bold mb-6">Otelciro</h3>
+                    <p class="text-white/80 text-lg leading-relaxed" data-tr="Otel gelirinizi maksimize eden profesyonel çözümler. Dijital çağda başarılı olmak için yanınızdayız." data-en="Professional solutions that maximize your hotel revenue. We are with you to succeed in the digital age.">
+                        Otel gelirinizi maksimize eden profesyonel çözümler. Dijital çağda başarılı olmak için yanınızdayız.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-6 text-xl" data-tr="Hizmetler" data-en="Services">Hizmetler</h4>
+                    <ul class="space-y-3 text-white/80">
+                        <li><a href="#" class="hover:text-booking-yellow transition-colors" data-tr="Dijital Pazarlama" data-en="Digital Marketing">Dijital Pazarlama</a></li>
+                        <li><a href="#" class="hover:text-booking-yellow transition-colors" data-tr="Gelir Yönetimi" data-en="Revenue Management">Gelir Yönetimi</a></li>
+                        <li><a href="#" class="hover:text-booking-yellow transition-colors" data-tr="B2B Satış" data-en="B2B Sales">B2B Satış</a></li>
+                        <li><a href="#" class="hover:text-booking-yellow transition-colors" data-tr="Operasyonel Danışmanlık" data-en="Operational Consulting">Operasyonel Danışmanlık</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-6 text-xl" data-tr="İletişim" data-en="Contact">İletişim</h4>
+                    <ul class="space-y-3 text-white/80">
+                        <li class="flex items-center"><i class="fas fa-phone mr-3 text-booking-yellow"></i>+90 501 332 43 00</li>
+                        <li class="flex items-center"><i class="fas fa-envelope mr-3 text-booking-yellow"></i>info@otelciro.com</li>
+                        <li class="flex items-center"><i class="fas fa-map-marker-alt mr-3 text-booking-yellow"></i><span data-tr="İstanbul, Türkiye" data-en="Istanbul, Turkey">İstanbul, Türkiye</span></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-6 text-xl" data-tr="Sosyal Medya" data-en="Social Media">Sosyal Medya</h4>
+                    <div class="flex space-x-4 mb-6">
+                        <a href="#" class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-2xl hover:bg-booking-yellow hover:text-booking-blue transition-all"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-2xl hover:bg-booking-yellow hover:text-booking-blue transition-all"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-2xl hover:bg-booking-yellow hover:text-booking-blue transition-all"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-2xl hover:bg-booking-yellow hover:text-booking-blue transition-all"><i class="fab fa-twitter"></i></a>
+                    </div>
+                    <p class="text-white/60 text-sm" data-tr="Güncel haberler ve ipuçları için bizi takip edin" data-en="Follow us for latest news and tips">
+                        Güncel haberler ve ipuçları için bizi takip edin
+                    </p>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/20 mt-12 pt-8 text-center text-white/60">
+                <p>&copy; 2024 Otelciro. <span data-tr="Tüm hakları saklıdır." data-en="All rights reserved.">Tüm hakları saklıdır.</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let currentLanguage = 'tr';
+        
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'tr' ? 'en' : 'tr';
+            const elements = document.querySelectorAll('[data-tr][data-en]');
+            
+            elements.forEach(element => {
+                if (currentLanguage === 'en') {
+                    element.textContent = element.getAttribute('data-en');
+                } else {
+                    element.textContent = element.getAttribute('data-tr');
+                }
+            });
+            
+            document.getElementById('lang-toggle').textContent = currentLanguage === 'tr' ? 'EN' : 'TR';
+            document.documentElement.lang = currentLanguage;
+        }
+        
+        function calculateFees() {
+            const roomCount = parseInt(document.getElementById('roomCount').value) || 0;
+            const billingType = document.querySelector('input[name="billing"]:checked').value;
+            
+            const basePrices = {
+                starter: 200,
+                b2b: 380,
+                premium: 1000
+            };
+            
+            Object.keys(basePrices).forEach(package => {
+                let fee = basePrices[package] + (10 * roomCount);
+                if (billingType === 'yearly') {
+                    fee = fee * 0.8; // 20% discount
+                }
+                document.getElementById(`price-${package}`).textContent = `€${Math.round(fee)}`;
+            });
+        }
+        
+        function scrollToPackages() {
+            document.getElementById('packages').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function scrollToCalculator() {
+            document.getElementById('calculator').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function scrollToContact() {
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function toggleAccordion(id) {
+            const content = document.getElementById(`${id}-content`);
+            const icon = document.getElementById(`${id}-icon`);
+            
+            content.classList.toggle('active');
+            icon.classList.toggle('rotate-180');
+        }
+        
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            calculateFees();
+            
+            // Observe all fade-in elements
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'960a09eb21b80c48',t:'MTc1Mjc1ODQ0OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
