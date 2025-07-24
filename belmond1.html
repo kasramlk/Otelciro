@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belmond Beyazıt Hotel - Satış Performans Raporu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f2f6fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, rgba(0, 53, 128, 0.9), rgba(0, 159, 227, 0.8)), 
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23003580" width="1200" height="600"/><path fill="%23009fe3" opacity="0.1" d="M0,300 Q300,200 600,300 T1200,300 L1200,600 L0,600 Z"/></svg>');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-content p {
+            font-size: 1.4rem;
+            font-weight: 400;
+            opacity: 0.95;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: -50px auto 50px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .card {
+            background: #f2f6fa;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 53, 128, 0.1);
+            border: 1px solid rgba(0, 159, 227, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 53, 128, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #009fe3, #feba02);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 24px;
+            color: white;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #003580;
+        }
+
+        .overview-text {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .kpi-section {
+            background: #003580;
+            padding: 60px 0;
+            margin: 50px 0;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .kpi-card {
+            background: #f2f6fa;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .kpi-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .kpi-number.yellow { color: #feba02; }
+        .kpi-number.blue { color: #003580; }
+        .kpi-number.cerulean { color: #009fe3; }
+
+        .kpi-label {
+            font-size: 1.1rem;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        .chart-small {
+            height: 250px;
+        }
+
+        .agency-info {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(0, 159, 227, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid #009fe3;
+        }
+
+        .agency-item {
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .agency-name {
+            font-weight: 600;
+            color: #003580;
+        }
+
+        .footer {
+            background: #003580;
+            color: white;
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+
+        .footer p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .section-title {
+            background: #003580;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin: 50px 0 30px;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .currency-btn {
+            background: linear-gradient(135deg, #feba02, #009fe3);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(254, 186, 2, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .currency-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(254, 186, 2, 0.4);
+        }
+
+        .currency-btn:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-content p {
+                font-size: 1.2rem;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                margin-top: -30px;
+            }
+            
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Belmond Beyazıt Hotel Satış Performans Raporu</h1>
+                <p>E-Ticaret Optimizasyon Dönemi: 13 Haziran – 24 Temmuz 2025</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Content -->
+    <div class="container">
+        <div class="dashboard-grid">
+            <!-- Genel Bakış Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">⚙️</div>
+                    <h3 class="card-title">Genel Bakış</h3>
+                </div>
+                <p class="overview-text">
+                    Kanal yöneticisi entegrasyonu, günlük fiyat optimizasyonu ve strateji uygulamaları başarıyla tamamlandı. 41 günde online kanallardan alınan rezervasyonlar ile önemli bir satış artışı sağlandı.
+                </p>
+            </div>
+
+            <!-- Konaklama Ayları Dağılımı -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📊</div>
+                    <h3 class="card-title">Konaklama Ayları Dağılımı</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Aylık Ciro -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">💰</div>
+                    <h3 class="card-title">Aylık Ciro Performansı</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+                <div class="agency-info">
+                    <div class="agency-item">
+                        <span class="agency-name">Haziran 2025:</span> <span id="juneRevenue">€7,500</span> toplam ciro
+                    </div>
+                    <div class="agency-item">
+                        <span class="agency-name">Temmuz 2025:</span> <span id="julyRevenue">€10,282</span> toplam ciro
+                    </div>
+                    <div class="agency-item">
+                        <span class="agency-name">Artış Oranı:</span> %37.1 aylık büyüme
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acenta Bazlı Satışlar -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🌐</div>
+                    <h3 class="card-title">Acenta Bazlı Satışlar</h3>
+                </div>
+                <div class="chart-container chart-small">
+                    <canvas id="agencyChart"></canvas>
+                </div>
+                <div class="agency-info">
+                    <div class="agency-item">
+                        <span class="agency-name">Booking.com:</span> <span id="bookingRevenue">€9,237</span> (47 rezervasyon) - Avrupa ve küresel pazarlar
+                    </div>
+                    <div class="agency-item">
+                        <span class="agency-name">Expedia:</span> <span id="expediaRevenue">€3,200</span> (12 rezervasyon) - ABD, Kanada ve Avrupa pazarları
+                    </div>
+                    <div class="agency-item">
+                        <span class="agency-name">CTrip:</span> <span id="ctripRevenue">€1,785</span> (11 rezervasyon) - Çin ve Asya pazarları
+                    </div>
+                    <div class="agency-item">
+                        <span class="agency-name">Agoda:</span> <span id="agodaRevenue">€1,580</span> (4 rezervasyon) - Asya-Pasifik pazarları
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Currency Converter -->
+    <div class="container" style="text-align: center; margin: 30px auto;">
+        <button id="currencyToggle" class="currency-btn">
+            <span id="currencyIcon">💱</span>
+            <span id="currencyText">USD'ye Çevir</span>
+        </button>
+    </div>
+
+    <!-- KPI Section -->
+    <section class="kpi-section">
+        <div class="container">
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-number yellow">74</div>
+                    <div class="kpi-label">Toplam Rezervasyon</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-number blue" id="totalRevenue">€15,802</div>
+                    <div class="kpi-label">41 Günde Online Kanallardan Alınan Rezervasyonlar<br>Haziran-Temmuz-Ağustos-Eylül-Ekim</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-number cerulean">€47.36</div>
+                    <div class="kpi-label">ADR (Ortalama Günlük Fiyat)</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Room Types Section -->
+    <div class="container">
+        <div class="card" style="margin-bottom: 50px;">
+            <div class="card-header">
+                <div class="card-icon">🏨</div>
+                <h3 class="card-title">Oda Tipi Performansı</h3>
+            </div>
+            <div class="chart-container">
+                <canvas id="roomTypesChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>Bu rapor Otelciro.com online satış ve gelir yönetimi danışmanlığı kapsamında hazırlanmıştır.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Chart.js configuration with Booking.com colors
+        const colors = {
+            primary: '#003580',
+            cerulean: '#009fe3',
+            yellow: '#feba02',
+            gray: '#666',
+            light: '#f2f6fa'
+        };
+
+        // Currency conversion functionality
+        let isUSD = false;
+        const exchangeRate = 1.10; // Current EUR to USD rate (approximate)
+
+        const currencyData = {
+            eur: {
+                totalRevenue: 15802,
+                juneRevenue: 7500,
+                julyRevenue: 10282,
+                bookingRevenue: 9237,
+                expediaRevenue: 3200,
+                ctripRevenue: 1785,
+                agodaRevenue: 1580,
+                monthlyData: [1540, 4000, 5015, 5241, 500],
+                revenueData: [7500, 10282]
+            }
+        };
+
+        function convertCurrency(value) {
+            return isUSD ? Math.round(value * exchangeRate) : value;
+        }
+
+        function formatCurrency(value) {
+            const symbol = isUSD ? '$' : '€';
+            return symbol + convertCurrency(value).toLocaleString();
+        }
+
+        // Monthly Distribution Chart
+        const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+        const monthlyChart = new Chart(monthlyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim'],
+                datasets: [{
+                    label: 'Aylık Ciro (€)',
+                    data: [1540, 4000, 5015, 5241, 500],
+                    backgroundColor: [colors.cerulean, colors.yellow, colors.primary, colors.cerulean, colors.yellow],
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 53, 128, 0.1)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return (isUSD ? '$' : '€') + value.toLocaleString();
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Agency Pie Chart
+        const agencyCtx = document.getElementById('agencyChart').getContext('2d');
+        new Chart(agencyCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Booking.com', 'Expedia', 'CTrip', 'Agoda'],
+                datasets: [{
+                    data: [47, 12, 11, 4],
+                    backgroundColor: [colors.primary, colors.yellow, colors.cerulean, '#ff6b6b'],
+                    borderWidth: 0,
+                    cutout: '60%'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Monthly Revenue Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: ['Haziran 2025', 'Temmuz 2025'],
+                datasets: [{
+                    label: 'Aylık Ciro (€)',
+                    data: [7500, 10282],
+                    borderColor: colors.yellow,
+                    backgroundColor: 'rgba(254, 186, 2, 0.1)',
+                    borderWidth: 4,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: colors.yellow,
+                    pointBorderColor: colors.primary,
+                    pointBorderWidth: 3,
+                    pointRadius: 8,
+                    pointHoverRadius: 12
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 53, 128, 0.1)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return (isUSD ? '$' : '€') + value.toLocaleString();
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Room Types Chart
+        const roomTypesCtx = document.getElementById('roomTypesChart').getContext('2d');
+        new Chart(roomTypesCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Standart Room', 'Triple', 'Deluxe Room', 'Small Room'],
+                datasets: [{
+                    label: 'Rezervasyon Sayısı',
+                    data: [42, 18, 9, 5],
+                    backgroundColor: [colors.primary, colors.yellow, colors.cerulean, colors.gray],
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 53, 128, 0.1)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        function updateAllCurrency() {
+            // Update KPI
+            document.getElementById('totalRevenue').textContent = formatCurrency(currencyData.eur.totalRevenue);
+            
+            // Update monthly revenue
+            document.getElementById('juneRevenue').textContent = formatCurrency(currencyData.eur.juneRevenue);
+            document.getElementById('julyRevenue').textContent = formatCurrency(currencyData.eur.julyRevenue);
+            
+            // Update agency revenues
+            document.getElementById('bookingRevenue').textContent = formatCurrency(currencyData.eur.bookingRevenue);
+            document.getElementById('expediaRevenue').textContent = formatCurrency(currencyData.eur.expediaRevenue);
+            document.getElementById('ctripRevenue').textContent = formatCurrency(currencyData.eur.ctripRevenue);
+            document.getElementById('agodaRevenue').textContent = formatCurrency(currencyData.eur.agodaRevenue);
+            
+            // Update charts
+            monthlyChart.data.datasets[0].data = currencyData.eur.monthlyData.map(convertCurrency);
+            monthlyChart.update();
+            
+            revenueChart.data.datasets[0].data = currencyData.eur.revenueData.map(convertCurrency);
+            revenueChart.update();
+            
+            // Update button text
+            document.getElementById('currencyText').textContent = isUSD ? "EUR'ye Çevir" : "USD'ye Çevir";
+        }
+
+        document.getElementById('currencyToggle').addEventListener('click', function() {
+            isUSD = !isUSD;
+            updateAllCurrency();
+        });
+
+        // Add subtle animations on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.card, .kpi-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96424633656ad621',t:'MTc1MzM0ODExOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
