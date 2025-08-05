@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otel Grubu Performans Raporu - Temmuz 2025</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=BlinkMacSystemFont:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'BlinkMacSystemFont', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f2f6fa;
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 53, 128, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #003580 0%, #009fe3 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.05)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.05)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.03)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .brand-logo {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .brand-logo:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+        
+        .hotel-selector {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            padding: 32px;
+            background: #f2f6fa;
+            border-bottom: 1px solid rgba(0, 53, 128, 0.08);
+        }
+        
+        .hotel-btn {
+            padding: 14px 28px;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            color: #003580;
+            box-shadow: 0 2px 8px rgba(0, 53, 128, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hotel-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 159, 227, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .hotel-btn:hover::before {
+            left: 100%;
+        }
+        
+        .hotel-btn.active {
+            background: #003580;
+            color: white;
+            border-color: #003580;
+            box-shadow: 0 4px 16px rgba(0, 53, 128, 0.2);
+        }
+        
+        .hotel-btn:hover:not(.active) {
+            background: #f2f6fa;
+            border-color: #009fe3;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 53, 128, 0.12);
+        }
+        
+        .report-content {
+            padding: 40px;
+        }
+        
+        .hotel-section {
+            display: none;
+        }
+        
+        .hotel-section.active {
+            display: block;
+        }
+        
+        .hotel-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .hotel-title h2 {
+            font-size: 2.4rem;
+            color: #003580;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+        
+        .hotel-title .period {
+            font-size: 1rem;
+            color: #666;
+            background: white;
+            padding: 10px 24px;
+            border-radius: 20px;
+            display: inline-block;
+            border: 1px solid rgba(0, 53, 128, 0.1);
+            font-weight: 500;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+        
+        .metric-card {
+            background: white;
+            color: #003580;
+            padding: 32px 24px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 53, 128, 0.08);
+            border: 1px solid rgba(0, 53, 128, 0.06);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #003580, #009fe3, #feba02);
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(0, 53, 128, 0.12);
+        }
+        
+        .metric-card h3 {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        
+        .metric-card .value {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #003580;
+            line-height: 1;
+        }
+        
+        .metric-card .unit {
+            font-size: 1.1rem;
+            color: #009fe3;
+            font-weight: 500;
+        }
+        
+        .charts-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 53, 128, 0.06);
+            border: 1px solid rgba(0, 53, 128, 0.04);
+        }
+        
+        .chart-container h3 {
+            color: #003580;
+            margin-bottom: 24px;
+            font-size: 1.2rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .reservations-section {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 20px rgba(0, 53, 128, 0.06);
+            border: 1px solid rgba(0, 53, 128, 0.04);
+        }
+        
+        .reservations-section h3 {
+            color: #003580;
+            margin-bottom: 24px;
+            font-size: 1.4rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .reservation-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-box {
+            background: #f2f6fa;
+            padding: 28px 24px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(0, 53, 128, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 53, 128, 0.1);
+        }
+        
+        .stat-box .number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #003580;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+        
+        .stat-box .label {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .tables-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 53, 128, 0.06);
+            border: 1px solid rgba(0, 53, 128, 0.04);
+        }
+        
+        .table-container h4 {
+            background: linear-gradient(135deg, #003580 0%, #009fe3 100%);
+            color: white;
+            padding: 20px;
+            margin: 0;
+            font-size: 1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 53, 128, 0.06);
+        }
+        
+        th {
+            background: #f2f6fa;
+            font-weight: 600;
+            color: #003580;
+            font-size: 0.9rem;
+        }
+        
+        td {
+            color: #333;
+            font-size: 0.95rem;
+        }
+        
+        tr:hover {
+            background: rgba(0, 159, 227, 0.02);
+        }
+        
+        .currency {
+            font-weight: 600;
+            color: #009fe3;
+        }
+        
+        .interpretation {
+            background: linear-gradient(135deg, rgba(0, 159, 227, 0.05) 0%, rgba(254, 186, 2, 0.05) 100%);
+            padding: 28px;
+            border-radius: 12px;
+            margin-top: 32px;
+            border-left: 4px solid #feba02;
+            border: 1px solid rgba(254, 186, 2, 0.1);
+        }
+        
+        .interpretation h4 {
+            color: #003580;
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .interpretation p {
+            color: #333;
+            line-height: 1.7;
+            font-size: 0.95rem;
+            font-weight: 400;
+        }
+        
+        @media (max-width: 768px) {
+            .hotel-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .tables-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .reservation-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <a href="https://www.otelciro.com" target="_blank" class="brand-logo">
+                    🏨 otelciro.com
+                </a>
+                <h1>Otel Grubu Performans Raporu</h1>
+                <p>Temmuz 2025 Aylık Analiz Raporu</p>
+            </div>
+        </div>
+        
+        <div class="hotel-selector">
+            <button class="hotel-btn active" onclick="showHotel('petrion')">Petrion Hotel</button>
+            <button class="hotel-btn" onclick="showHotel('taksim')">Taksim Nis Hotel</button>
+            <button class="hotel-btn" onclick="showHotel('eskiciler')">Eskiciler Konağı</button>
+        </div>
+        
+        <div class="report-content">
+            <!-- Petrion Hotel Section -->
+            <div id="petrion" class="hotel-section active">
+                <div class="hotel-title">
+                    <h2>🏛️ Petrion Hotel Balat</h2>
+                    <span class="period">Temmuz 2025 Performans Raporu</span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <h3>Toplam Gelir</h3>
+                        <div class="value">25,537</div>
+                        <div class="unit">EUR</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Doluluk Oranı</h3>
+                        <div class="value">62.62</div>
+                        <div class="unit">%</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Günlük Ort. Fiyat (ADR)</h3>
+                        <div class="value">76.48</div>
+                        <div class="unit">EUR</div>
+                    </div>
+                </div>
+                
+                <div class="charts-section">
+                    <div class="chart-container">
+                        <h3>📊 Aylık Gelir Dağılımı</h3>
+                        <canvas id="petrionRevenueChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>📈 Rezervasyon Kanalları</h3>
+                        <canvas id="petrionChannelChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="reservations-section">
+                    <h3>📋 Temmuz Ayı Yeni Rezervasyonlar</h3>
+                    <div class="reservation-stats">
+                        <div class="stat-box">
+                            <div class="number">116</div>
+                            <div class="label">Toplam Rezervasyon</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="number">22,315 €</div>
+                            <div class="label">Toplam Hacim</div>
+                        </div>
+                    </div>
+                    
+                    <div class="tables-section">
+                        <div class="table-container">
+                            <h4>🗓️ Konaklama Aylarına Göre Dağılım</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Konaklama Ayı</th>
+                                        <th>Rezervasyon</th>
+                                        <th>Gelir (€)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Temmuz 2025</td><td>72</td><td class="currency">9,844.29</td></tr>
+                                    <tr><td>Ağustos 2025</td><td>14</td><td class="currency">3,239.99</td></tr>
+                                    <tr><td>Eylül 2025</td><td>13</td><td class="currency">4,316.38</td></tr>
+                                    <tr><td>Ekim 2025</td><td>8</td><td class="currency">2,597.28</td></tr>
+                                    <tr><td>Kasım 2025</td><td>3</td><td class="currency">814.23</td></tr>
+                                    <tr><td>Aralık 2025</td><td>2</td><td class="currency">635.12</td></tr>
+                                    <tr><td>Ocak 2026</td><td>3</td><td class="currency">499.32</td></tr>
+                                    <tr><td>Nisan 2026</td><td>1</td><td class="currency">371.16</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="table-container">
+                            <h4>🌐 Rezervasyon Kanalları</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Kanal / Partner</th>
+                                        <th>Rezervasyon</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Booking.com (%15)</td><td>58</td></tr>
+                                    <tr><td>Walk-in</td><td>30</td></tr>
+                                    <tr><td>Expedia (%18)</td><td>11</td></tr>
+                                    <tr><td>SabeeApp Booking Engine</td><td>8</td></tr>
+                                    <tr><td>Trip.com</td><td>4</td></tr>
+                                    <tr><td>Bilinmeyen</td><td>4</td></tr>
+                                    <tr><td>Mehmet Kafe Komşu</td><td>1</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="interpretation">
+                    <h4>📝 Analiz ve Yorum</h4>
+                    <p>Temmuz ayında yapılan rezervasyonların çoğu aynı ay için olmasına rağmen, 8 ay ileriye kadar uzanan sağlam bir ön rezervasyon eğrisi yakaladınız. Bu, otelin gelecek dönemler için güçlü bir rezervasyon portföyüne sahip olduğunu göstermektedir.</p>
+                </div>
+            </div>
+            
+            <!-- Taksim Nis Hotel Section -->
+            <div id="taksim" class="hotel-section">
+                <div class="hotel-title">
+                    <h2>🏙️ Taksim Nis Hotel</h2>
+                    <span class="period">Temmuz 2025 Performans Raporu</span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <h3>Toplam Gelir</h3>
+                        <div class="value">24,854</div>
+                        <div class="unit">EUR</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Doluluk Oranı</h3>
+                        <div class="value">69.45</div>
+                        <div class="unit">%</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Günlük Ort. Fiyat (ADR)</h3>
+                        <div class="value">67.91</div>
+                        <div class="unit">EUR</div>
+                    </div>
+                </div>
+                
+                <div class="charts-section">
+                    <div class="chart-container">
+                        <h3>📊 Aylık Gelir Dağılımı</h3>
+                        <canvas id="taksimRevenueChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>📈 Rezervasyon Kanalları</h3>
+                        <canvas id="taksimChannelChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="reservations-section">
+                    <h3>📋 Temmuz Ayı Yeni Rezervasyonlar</h3>
+                    <div class="reservation-stats">
+                        <div class="stat-box">
+                            <div class="number">114</div>
+                            <div class="label">Toplam Rezervasyon</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="number">21,725 €</div>
+                            <div class="label">Toplam Hacim</div>
+                        </div>
+                    </div>
+                    
+                    <div class="tables-section">
+                        <div class="table-container">
+                            <h4>🗓️ Konaklama Aylarına Göre Dağılım</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Konaklama Ayı</th>
+                                        <th>Rezervasyon</th>
+                                        <th>Gelir (€)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Temmuz 2025</td><td>56</td><td class="currency">6,566.75</td></tr>
+                                    <tr><td>Ağustos 2025</td><td>23</td><td class="currency">4,666.52</td></tr>
+                                    <tr><td>Eylül 2025</td><td>15</td><td class="currency">2,984.57</td></tr>
+                                    <tr><td>Ekim 2025</td><td>10</td><td class="currency">2,841.41</td></tr>
+                                    <tr><td>Kasım 2025</td><td>7</td><td class="currency">3,170.06</td></tr>
+                                    <tr><td>Aralık 2025</td><td>3</td><td class="currency">1,298.99</td></tr>
+                                    <tr><td>Mayıs 2026</td><td>1</td><td class="currency">197.68</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="table-container">
+                            <h4>🌐 Rezervasyon Kanalları</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Kanal / Partner</th>
+                                        <th>Rezervasyon</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Booking.com (%15)</td><td>42</td></tr>
+                                    <tr><td>Agoda</td><td>38</td></tr>
+                                    <tr><td>Bilinmeyen</td><td>22</td></tr>
+                                    <tr><td>Expedia (%18)</td><td>7</td></tr>
+                                    <tr><td>Walk-in</td><td>3</td></tr>
+                                    <tr><td>Telefon</td><td>2</td></tr>
+                                    <tr><td>Trip.com</td><td>1</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="interpretation">
+                    <h4>📝 Analiz ve Yorum</h4>
+                    <p>Taksim Nis Hotel, %69.45 doluluk oranı ile grup içinde en yüksek doluluk performansını göstermiştir. Online rezervasyon kanallarının (Booking.com ve Agoda) güçlü performansı dikkat çekicidir. Gelecek aylara yayılan rezervasyon dağılımı istikrarlı bir talep göstermektedir.</p>
+                </div>
+            </div>
+            
+            <!-- Eskiciler Konağı Section -->
+            <div id="eskiciler" class="hotel-section">
+                <div class="hotel-title">
+                    <h2>🏰 Eskiciler Konağı Isparta</h2>
+                    <span class="period">Temmuz 2025 Performans Raporu</span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <h3>Toplam Gelir</h3>
+                        <div class="value">1,040,096</div>
+                        <div class="unit">TL</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Doluluk Oranı</h3>
+                        <div class="value">40.41</div>
+                        <div class="unit">%</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Günlük Ort. Fiyat (ADR)</h3>
+                        <div class="value">4,309</div>
+                        <div class="unit">TL</div>
+                    </div>
+                </div>
+                
+                <div class="charts-section">
+                    <div class="chart-container">
+                        <h3>📊 Aylık Gelir Dağılımı</h3>
+                        <canvas id="eskicilerRevenueChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>📈 Rezervasyon Kanalları</h3>
+                        <canvas id="eskicilerChannelChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="reservations-section">
+                    <h3>📋 Temmuz Ayı Yeni Rezervasyonlar</h3>
+                    <div class="reservation-stats">
+                        <div class="stat-box">
+                            <div class="number">233</div>
+                            <div class="label">Toplam Rezervasyon</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="number">1,151,868 ₺</div>
+                            <div class="label">Toplam Hacim</div>
+                        </div>
+                    </div>
+                    
+                    <div class="tables-section">
+                        <div class="table-container">
+                            <h4>🗓️ Konaklama Aylarına Göre Dağılım</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Konaklama Ayı</th>
+                                        <th>Rezervasyon</th>
+                                        <th>Gelir (₺)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Temmuz 2025</td><td>157</td><td class="currency">769,495.56</td></tr>
+                                    <tr><td>Ağustos 2025</td><td>43</td><td class="currency">250,403.18</td></tr>
+                                    <tr><td>Eylül 2025</td><td>15</td><td class="currency">46,759.10</td></tr>
+                                    <tr><td>Ekim 2025</td><td>13</td><td class="currency">69,980.84</td></tr>
+                                    <tr><td>Kasım 2025</td><td>4</td><td class="currency">15,230.14</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="table-container">
+                            <h4>🌐 Rezervasyon Kanalları</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Kanal / Partner</th>
+                                        <th>Rezervasyon</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Bilinmeyen</td><td>72</td></tr>
+                                    <tr><td>Booking.com (%15)</td><td>49</td></tr>
+                                    <tr><td>Ets / Odamax (%15)</td><td>40</td></tr>
+                                    <tr><td>Expedia (%18)</td><td>27</td></tr>
+                                    <tr><td>SabeeApp Booking Engine</td><td>23</td></tr>
+                                    <tr><td>Telefon</td><td>11</td></tr>
+                                    <tr><td>Walk-in</td><td>8</td></tr>
+                                    <tr><td>TatilSepeti</td><td>2</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="interpretation">
+                    <h4>📝 Analiz ve Yorum</h4>
+                    <p>Eskiciler Konağı, 233 rezervasyon ile en yüksek rezervasyon sayısına sahiptir ancak %40.41 doluluk oranı ile gelişim potansiyeli bulunmaktadır. Yüksek ADR (4,309 TL) premium konumlandırmayı göstermektedir. Rezervasyon kanallarında çeşitlilik mevcuttur ve "bilinmeyen" kategorisinin yüksekliği kanal takibinin iyileştirilmesi gerektiğini işaret etmektedir.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Hotel switching functionality
+        function showHotel(hotelId) {
+            // Hide all sections
+            document.querySelectorAll('.hotel-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.hotel-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(hotelId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Initialize charts for the selected hotel
+            setTimeout(() => {
+                initializeCharts(hotelId);
+            }, 100);
+        }
+
+        // Chart initialization
+        function initializeCharts(hotelId) {
+            if (hotelId === 'petrion') {
+                initializePetrionCharts();
+            } else if (hotelId === 'taksim') {
+                initializeTaksimCharts();
+            } else if (hotelId === 'eskiciler') {
+                initializeEskicilerCharts();
+            }
+        }
+
+        function initializePetrionCharts() {
+            // Revenue Chart
+            const revenueCtx = document.getElementById('petrionRevenueChart');
+            if (revenueCtx) {
+                new Chart(revenueCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Tem 25', 'Ağu 25', 'Eyl 25', 'Eki 25', 'Kas 25', 'Ara 25', 'Oca 26', 'Nis 26'],
+                        datasets: [{
+                            label: 'Gelir (€)',
+                            data: [9844.29, 3239.99, 4316.38, 2597.28, 814.23, 635.12, 499.32, 371.16],
+                            backgroundColor: 'rgba(0, 53, 128, 0.8)',
+                            borderColor: '#003580',
+                            borderWidth: 2,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Channel Chart
+            const channelCtx = document.getElementById('petrionChannelChart');
+            if (channelCtx) {
+                new Chart(channelCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Booking.com', 'Walk-in', 'Expedia', 'SabeeApp', 'Trip.com', 'Diğer'],
+                        datasets: [{
+                            data: [58, 30, 11, 8, 4, 5],
+                            backgroundColor: [
+                                '#003580',
+                                '#009fe3',
+                                '#feba02',
+                                '#666',
+                                '#f2f6fa',
+                                '#0066cc'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function initializeTaksimCharts() {
+            // Revenue Chart
+            const revenueCtx = document.getElementById('taksimRevenueChart');
+            if (revenueCtx) {
+                new Chart(revenueCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Tem 25', 'Ağu 25', 'Eyl 25', 'Eki 25', 'Kas 25', 'Ara 25', 'May 26'],
+                        datasets: [{
+                            label: 'Gelir (€)',
+                            data: [6566.75, 4666.52, 2984.57, 2841.41, 3170.06, 1298.99, 197.68],
+                            backgroundColor: 'rgba(0, 53, 128, 0.8)',
+                            borderColor: '#003580',
+                            borderWidth: 2,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Channel Chart
+            const channelCtx = document.getElementById('taksimChannelChart');
+            if (channelCtx) {
+                new Chart(channelCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Booking.com', 'Agoda', 'Bilinmeyen', 'Expedia', 'Walk-in', 'Telefon', 'Trip.com'],
+                        datasets: [{
+                            data: [42, 38, 22, 7, 3, 2, 1],
+                            backgroundColor: [
+                                '#003580',
+                                '#009fe3',
+                                '#feba02',
+                                '#666',
+                                '#f2f6fa',
+                                '#0066cc',
+                                '#ff6b35'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function initializeEskicilerCharts() {
+            // Revenue Chart
+            const revenueCtx = document.getElementById('eskicilerRevenueChart');
+            if (revenueCtx) {
+                new Chart(revenueCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Tem 25', 'Ağu 25', 'Eyl 25', 'Eki 25', 'Kas 25'],
+                        datasets: [{
+                            label: 'Gelir (₺)',
+                            data: [769495.56, 250403.18, 46759.10, 69980.84, 15230.14],
+                            backgroundColor: 'rgba(0, 53, 128, 0.8)',
+                            borderColor: '#003580',
+                            borderWidth: 2,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Channel Chart
+            const channelCtx = document.getElementById('eskicilerChannelChart');
+            if (channelCtx) {
+                new Chart(channelCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Bilinmeyen', 'Booking.com', 'Ets/Odamax', 'Expedia', 'SabeeApp', 'Telefon', 'Walk-in', 'TatilSepeti'],
+                        datasets: [{
+                            data: [72, 49, 40, 27, 23, 11, 8, 2],
+                            backgroundColor: [
+                                '#003580',
+                                '#009fe3',
+                                '#feba02',
+                                '#666',
+                                '#f2f6fa',
+                                '#0066cc',
+                                '#ff6b35',
+                                '#28a745'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Initialize charts on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePetrionCharts();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96a4bae04785c9d1',t:'MTc1NDM4MDUwMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
