@@ -1,1 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otelciro B2B Hub - Connecting Hotels & Agencies Worldwide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#003580',
+                        'primary-light': '#0071c2',
+                        'accent': '#febb02',
+                        'dark': '#1a1a1a',
+                        'gray-custom': '#6b7280',
+                        'light-bg': '#f8fafc'
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'fade-in': 'fadeIn 1s ease-out',
+                        'pulse-slow': 'pulse 3s infinite'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .gradient-primary { background: linear-gradient(135deg, #003580 0%, #0071c2 50%, #00a8ff 100%); }
+        .gradient-card { background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%); }
+        .glass-effect { backdrop-filter: blur(20px); background: rgba(255, 255, 255, 0.1); }
+        
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .hero-bg { 
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(0, 53, 128, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 113, 194, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(254, 187, 2, 0.05) 0%, transparent 50%);
+        }
+        
+        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-hover:hover { transform: translateY(-8px); box-shadow: 0 25px 50px -12px rgba(0, 53, 128, 0.15); }
+        
+        .text-gradient { background: linear-gradient(135deg, #003580, #0071c2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .feature-icon { 
+            background: linear-gradient(135deg, #003580, #0071c2);
+            box-shadow: 0 8px 32px rgba(0, 53, 128, 0.3);
+        }
+
+        .network-animation {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .network-animation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(254, 187, 2, 0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+    </style>
+</head>
+<body class="bg-white overflow-x-hidden">
+    <!-- Header -->
+    <nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 gradient-primary rounded-xl flex items-center justify-center shadow-lg">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-dark">Otelciro</h1>
+                        <p class="text-xs text-gray-custom -mt-1">B2B Hub</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#hotels" class="text-gray-custom hover:text-primary transition-colors font-medium" data-tr="nav-hotels">Oteller İçin</a>
+                    <a href="#agencies" class="text-gray-custom hover:text-primary transition-colors font-medium" data-tr="nav-agencies">Acenteler İçin</a>
+                    <a href="#features" class="text-gray-custom hover:text-primary transition-colors font-medium" data-tr="nav-features">Özellikler</a>
+                    <div class="flex items-center space-x-2">
+                        <button id="langToggle" class="flex items-center space-x-1 text-gray-custom hover:text-primary transition-colors">
+                            <span id="currentLang">TR</span>
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <a href="https://www.otelciro.com/b2b" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-light transition-all font-medium" data-tr="nav-access">Platforma Erişim</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-20 hero-bg relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="animate-slide-up">
+                    <div class="inline-flex items-center bg-accent/10 text-accent px-4 py-2 rounded-full text-sm font-semibold mb-6">
+                        <span class="w-2 h-2 bg-accent rounded-full mr-2 animate-pulse"></span>
+                        <span data-tr="hero-badge">Oteller ve Global Seyahat Acenteleri Arasında Köprü</span>
+                    </div>
+                    <h1 class="text-5xl lg:text-6xl font-black leading-tight mb-6">
+                        <span class="text-gradient">Otelciro B2B Hub</span>
+                        <br>
+                        <span class="text-dark" data-tr="hero-title">Oteller ve Acenteleri Dünya Çapında Bağlıyor</span>
+                    </h1>
+                    <p class="text-xl text-gray-custom mb-8 leading-relaxed max-w-lg" data-tr="hero-subtitle">
+                        Otel Dağıtımı ve Rezervasyonlar için Nihai B2B Platformu. 
+                        Otellerin ve seyahat acentelerinin küresel bağlantı kurma şeklini devrimleştiriyor.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 mb-12">
+                        <a href="https://www.otelciro.com/b2b" class="bg-primary text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-primary-light transition-all shadow-lg hover:shadow-xl transform hover:scale-105" data-tr="hero-cta-primary">
+                            Platforma Erişim
+                        </a>
+                        <button class="border-2 border-primary text-primary px-8 py-4 rounded-xl font-semibold text-lg hover:bg-primary hover:text-white transition-all" data-tr="hero-cta-secondary">
+                            Daha Fazla Bilgi
+                        </button>
+                    </div>
+                    <div class="flex items-center space-x-8 text-sm text-gray-custom">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span data-tr="hero-feature-1">Anında Rezervasyon Onayı</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span data-tr="hero-feature-2">7/24 Destek</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="relative animate-fade-in">
+                    <div class="absolute inset-0 gradient-primary rounded-3xl blur-3xl opacity-20 animate-pulse-slow"></div>
+                    <div class="relative bg-white rounded-3xl p-8 shadow-2xl border border-gray-100 network-animation">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-semibold text-dark">Global Network</h3>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                                <span class="text-sm text-green-600 font-medium">Live</span>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl text-center">
+                                <div class="text-3xl mb-2">🏨</div>
+                                <div class="text-2xl font-bold text-primary">100+</div>
+                                <div class="text-sm text-gray-600">Premium Hotels</div>
+                            </div>
+                            <div class="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl text-center">
+                                <div class="text-3xl mb-2">✈️</div>
+                                <div class="text-2xl font-bold text-green-600">100+</div>
+                                <div class="text-sm text-gray-600">Travel Agencies</div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                                        <span class="text-white text-xs">🌍</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-sm">Global Connectivity</div>
+                                        <div class="text-xs text-gray-500">Real-time updates</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xs text-green-600 font-semibold">Active</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
+                                        <span class="text-dark text-xs">🤝</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-sm">Direct Partnerships</div>
+                                        <div class="text-xs text-gray-500">Guaranteed best prices</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xs text-green-600 font-semibold">Secured</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="py-16 bg-light-bg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-5 gap-8 text-center">
+                <div>
+                    <div class="text-4xl font-black text-primary mb-2">100+</div>
+                    <div class="text-gray-custom font-medium" data-tr="stat-1">Dünya Çapında Bağlı Seyahat Acenteleri</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-black text-primary mb-2">100+</div>
+                    <div class="text-gray-custom font-medium" data-tr="stat-2">Türkiye'de Premium Oteller</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-black text-primary mb-2">24/7</div>
+                    <div class="text-gray-custom font-medium" data-tr="stat-3">Gerçek Zamanlı Müsaitlik Güncellemeleri</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-black text-primary mb-2">100%</div>
+                    <div class="text-gray-custom font-medium" data-tr="stat-4">Garantili En İyi Fiyatlar</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-black text-primary mb-2">⚡</div>
+                    <div class="text-gray-custom font-medium" data-tr="stat-5">Anında Rezervasyon Onayı</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value Propositions - Two Column Layout -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-dark mb-4">
+                    <span class="text-gradient">Your Gateway to</span> Premium Hotel Partnerships
+                </h2>
+                <p class="text-xl text-gray-custom max-w-3xl mx-auto">
+                    Connecting over 100 travel agencies worldwide with premium Turkish hotels
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- For Hotels -->
+                <div id="hotels" class="card-hover bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl p-8 border border-blue-200">
+                    <div class="text-center mb-8">
+                        <div class="w-20 h-20 bg-primary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                            <span class="text-4xl text-white">🏨</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-dark mb-2">For Hotels</h3>
+                        <p class="text-gray-600">Expand your global reach and increase revenue</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4 p-4 bg-white rounded-xl shadow-sm">
+                            <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-2xl">🏨</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-dark">Connect with 100+ Global Agencies</h4>
+                                <p class="text-sm text-gray-600">Reach travel agencies worldwide instantly</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4 p-4 bg-white rounded-xl shadow-sm">
+                            <div class="w-12 h-12 bg-accent rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-2xl">💰</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-dark">Share Your Best Prices Directly</h4>
+                                <p class="text-sm text-gray-600">Control your pricing and maximize profits</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4 p-4 bg-white rounded-xl shadow-sm">
+                            <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-2xl">📈</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-dark">Increase Your Bookings & Revenue</h4>
+                                <p class="text-sm text-gray-600">Boost occupancy with global distribution</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4 p-4 bg-white rounded-xl shadow-sm">
+                            <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-2xl">⚡</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-dark">Real-Time Inventory Management</h4>
+                                <p class="text-sm text-gray-600">Live availability and instant updates</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4 p-4 bg-white rounded-xl shadow-sm">
+                            <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-2xl">🌍</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-dark">Expand Your Global Reach</h4>
+                                <p class="text-sm text-gray-600">Access international markets effortlessly</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- For Travel Agencies -->
+                <div id="agencies" class="card-hover bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-8 border border-green-200">
+                    <div class="text-center mb-8">
+                        <div class="w-20 h-20 bg-accent rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                            <span class="text-4xl text-dark">✈️</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-dark mb-2">For Travel Agencies</h3>
+                        <p class="text-gray-600">Access premium hotels with guaranteed best prices</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4 p-4 bg-white rounded-xl shadow-sm">
+                            <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-2xl">✈️</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-dark">Access 100+ Premium Hotels in Turkey</h4>
+                                <p class="text-sm text-gray-600">Curated selection of top-quality properties</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4 p-4 bg-white rounded-xl shadow-sm">
+                            <div class="w-12 h-12 bg-accent rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-2xl">💎</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-dark">Guaranteed Best Available Prices</h4>
+                                <p class="text-sm text-gray-600">Competitive rates directly from hotels</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4 p-4 bg-white rounded-xl shadow-sm">
+                            <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-2xl">📱</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-dark">Live Availability & Instant Booking</h4>
+                                <p class="text-sm text-gray-600">Real-time inventory with immediate confirmation</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4 p-4 bg-white rounded-xl shadow-sm">
+                            <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-2xl">🤝</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-dark">Direct Hotel Partnerships</h4>
+                                <p class="text-sm text-gray-600">Build lasting relationships with properties</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4 p-4 bg-white rounded-xl shadow-sm">
+                            <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <span class="text-2xl">🎯</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-dark">Streamlined Reservation Process</h4>
+                                <p class="text-sm text-gray-600">Simple, efficient booking workflow</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Features Section -->
+    <section id="features" class="py-20 gradient-primary">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-white mb-4">Key Platform Features</h2>
+                <p class="text-xl text-blue-100 max-w-3xl mx-auto">
+                    Secure, reliable, and user-friendly platform designed for professional use
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="glass-effect rounded-2xl p-8 border border-white/20 card-hover">
+                    <div class="w-16 h-16 bg-accent rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-dark" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Real-Time Connectivity</h3>
+                    <p class="text-blue-100 mb-6">Live availability and pricing updates ensure accurate information for all bookings</p>
+                    <ul class="space-y-2 text-sm text-blue-100">
+                        <li class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>Instant inventory updates</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>Live pricing synchronization</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="glass-effect rounded-2xl p-8 border border-white/20 card-hover">
+                    <div class="w-16 h-16 bg-accent rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-dark" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Secure Platform</h3>
+                    <p class="text-blue-100 mb-6">Bank-level security for all transactions with encrypted data protection</p>
+                    <ul class="space-y-2 text-sm text-blue-100">
+                        <li class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>SSL encryption</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>Secure payment processing</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="glass-effect rounded-2xl p-8 border border-white/20 card-hover">
+                    <div class="w-16 h-16 bg-accent rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-dark" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.01-4.65.51-6.81l-.02-.02C11.54 4.78 12.25 4 13.19 4c.78 0 1.44.61 1.44 1.39 0 .78-.66 1.39-1.44 1.39-.64 0-1.18-.42-1.35-1.02h-.01c-.17.6-.71 1.02-1.35 1.02-.78 0-1.44-.61-1.44-1.39 0-.78.66-1.39 1.44-1.39.94 0 1.65.78 1.94 1.61l.02.02c1.5 2.16 1.23 4.87-.51 6.81l.03.03 2.54 2.51c.39.39.39 1.02 0 1.41-.39.39-1.02.39-1.41 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Multi-Language Support</h3>
+                    <p class="text-blue-100 mb-6">Turkish and English interface for seamless global communication</p>
+                    <ul class="space-y-2 text-sm text-blue-100">
+                        <li class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>Turkish & English support</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>Localized content</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="glass-effect rounded-2xl p-8 border border-white/20 card-hover">
+                    <div class="w-16 h-16 bg-accent rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-dark" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.5 6L12 10.5 8.5 8 12 5.5 15.5 8zM12 19c-3.87 0-7-3.13-7-7 0-.84.16-1.65.43-2.4L12 13l6.57-3.4c.27.75.43 1.56.43 2.4 0 3.87-3.13 7-7 7z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">24/7 Support</h3>
+                    <p class="text-blue-100 mb-6">Dedicated customer service team available around the clock</p>
+                    <ul class="space-y-2 text-sm text-blue-100">
+                        <li class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>Round-the-clock assistance</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>Expert technical support</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="glass-effect rounded-2xl p-8 border border-white/20 card-hover">
+                    <div class="w-16 h-16 bg-accent rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-dark" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Easy Integration</h3>
+                    <p class="text-blue-100 mb-6">Simple onboarding process gets you started quickly</p>
+                    <ul class="space-y-2 text-sm text-blue-100">
+                        <li class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>Quick setup process</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>User-friendly interface</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="glass-effect rounded-2xl p-8 border border-white/20 card-hover">
+                    <div class="w-16 h-16 bg-accent rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-dark" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Instant Confirmation</h3>
+                    <p class="text-blue-100 mb-6">Immediate booking confirmations for seamless operations</p>
+                    <ul class="space-y-2 text-sm text-blue-100">
+                        <li class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>Real-time confirmations</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-accent" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span>Automated notifications</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call-to-Action Section -->
+    <section class="py-20 bg-light-bg">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl font-black text-dark mb-6">
+                <span class="text-gradient">Start Your Journey</span> Today
+            </h2>
+            <p class="text-xl text-gray-custom mb-8 max-w-2xl mx-auto">
+                Join the network that's revolutionizing B2B hotel distribution. 
+                Discover opportunities and build lasting partnerships.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                <a href="https://www.otelciro.com/b2b" class="bg-primary text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-primary-light transition-all shadow-lg transform hover:scale-105">
+                    Access Platform Now
+                </a>
+                <button class="border-2 border-primary text-primary px-10 py-4 rounded-xl font-semibold text-lg hover:bg-primary hover:text-white transition-all">
+                    Join the Network
+                </button>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8 text-center">
+                <div class="bg-white rounded-2xl p-6 shadow-lg card-hover">
+                    <div class="text-3xl mb-2">🚀</div>
+                    <div class="text-dark font-semibold">Start Booking Today</div>
+                    <div class="text-gray-custom text-sm">Immediate access to inventory</div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 shadow-lg card-hover">
+                    <div class="text-3xl mb-2">🔒</div>
+                    <div class="text-dark font-semibold">Secure & Reliable</div>
+                    <div class="text-gray-custom text-sm">Bank-level security standards</div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 shadow-lg card-hover">
+                    <div class="text-3xl mb-2">🌟</div>
+                    <div class="text-dark font-semibold">Discover Opportunities</div>
+                    <div class="text-gray-custom text-sm">Expand your business network</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-4 gap-8">
+                <div class="lg:col-span-2">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-12 h-12 gradient-primary rounded-xl flex items-center justify-center">
+                            <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold">Otelciro B2B Hub</h3>
+                            <p class="text-gray-400 text-sm">Connecting Hotels & Agencies Worldwide</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 mb-6 max-w-md">
+                        The ultimate B2B platform for hotel distribution and reservations. 
+                        Connecting over 100 travel agencies worldwide with premium Turkish hotels.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-primary transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-primary transition-colors">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Platform</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#hotels" class="text-gray-300 hover:text-accent transition-colors">For Hotels</a></li>
+                        <li><a href="#agencies" class="text-gray-300 hover:text-accent transition-colors">For Agencies</a></li>
+                        <li><a href="#features" class="text-gray-300 hover:text-accent transition-colors">Features</a></li>
+                        <li><a href="https://www.otelciro.com/b2b" class="text-gray-300 hover:text-accent transition-colors">Access Platform</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-accent transition-colors">24/7 Customer Service</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-accent transition-colors">Help Center</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-accent transition-colors">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-accent transition-colors">Technical Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-400 text-sm">
+                        &copy; 2024 Otelciro B2B Hub. All rights reserved.
+                    </p>
+                    <div class="flex space-x-6 mt-4 md:mt-0">
+                        <a href="#" class="text-gray-400 hover:text-accent text-sm transition-colors">Privacy Policy</a>
+                        <a href="#" class="text-gray-400 hover:text-accent text-sm transition-colors">Terms of Service</a>
+                        <a href="#" class="text-gray-400 hover:text-accent text-sm transition-colors">Cookie Policy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Translation system
+        const translations = {
+            tr: {
+                'nav-hotels': 'Oteller İçin',
+                'nav-agencies': 'Acenteler İçin',
+                'nav-features': 'Özellikler',
+                'nav-access': 'Platforma Erişim',
+                'hero-badge': 'Oteller ve Global Seyahat Acenteleri Arasında Köprü',
+                'hero-title': 'Oteller ve Acenteleri Dünya Çapında Bağlıyor',
+                'hero-subtitle': 'Otel Dağıtımı ve Rezervasyonlar için Nihai B2B Platformu. Otellerin ve seyahat acentelerinin küresel bağlantı kurma şeklini devrimleştiriyor.',
+                'hero-cta-primary': 'Platforma Erişim',
+                'hero-cta-secondary': 'Daha Fazla Bilgi',
+                'hero-feature-1': 'Anında Rezervasyon Onayı',
+                'hero-feature-2': '7/24 Destek',
+                'stat-1': 'Dünya Çapında Bağlı Seyahat Acenteleri',
+                'stat-2': 'Türkiye\'de Premium Oteller',
+                'stat-3': 'Gerçek Zamanlı Müsaitlik Güncellemeleri',
+                'stat-4': 'Garantili En İyi Fiyatlar',
+                'stat-5': 'Anında Rezervasyon Onayı'
+            },
+            en: {
+                'nav-hotels': 'For Hotels',
+                'nav-agencies': 'For Agencies',
+                'nav-features': 'Features',
+                'nav-access': 'Access Platform',
+                'hero-badge': 'The Bridge Between Hotels & Global Travel Agencies',
+                'hero-title': 'Connecting Hotels & Agencies Worldwide',
+                'hero-subtitle': 'The Ultimate B2B Platform for Hotel Distribution & Reservations. Revolutionizing how hotels and travel agencies connect globally.',
+                'hero-cta-primary': 'Access Platform',
+                'hero-cta-secondary': 'Learn More',
+                'hero-feature-1': 'Instant Booking Confirmation',
+                'hero-feature-2': '24/7 Support',
+                'stat-1': 'Connected Travel Agencies Worldwide',
+                'stat-2': 'Premium Hotels in Turkey',
+                'stat-3': 'Real-Time Availability Updates',
+                'stat-4': 'Guaranteed Best Prices',
+                'stat-5': 'Instant Booking Confirmation'
+            }
+        };
+
+        let currentLanguage = 'tr';
+
+        function switchLanguage(lang) {
+            currentLanguage = lang;
+            document.getElementById('currentLang').textContent = lang.toUpperCase();
+            
+            // Update all translatable elements
+            document.querySelectorAll('[data-tr]').forEach(element => {
+                const key = element.getAttribute('data-tr');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+            
+            // Save language preference
+            localStorage.setItem('preferred-language', lang);
+        }
+
+        // Language toggle functionality
+        document.getElementById('langToggle').addEventListener('click', () => {
+            const newLang = currentLanguage === 'tr' ? 'en' : 'tr';
+            switchLanguage(newLang);
+        });
+
+        // Load saved language preference
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('preferred-language') || 'tr';
+            if (savedLang !== 'tr') {
+                switchLanguage(savedLang);
+            }
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-slide-up');
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.querySelectorAll('.card-hover').forEach(el => observer.observe(el));
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('bg-white/95');
+                nav.classList.remove('bg-white/90');
+            } else {
+                nav.classList.add('bg-white/90');
+                nav.classList.remove('bg-white/95');
+            }
+        });
+
+        // Add click tracking for CTA buttons
+        document.querySelectorAll('a[href="https://www.otelciro.com/b2b"]').forEach(button => {
+            button.addEventListener('click', function() {
+                // Analytics tracking could be added here
+                console.log('B2B Platform access clicked');
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96da52cb32781e64',t:'MTc1NDk0MjQ3MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
 
