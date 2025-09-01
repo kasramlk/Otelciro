@@ -3,19 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Otelciro.com - Nova plaza Hotels - Analytics Dashboard</title>
+    <title>Elite Hotel Portfolio - Advanced Analytics Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
             --primary-nova: #667eea;
-            --primary-orion: #f093fb;
+            --primary-orion: #06b6d4;
             --accent-nova: #4facfe;
-            --accent-orion: #fa709a;
+            --accent-orion: #0891b2;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
+            --info: #3b82f6;
             --text-primary: #1f2937;
             --text-secondary: #6b7280;
             --text-light: #ffffff;
@@ -25,7 +27,7 @@
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             --radius: 12px;
-            --transition: all 0.2s ease;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -44,23 +46,18 @@
         }
 
         body.orion-theme {
-            background: linear-gradient(135deg, var(--primary-orion) 0%, #f5576c 100%);
+            background: linear-gradient(135deg, var(--primary-orion) 0%, #0369a1 100%);
         }
 
-        /* 3D and Animation Effects */
+        /* Enhanced Animations */
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
         }
 
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
         }
 
         @keyframes slideInUp {
@@ -79,7 +76,17 @@
             50% { box-shadow: 0 0 30px rgba(102, 126, 234, 0.6); }
         }
 
-        /* 3D Glassmorphism Navigation */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        @keyframes countUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Enhanced Navigation */
         .navbar {
             position: fixed;
             top: 0;
@@ -95,7 +102,7 @@
         }
 
         .nav-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 24px;
             display: flex;
@@ -111,13 +118,24 @@
             font-weight: 800;
             color: white;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            animation: pulse 3s ease-in-out infinite;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: translateY(-2px);
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
         }
 
         .logo i {
             color: #ffd700;
             animation: glow 2s ease-in-out infinite;
-            transform: perspective(1000px) rotateY(15deg);
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
         .nav-buttons {
@@ -138,42 +156,94 @@
             color: rgba(255, 255, 255, 0.8);
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: var(--transition);
             position: relative;
             overflow: hidden;
-            transform: perspective(1000px) rotateX(0deg);
         }
 
         .nav-btn:hover {
-            transform: perspective(1000px) rotateX(-5deg) translateY(-2px);
             color: white;
+            transform: translateY(-2px);
         }
 
         .nav-btn.active {
             background: rgba(255, 255, 255, 0.2);
             color: white;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            transform: perspective(1000px) rotateX(-3deg) translateY(-1px);
         }
 
         .nav-btn.nova.active {
             background: linear-gradient(135deg, var(--primary-nova), var(--accent-nova));
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
         }
 
         .nav-btn.orion.active {
             background: linear-gradient(135deg, var(--primary-orion), var(--accent-orion));
-            box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
+        }
+
+        /* Time Controls */
+        .time-controls {
+            display: flex;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .time-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .time-btn:hover {
+            color: white;
+        }
+
+        .time-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        /* Live Status Indicator */
+        .live-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .live-text {
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 600;
         }
 
         /* Main Container */
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 100px 24px 24px;
         }
 
-        /* 3D Glassmorphism Hero */
+        /* Enhanced Hero Section */
         .hero {
             background: rgba(255, 255, 255, 0.25);
             backdrop-filter: blur(20px);
@@ -184,18 +254,16 @@
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.3);
             animation: slideInUp 1s ease-out;
-            transform: perspective(1000px) rotateX(2deg);
         }
 
         .hero-title {
             font-size: 3rem;
             font-weight: 900;
-            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            background: linear-gradient(135deg, #667eea, #06b6d4, #0891b2);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 20px;
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             animation: shimmer 3s ease-in-out infinite;
             background-size: 200% 200%;
         }
@@ -220,12 +288,13 @@
             border-radius: 15px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: perspective(1000px) rotateY(0deg);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
         }
 
         .hero-stat:hover {
-            transform: perspective(1000px) rotateY(5deg) translateY(-5px);
+            transform: translateY(-5px);
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
         }
 
@@ -236,7 +305,7 @@
             display: block;
             margin-bottom: 10px;
             text-shadow: 0 2px 15px rgba(255, 215, 0, 0.5);
-            animation: pulse 2s ease-in-out infinite;
+            animation: countUp 1s ease-out;
         }
 
         .hero-stat-label {
@@ -247,169 +316,330 @@
             letter-spacing: 1px;
         }
 
-        /* 3D Performance Grid */
-        .performance-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
+        .hero-stat-trend {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+
+        .trend-up {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .trend-down {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        /* Advanced Analytics Grid */
+        .analytics-grid {
+            display: block;
             margin-bottom: 40px;
         }
 
-        .performance-card {
+        .main-chart-section {
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(20px);
             padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
-            animation: slideInUp 0.8s ease-out;
         }
 
-        .performance-card:hover {
-            transform: perspective(1000px) rotateX(-5deg) rotateY(5deg) translateY(-10px);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .card-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            background: linear-gradient(135deg, var(--primary-nova), var(--accent-nova));
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-            animation: float 3s ease-in-out infinite;
-            transform: perspective(1000px) rotateY(15deg);
-        }
-
-        .card-icon.orion {
-            background: linear-gradient(135deg, var(--primary-orion), var(--accent-orion));
-            box-shadow: 0 8px 20px rgba(240, 147, 251, 0.3);
-        }
-
-        .card-title {
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: white;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .metrics-list {
+        .side-metrics {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
 
-        .metric-row {
+        .metric-card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: var(--transition);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .metric-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: perspective(1000px) rotateX(0deg);
+            justify-content: space-between;
+            margin-bottom: 15px;
         }
 
-        .metric-row:hover {
-            transform: perspective(1000px) rotateX(-2deg) translateY(-2px);
-            background: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .metric-label {
+        .metric-title {
+            font-size: 0.9rem;
             font-weight: 600;
             color: rgba(255, 255, 255, 0.8);
-            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
         }
 
         .metric-value {
+            font-size: 2rem;
             font-weight: 800;
-            font-size: 1.2rem;
             color: white;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
-        .trend-up {
-            color: #00ff88;
-            text-shadow: 0 2px 15px rgba(0, 255, 136, 0.5);
-            animation: pulse 2s ease-in-out infinite;
+        .metric-change {
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        .trend-down {
-            color: #ff4757;
-            text-shadow: 0 2px 15px rgba(255, 71, 87, 0.5);
+        /* Performance Scoring */
+        .performance-score {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
         }
 
-        .neutral {
-            color: rgba(255, 255, 255, 0.7);
+        .score-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* 3D Chart Sections */
-        .chart-section {
+        .score-excellent {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .score-good {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .score-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+        }
+
+        .score-details {
+            flex: 1;
+        }
+
+        .score-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 5px;
+        }
+
+        .score-description {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Forecasting Section */
+        .forecast-section {
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(20px);
-            padding: 40px;
+            padding: 30px;
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.3);
             margin-bottom: 40px;
-            animation: slideInUp 1s ease-out;
-            transform: perspective(1000px) rotateX(1deg);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .chart-section:hover {
-            transform: perspective(1000px) rotateX(-2deg) translateY(-5px);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+        .forecast-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .forecast-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .forecast-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .forecast-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .forecast-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .forecast-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        /* Alert System */
+        .alerts-section {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .alerts-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .alerts-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid;
+            transition: var(--transition);
+        }
+
+        .alert-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .alert-success {
+            border-left-color: #10b981;
+        }
+
+        .alert-warning {
+            border-left-color: #f59e0b;
+        }
+
+        .alert-info {
+            border-left-color: #3b82f6;
+        }
+
+        .alert-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .alert-text {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .alert-time {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Chart Enhancements */
+        .chart-section {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 30px;
         }
 
         .chart-header {
             display: flex;
             align-items: center;
-            justify-content: between;
-            margin-bottom: 30px;
+            justify-content: space-between;
+            margin-bottom: 25px;
         }
 
         .chart-title {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 800;
             color: white;
             display: flex;
             align-items: center;
-            gap: 15px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .chart-title i {
-            color: #ffd700;
-            animation: glow 2s ease-in-out infinite;
+            gap: 12px;
         }
 
         .chart-container {
             position: relative;
-            height: 350px;
-            background: rgba(255, 255, 255, 0.15);
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
             padding: 20px;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* 3D Glassmorphism Table */
+        /* Table Enhancements */
         .table-section {
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(20px);
@@ -417,10 +647,8 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.3);
             overflow: hidden;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             display: none;
-            animation: slideInUp 1.2s ease-out;
-            transform: perspective(1000px) rotateX(1deg);
         }
 
         .table-section.active {
@@ -429,34 +657,49 @@
 
         .table-header {
             background: rgba(255, 255, 255, 0.15);
-            padding: 30px;
+            padding: 25px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .table-title {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 800;
             color: white;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .table-filters {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .filter-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
         }
 
         .table-wrapper {
-            max-height: 450px;
+            max-height: 500px;
             overflow-y: auto;
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .table-wrapper::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .table-wrapper::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .table-wrapper::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 4px;
         }
 
         table {
@@ -478,105 +721,66 @@
             top: 0;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            font-size: 0.9rem;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            font-size: 0.85rem;
         }
 
         tbody tr {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: var(--transition);
         }
 
         tbody tr:hover {
             background: rgba(255, 255, 255, 0.15);
-            transform: translateX(5px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transform: translateX(3px);
         }
 
         .agency-name {
             font-weight: 700;
             color: white;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
         }
 
         td {
             color: rgba(255, 255, 255, 0.95);
             font-weight: 500;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 
-        /* 3D Insights Section */
-        .insights-section {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(20px);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            margin-bottom: 40px;
-            animation: slideInUp 1.4s ease-out;
-        }
-
-        .insights-title {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 30px;
-            display: flex;
+        /* Performance Indicators */
+        .performance-indicator {
+            display: inline-flex;
             align-items: center;
-            gap: 15px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            gap: 5px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
 
-        .insights-title i {
-            color: #ffd700;
-            animation: glow 2s ease-in-out infinite;
+        .indicator-excellent {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
         }
 
-        .insights-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
+        .indicator-good {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
         }
 
-        .insight-card {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            padding: 25px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            border-left: 4px solid var(--primary-nova);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: perspective(1000px) rotateY(0deg);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        .indicator-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
         }
 
-        .insight-card:hover {
-            transform: perspective(1000px) rotateY(-5deg) translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            background: rgba(255, 255, 255, 0.25);
+        .indicator-poor {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
         }
 
-        .insight-card.orion {
-            border-left-color: var(--primary-orion);
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
-        .insight-title {
-            font-weight: 700;
-            color: white;
-            margin-bottom: 12px;
-            font-size: 1.1rem;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .insight-text {
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.6;
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
             .container {
                 padding: 80px 16px 16px;
@@ -587,6 +791,11 @@
                 gap: 16px;
             }
 
+            .nav-controls {
+                flex-direction: column;
+                gap: 12px;
+            }
+
             .hero {
                 padding: 24px;
             }
@@ -595,175 +804,164 @@
                 font-size: 2rem;
             }
 
-            .performance-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .chart-section, .insights-section {
-                padding: 20px;
-            }
-
             .chart-container {
-                height: 250px;
+                height: 300px;
             }
-        }
-
-        /* Loading state */
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
+    <!-- Enhanced Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo">
+            <a href="https://otelciro.com" target="_blank" class="logo">
                 <i class="fas fa-hotel"></i>
-                <span>Otel Analitik Paneli</span>
-            </div>
-            <div class="nav-buttons">
-                <button class="nav-btn nova active" onclick="switchHotel('nova')">
-                    Nova Plaza Crystal
-                </button>
-                <button class="nav-btn orion" onclick="switchHotel('orion')">
-                    Orion Otel
-                </button>
+                <span>Otelciro.com</span>
+            </a>
+            <div class="nav-controls">
+                <div class="nav-buttons">
+                    <button class="nav-btn nova active" onclick="switchHotel('nova')">
+                        Nova Plaza Crystal
+                    </button>
+                    <button class="nav-btn orion" onclick="switchHotel('orion')">
+                        Orion Otel
+                    </button>
+                </div>
+                <div class="live-status">
+                    <div class="live-dot"></div>
+                    <span class="live-text">Canlı</span>
+                </div>
             </div>
         </div>
     </nav>
 
     <div class="container">
-        <!-- Hero Section -->
+        <!-- Enhanced Hero Section -->
         <section class="hero">
-            <h1 class="hero-title">Otel Performans Paneli</h1>
-            <div class="hero-subtitle">Gerçek zamanlı analitik ve içgörüler</div>
-            <div class="hero-note" style="font-size: 1rem; color: rgba(255, 255, 255, 0.8); margin-bottom: 30px; font-weight: 500; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);">
-                Aşağıdaki veriler Temmuz ve Ağustos aylarının toplam değerlerini göstermektedir
-            </div>
+            <h1 class="hero-title">Gelişmiş Otel Analitik Paneli</h1>
+            <div class="hero-subtitle">Yapay zeka destekli tahminler ve gerçek zamanlı içgörüler</div>
             <div class="hero-stats">
                 <div class="hero-stat">
+                    <div class="hero-stat-trend trend-up">+31%</div>
                     <span class="hero-stat-value" id="heroRevenue">$636K</span>
                     <span class="hero-stat-label">Toplam Gelir</span>
                 </div>
                 <div class="hero-stat">
+                    <div class="hero-stat-trend trend-up">+23%</div>
                     <span class="hero-stat-value" id="heroOccupancy">93.5%</span>
                     <span class="hero-stat-label">Doluluk Oranı</span>
                 </div>
                 <div class="hero-stat">
-                    <span class="hero-stat-value" id="heroGrowth">+31%</span>
-                    <span class="hero-stat-label">Büyüme Oranı</span>
+                    <div class="hero-stat-trend trend-up">+18%</div>
+                    <span class="hero-stat-value" id="heroADR">$127</span>
+                    <span class="hero-stat-label">Ortalama ADR</span>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-trend trend-up">+12%</div>
+                    <span class="hero-stat-value" id="heroScore">94</span>
+                    <span class="hero-stat-label">Performans Skoru</span>
                 </div>
             </div>
         </section>
 
-        <!-- Performance Cards -->
-        <div class="performance-grid" id="performanceGrid">
-            <!-- Cards will be generated dynamically -->
+
+
+        <!-- Advanced Analytics Grid -->
+        <div class="analytics-grid">
+            <div class="main-chart-section">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <i class="fas fa-chart-area"></i>
+                        Gelir Trendi & Tahminler
+                    </div>
+                    <div class="forecast-controls">
+                        <button class="forecast-btn active" onclick="setForecastPeriod('3m')">3 Ay</button>
+                        <button class="forecast-btn" onclick="setForecastPeriod('6m')">6 Ay</button>
+                        <button class="forecast-btn" onclick="setForecastPeriod('1y')">1 Yıl</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="advancedRevenueChart"></canvas>
+                </div>
+            </div>
+
+
         </div>
 
-        <!-- Revenue Chart -->
+        <!-- Market Share Analysis -->
         <section class="chart-section">
             <div class="chart-header">
                 <div class="chart-title">
-                    <i class="fas fa-chart-line"></i>
-                    Aylık Gelir Karşılaştırması
+                    <i class="fas fa-pie-chart"></i>
+                    Pazar Payı Analizi
                 </div>
             </div>
             <div class="chart-container">
-                <canvas id="revenueChart"></canvas>
+                <canvas id="marketShareChart"></canvas>
             </div>
         </section>
 
-        <!-- Top Agencies Chart -->
-        <section class="chart-section" id="topAgenciesSection">
+        <!-- Performance Comparison -->
+        <section class="chart-section">
             <div class="chart-header">
                 <div class="chart-title">
-                    <i class="fas fa-trophy"></i>
-                    <span id="topAgenciesTitle">En İyi 8 Acenta</span>
+                    <i class="fas fa-chart-bar"></i>
+                    Acenta Performans Karşılaştırması
                 </div>
             </div>
             <div class="chart-container">
-                <canvas id="topAgenciesChart"></canvas>
+                <canvas id="performanceComparisonChart"></canvas>
             </div>
         </section>
 
-        <!-- Agency Performance Table -->
-        <div class="table-section active" id="nova-table">
+        <!-- Detailed Agency Performance Table -->
+        <section class="table-section active">
             <div class="table-header">
-                <div class="table-title">Nova Plaza Crystal - Detaylı Acenta Performansı</div>
+                <div class="table-title">Detaylı Acenta Performansı</div>
+                <div class="table-filters">
+                    <button class="filter-btn active" onclick="filterTable('all')">Tümü</button>
+                    <button class="filter-btn" onclick="filterTable('top')">En İyi 10</button>
+                    <button class="filter-btn" onclick="filterTable('growth')">Büyüyen</button>
+                    <button class="filter-btn" onclick="filterTable('declining')">Azalan</button>
+                </div>
             </div>
             <div class="table-wrapper">
-                <table>
+                <table id="agencyTable">
                     <thead>
                         <tr>
                             <th>Acenta Adı</th>
-                            <th>Temmuz Geliri</th>
+                            <th>Temmuz Gelir</th>
                             <th>Temmuz ADR</th>
-                            <th>Ağustos Geliri</th>
+                            <th>Ağustos Gelir</th>
                             <th>Ağustos ADR</th>
                             <th>Gelir Değişimi</th>
                             <th>ADR Değişimi</th>
+                            <th>Performans</th>
                         </tr>
                     </thead>
-                    <tbody id="novaTableBody"></tbody>
+                    <tbody id="agencyTableBody">
+                        <!-- Table rows will be populated dynamically -->
+                    </tbody>
                 </table>
-            </div>
-        </div>
-
-        <div class="table-section" id="orion-table">
-            <div class="table-header">
-                <div class="table-title">Orion Otel - Detaylı Acenta Performansı</div>
-            </div>
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Acenta Adı</th>
-                            <th>Temmuz Geliri</th>
-                            <th>Temmuz ADR</th>
-                            <th>Ağustos Geliri</th>
-                            <th>Ağustos ADR</th>
-                            <th>Gelir Değişimi</th>
-                            <th>ADR Değişimi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="orionTableBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Key Insights -->
-        <section class="insights-section">
-            <h3 class="insights-title">
-                <i class="fas fa-lightbulb"></i>
-                Önemli İçgörüler
-            </h3>
-            <div class="insights-grid" id="insightsGrid">
-                <!-- Insights will be generated dynamically -->
             </div>
         </section>
+
     </div>
 
     <script>
-        // Complete hotel data with all agencies
+        // Enhanced hotel data with forecasting
         const hotelData = {
             nova: {
                 name: "Nova Plaza Crystal Hotel",
                 theme: "nova",
                 july: { revenue: 343635, occupancy: 68.94 },
                 august: { revenue: 463180, occupancy: 91.91 },
-                topAgencies: [
-                    ["Ogarite Turizm", 81943, 49.35],
-                    ["Dilman Turizm", 70888, 154.40],
-                    ["Nova Plus", 40601, 316.30],
-                    ["World 2 Meet", 39724, 193.07],
-                    ["Future Turizm", 30123, 96.03],
-                    ["TBO", 29064, 91.24],
-                    ["OstroVok", 25274, 91.68],
-                    ["Intra Turizm", 23593, 188.77]
-                ],
+                forecast: {
+                    september: 521000,
+                    october: 487000,
+                    november: 423000,
+                    december: 456000
+                },
                 allAgencies: [
                     ["Booking.com", 11718.2, 98.45, 3246.18, 95.48, -72.30, -3.02],
                     ["CTrip", 1457.51, 97.17, 4087.58, 71.71, 180.45, -26.20],
@@ -802,16 +1000,12 @@
                 theme: "orion",
                 july: { revenue: 135372, occupancy: 78.63 },
                 august: { revenue: 172848, occupancy: 95.15 },
-                topAgencies: [
-                    ["Dilman Tour", 47454, 279.33],
-                    ["Ogarite Turizm", 34941, 20.43],
-                    ["Future Turizm", 21560, 16.30],
-                    ["Expedia", 17590, -35.74],
-                    ["Agoda", 11440, -34.66],
-                    ["Nova Plus", 5333, 40.19],
-                    ["Intra Turizm", 5187, 142.80],
-                    ["World 2 Meet", 4573, 50.91]
-                ],
+                forecast: {
+                    september: 189000,
+                    october: 167000,
+                    november: 143000,
+                    december: 156000
+                },
                 allAgencies: [
                     ["Keytel SA", 2511.07, 57.07, 3250.46, 59.1, 29.45, 3.56],
                     ["Kor Agro Organik Gıda A.Ş", 249.7, 62.43, 0, 0, -100.00, -100.00],
@@ -859,27 +1053,48 @@
         };
 
         let currentHotel = 'nova';
-        let revenueChart, topAgenciesChart;
+        let currentTimeRange = 'current';
+        let currentForecastPeriod = '3m';
+        let charts = {};
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+        });
+
+        function initializeDashboard() {
+            updateHeroStats();
+            initializeCharts();
+            populateAgencyTable();
+        }
 
         // Switch hotel function
         function switchHotel(hotel) {
             if (currentHotel === hotel) return;
             
             currentHotel = hotel;
-            
-            // Update theme
             document.body.className = hotel === 'orion' ? 'orion-theme' : '';
             
-            // Update navigation
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`.nav-btn.${hotel}`).classList.add('active');
             
-            // Update content
             updateHeroStats();
-            updatePerformanceCards();
             updateCharts();
-            updateTable();
-            updateInsights();
+        }
+
+        // Time range controls
+        function setTimeRange(range) {
+            currentTimeRange = range;
+            document.querySelectorAll('.time-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            updateCharts();
+        }
+
+        function setForecastPeriod(period) {
+            currentForecastPeriod = period;
+            document.querySelectorAll('.forecast-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            updateAdvancedRevenueChart();
         }
 
         // Update hero statistics
@@ -888,116 +1103,86 @@
             const totalRevenue = data.july.revenue + data.august.revenue;
             const avgOccupancy = (data.july.occupancy + data.august.occupancy) / 2;
             const growthRate = ((data.august.revenue - data.july.revenue) / data.july.revenue) * 100;
+            const avgADR = totalRevenue / (data.july.occupancy + data.august.occupancy) * 2;
+            const performanceScore = calculatePerformanceScore(data);
             
-            document.getElementById('heroRevenue').textContent = `$${Math.round(totalRevenue / 1000)}K`;
-            document.getElementById('heroOccupancy').textContent = `${avgOccupancy.toFixed(1)}%`;
-            document.getElementById('heroGrowth').textContent = `+${growthRate.toFixed(0)}%`;
+            animateValue('heroRevenue', `$${Math.round(totalRevenue / 1000)}K`);
+            animateValue('heroOccupancy', `${avgOccupancy.toFixed(1)}%`);
+            animateValue('heroADR', `$${Math.round(avgADR / 1000)}`);
+            animateValue('heroScore', performanceScore);
         }
 
-        // Update performance cards
-        function updatePerformanceCards() {
-            const data = hotelData[currentHotel];
-            const grid = document.getElementById('performanceGrid');
-            
+        // Calculate performance score
+        function calculatePerformanceScore(data) {
             const revenueGrowth = ((data.august.revenue - data.july.revenue) / data.july.revenue) * 100;
-            const occupancyGrowth = data.august.occupancy - data.july.occupancy;
-            
-            grid.innerHTML = `
-                <div class="performance-card">
-                    <div class="card-header">
-                        <div class="card-icon ${data.theme}">
-                            <i class="fas fa-dollar-sign"></i>
-                        </div>
-                        <div class="card-title">Gelir Performansı</div>
-                    </div>
-                    <div class="metrics-list">
-                        <div class="metric-row">
-                            <div class="metric-label">Temmuz Geliri</div>
-                            <div class="metric-value">$${Math.round(data.july.revenue / 1000)}K</div>
-                        </div>
-                        <div class="metric-row">
-                            <div class="metric-label">Ağustos Geliri</div>
-                            <div class="metric-value">$${Math.round(data.august.revenue / 1000)}K</div>
-                        </div>
-                        <div class="metric-row">
-                            <div class="metric-label">Büyüme Oranı</div>
-                            <div class="metric-value trend-up">+${revenueGrowth.toFixed(1)}%</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="performance-card">
-                    <div class="card-header">
-                        <div class="card-icon ${data.theme}">
-                            <i class="fas fa-percentage"></i>
-                        </div>
-                        <div class="card-title">Doluluk Performansı</div>
-                    </div>
-                    <div class="metrics-list">
-                        <div class="metric-row">
-                            <div class="metric-label">Temmuz Doluluk</div>
-                            <div class="metric-value">${data.july.occupancy.toFixed(1)}%</div>
-                        </div>
-                        <div class="metric-row">
-                            <div class="metric-label">Ağustos Doluluk</div>
-                            <div class="metric-value">${data.august.occupancy.toFixed(1)}%</div>
-                        </div>
-                        <div class="metric-row">
-                            <div class="metric-label">İyileşme</div>
-                            <div class="metric-value trend-up">+${occupancyGrowth.toFixed(1)}%</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="performance-card">
-                    <div class="card-header">
-                        <div class="card-icon ${data.theme}">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <div class="card-title">Temel Metrikler</div>
-                    </div>
-                    <div class="metrics-list">
-                        <div class="metric-row">
-                            <div class="metric-label">En İyi Acenta Geliri</div>
-                            <div class="metric-value">$${Math.round(data.topAgencies[0][1] / 1000)}K</div>
-                        </div>
-                        <div class="metric-row">
-                            <div class="metric-label">Aktif Acentalar</div>
-                            <div class="metric-value">${data.topAgencies.length}</div>
-                        </div>
-                        <div class="metric-row">
-                            <div class="metric-label">En İyi Büyüme</div>
-                            <div class="metric-value trend-up">+${Math.max(...data.topAgencies.map(a => a[2])).toFixed(0)}%</div>
-                        </div>
-                    </div>
-                </div>
-            `;
+            const occupancyImprovement = data.august.occupancy - data.july.occupancy;
+            const baseScore = 70;
+            const growthBonus = Math.min(revenueGrowth * 0.5, 20);
+            const occupancyBonus = Math.min(occupancyImprovement * 0.3, 10);
+            return Math.round(baseScore + growthBonus + occupancyBonus);
         }
+
+        // Animate value changes
+        function animateValue(elementId, newValue) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.style.animation = 'countUp 0.8s ease-out';
+                setTimeout(() => {
+                    element.textContent = newValue;
+                    element.style.animation = '';
+                }, 100);
+            }
+        }
+
+
+
+
 
         // Initialize charts
         function initializeCharts() {
-            createRevenueChart();
-            createTopAgenciesChart();
+            createAdvancedRevenueChart();
+            createMarketShareChart();
+            createPerformanceComparisonChart();
         }
 
-        // Create revenue chart
-        function createRevenueChart() {
-            const ctx = document.getElementById('revenueChart').getContext('2d');
+        // Advanced revenue chart with forecasting
+        function createAdvancedRevenueChart() {
+            const ctx = document.getElementById('advancedRevenueChart').getContext('2d');
+            const data = hotelData[currentHotel];
             
-            revenueChart = new Chart(ctx, {
-                type: 'bar',
+            if (charts.advancedRevenue) {
+                charts.advancedRevenue.destroy();
+            }
+
+            const historicalData = [data.july.revenue / 1000, data.august.revenue / 1000];
+            const forecastData = [
+                data.forecast.september / 1000,
+                data.forecast.october / 1000,
+                data.forecast.november / 1000,
+                data.forecast.december / 1000
+            ];
+
+            charts.advancedRevenue = new Chart(ctx, {
+                type: 'line',
                 data: {
-                    labels: ['Temmuz 2025', 'Ağustos 2025'],
+                    labels: ['Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
                     datasets: [{
-                        label: 'Nova Plaza',
-                        data: [343.6, 463.2],
-                        backgroundColor: '#667eea',
-                        borderRadius: 8
+                        label: 'Gerçek Gelir',
+                        data: [...historicalData, null, null, null, null],
+                        borderColor: currentHotel === 'nova' ? '#667eea' : '#06b6d4',
+                        backgroundColor: currentHotel === 'nova' ? 'rgba(102, 126, 234, 0.1)' : 'rgba(6, 182, 212, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
                     }, {
-                        label: 'Orion Otel',
-                        data: [135.4, 172.8],
-                        backgroundColor: '#f093fb',
-                        borderRadius: 8
+                        label: 'Tahmin',
+                        data: [null, data.august.revenue / 1000, ...forecastData],
+                        borderColor: '#ffd700',
+                        backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                        borderWidth: 3,
+                        borderDash: [5, 5],
+                        fill: true,
+                        tension: 0.4
                     }]
                 },
                 options: {
@@ -1005,15 +1190,73 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'top'
+                            position: 'top',
+                            labels: { color: 'white' }
                         }
                     },
                     scales: {
+                        x: {
+                            ticks: { color: 'rgba(255, 255, 255, 0.8)' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
                         y: {
                             beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Revenue ($K)'
+                            ticks: { 
+                                color: 'rgba(255, 255, 255, 0.8)',
+                                callback: function(value) {
+                                    return '$' + value + 'K';
+                                }
+                            },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Market share chart
+        function createMarketShareChart() {
+            const ctx = document.getElementById('marketShareChart').getContext('2d');
+            const data = hotelData[currentHotel];
+            
+            if (charts.marketShare) {
+                charts.marketShare.destroy();
+            }
+
+            // Get top agencies by total revenue
+            const sortedAgencies = data.allAgencies
+                .map(agency => ({
+                    name: agency[0],
+                    revenue: agency[1] + agency[3]
+                }))
+                .sort((a, b) => b.revenue - a.revenue)
+                .slice(0, 6);
+
+            const colors = [
+                '#667eea', '#06b6d4', '#4facfe', '#0891b2', 
+                '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'
+            ];
+
+            charts.marketShare = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: sortedAgencies.map(a => a.name),
+                    datasets: [{
+                        data: sortedAgencies.map(a => a.revenue),
+                        backgroundColor: colors,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: { 
+                                color: 'white',
+                                usePointStyle: true,
+                                padding: 20
                             }
                         }
                     }
@@ -1021,48 +1264,60 @@
             });
         }
 
-        // Create top agencies chart
-        function createTopAgenciesChart() {
-            updateTopAgenciesChart();
-        }
-
-        // Update top agencies chart
-        function updateTopAgenciesChart() {
-            const data = hotelData[currentHotel];
+        // Performance comparison chart
+        function createPerformanceComparisonChart() {
+            const ctx = document.getElementById('performanceComparisonChart').getContext('2d');
             
-            if (topAgenciesChart) {
-                topAgenciesChart.destroy();
+            if (charts.performanceComparison) {
+                charts.performanceComparison.destroy();
             }
 
-            const ctx = document.getElementById('topAgenciesChart').getContext('2d');
-            const color = currentHotel === 'nova' ? '#667eea' : '#f093fb';
-            
-            topAgenciesChart = new Chart(ctx, {
-                type: 'bar',
+            const novaData = hotelData.nova;
+            const orionData = hotelData.orion;
+
+            charts.performanceComparison = new Chart(ctx, {
+                type: 'radar',
                 data: {
-                    labels: data.topAgencies.map(agency => agency[0]),
+                    labels: ['Gelir', 'Doluluk', 'Büyüme', 'ADR', 'Acenta Sayısı'],
                     datasets: [{
-                        label: 'Revenue ($)',
-                        data: data.topAgencies.map(agency => agency[1]),
-                        backgroundColor: color,
-                        borderRadius: 6
+                        label: 'Nova Plaza',
+                        data: [
+                            (novaData.july.revenue + novaData.august.revenue) / 10000,
+                            (novaData.july.occupancy + novaData.august.occupancy) / 2,
+                            ((novaData.august.revenue - novaData.july.revenue) / novaData.july.revenue) * 100,
+                            85, // Average ADR
+                            novaData.allAgencies.length
+                        ],
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                        borderWidth: 2
+                    }, {
+                        label: 'Orion Hotel',
+                        data: [
+                            (orionData.july.revenue + orionData.august.revenue) / 10000,
+                            (orionData.july.occupancy + orionData.august.occupancy) / 2,
+                            ((orionData.august.revenue - orionData.july.revenue) / orionData.july.revenue) * 100,
+                            72, // Average ADR
+                            orionData.allAgencies.length
+                        ],
+                        borderColor: '#06b6d4',
+                        backgroundColor: 'rgba(6, 182, 212, 0.2)',
+                        borderWidth: 2
                     }]
                 },
                 options: {
-                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { display: false }
+                        legend: {
+                            labels: { color: 'white' }
+                        }
                     },
                     scales: {
-                        x: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return '$' + (value / 1000).toFixed(0) + 'K';
-                                }
-                            }
+                        r: {
+                            ticks: { color: 'rgba(255, 255, 255, 0.8)' },
+                            grid: { color: 'rgba(255, 255, 255, 0.2)' },
+                            pointLabels: { color: 'white' }
                         }
                     }
                 }
@@ -1071,117 +1326,111 @@
 
         // Update charts
         function updateCharts() {
-            updateTopAgenciesChart();
-            document.getElementById('topAgenciesTitle').textContent = `${hotelData[currentHotel].name} - En İyi Acentalar`;
+            createAdvancedRevenueChart();
+            createMarketShareChart();
+            createPerformanceComparisonChart();
+            populateAgencyTable();
         }
 
-        // Update table
-        function updateTable() {
+        function updateAdvancedRevenueChart() {
+            createAdvancedRevenueChart();
+        }
+
+        // Populate agency table
+        function populateAgencyTable(filter = 'all') {
             const data = hotelData[currentHotel];
+            const tableBody = document.getElementById('agencyTableBody');
             
-            // Hide all tables
-            document.querySelectorAll('.table-section').forEach(table => {
-                table.classList.remove('active');
-            });
+            if (!tableBody) return;
             
-            // Show current table
-            document.getElementById(`${currentHotel}-table`).classList.add('active');
-        }
-
-        // Populate tables with complete agency data
-        function populateTables() {
-            // Nova table - all agencies
-            const novaTableBody = document.getElementById('novaTableBody');
-            hotelData.nova.allAgencies.forEach(row => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="agency-name">${row[0]}</td>
-                    <td>$${row[1].toLocaleString()}</td>
-                    <td>$${row[2].toFixed(2)}</td>
-                    <td>$${row[3].toLocaleString()}</td>
-                    <td>$${row[4].toFixed(2)}</td>
-                    <td class="${row[5] > 0 ? 'trend-up' : row[5] < 0 ? 'trend-down' : 'neutral'}">${row[5] > 0 ? '+' : ''}${row[5].toFixed(1)}%</td>
-                    <td class="${row[6] > 0 ? 'trend-up' : row[6] < 0 ? 'trend-down' : 'neutral'}">${row[6] > 0 ? '+' : ''}${row[6].toFixed(1)}%</td>
+            let agencies = [...data.allAgencies];
+            
+            // Apply filters
+            switch(filter) {
+                case 'top':
+                    agencies = agencies
+                        .sort((a, b) => (b[1] + b[3]) - (a[1] + a[3]))
+                        .slice(0, 10);
+                    break;
+                case 'growth':
+                    agencies = agencies.filter(agency => agency[4] > 0);
+                    break;
+                case 'declining':
+                    agencies = agencies.filter(agency => agency[4] < 0);
+                    break;
+                default:
+                    agencies = agencies.sort((a, b) => (b[1] + b[3]) - (a[1] + a[3]));
+            }
+            
+            tableBody.innerHTML = '';
+            
+            agencies.forEach(agency => {
+                const row = document.createElement('tr');
+                const [name, julyRevenue, julyADR, augustRevenue, augustADR, revenueChange, adrChange] = agency;
+                
+                const performanceClass = getPerformanceClass(revenueChange, adrChange);
+                const performanceText = getPerformanceText(revenueChange, adrChange);
+                
+                row.innerHTML = `
+                    <td class="agency-name">${name}</td>
+                    <td>$${julyRevenue.toLocaleString()}</td>
+                    <td>$${julyADR.toFixed(2)}</td>
+                    <td>$${augustRevenue.toLocaleString()}</td>
+                    <td>$${augustADR.toFixed(2)}</td>
+                    <td style="color: ${revenueChange >= 0 ? '#10b981' : '#ef4444'}">
+                        ${revenueChange >= 0 ? '+' : ''}${revenueChange.toFixed(1)}%
+                    </td>
+                    <td style="color: ${adrChange >= 0 ? '#10b981' : '#ef4444'}">
+                        ${adrChange >= 0 ? '+' : ''}${adrChange.toFixed(1)}%
+                    </td>
+                    <td>
+                        <span class="performance-indicator ${performanceClass}">
+                            ${performanceText}
+                        </span>
+                    </td>
                 `;
-                novaTableBody.appendChild(tr);
-            });
-
-            // Orion table - all agencies
-            const orionTableBody = document.getElementById('orionTableBody');
-            hotelData.orion.allAgencies.forEach(row => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="agency-name">${row[0]}</td>
-                    <td>$${row[1].toLocaleString()}</td>
-                    <td>$${row[2].toFixed(2)}</td>
-                    <td>$${row[3].toLocaleString()}</td>
-                    <td>$${row[4].toFixed(2)}</td>
-                    <td class="${row[5] > 0 ? 'trend-up' : row[5] < 0 ? 'trend-down' : 'neutral'}">${row[5] > 0 ? '+' : ''}${row[5].toFixed(1)}%</td>
-                    <td class="${row[6] > 0 ? 'trend-up' : row[6] < 0 ? 'trend-down' : 'neutral'}">${row[6] > 0 ? '+' : ''}${row[6].toFixed(1)}%</td>
-                `;
-                orionTableBody.appendChild(tr);
+                
+                tableBody.appendChild(row);
             });
         }
 
-        // Update insights
-        function updateInsights() {
-            const data = hotelData[currentHotel];
-            const grid = document.getElementById('insightsGrid');
-            
-            const insights = currentHotel === 'nova' ? [
-                {
-                    title: "Güçlü Büyüme",
-                    text: "Nova Plaza %34.8 gelir artışı ile mükemmel doluluk iyileştirmesi sağladı."
-                },
-                {
-                    title: "En İyi Performans",
-                    text: "Ogarite Turizm $82K gelir ile liderlik ediyor ve tutarlı ortaklık değeri gösteriyor."
-                },
-                {
-                    title: "Yükselen Kanallar",
-                    text: "Nova Plus %316 büyüme ile başarılı yeni ortaklıkları işaret ediyor."
-                }
-            ] : [
-                {
-                    title: "Sağlam Performans",
-                    text: "Orion Otel %27.7 gelir artışı ile %95.15 doluluk oranına ulaştı."
-                },
-                {
-                    title: "Kanal Lideri",
-                    text: "Dilman Tour $47K gelir ve etkileyici %279 büyüme oranı ile öne çıkıyor."
-                },
-                {
-                    title: "Pazar Konumu",
-                    text: "Birden fazla kanalda güçlü performans ve tutarlı büyüme modelleri."
-                }
-            ];
-            
-            grid.innerHTML = insights.map(insight => `
-                <div class="insight-card ${data.theme}">
-                    <div class="insight-title">${insight.title}</div>
-                    <div class="insight-text">${insight.text}</div>
-                </div>
-            `).join('');
+        // Get performance class based on metrics
+        function getPerformanceClass(revenueChange, adrChange) {
+            if (revenueChange > 50 && adrChange > 10) return 'indicator-excellent';
+            if (revenueChange > 0 && adrChange > 0) return 'indicator-good';
+            if (revenueChange > -20 && adrChange > -10) return 'indicator-warning';
+            return 'indicator-poor';
         }
 
-        // Initialize everything
-        document.addEventListener('DOMContentLoaded', function() {
-            updateHeroStats();
-            updatePerformanceCards();
-            populateTables();
-            initializeCharts();
-            updateInsights();
-        });
+        // Get performance text
+        function getPerformanceText(revenueChange, adrChange) {
+            if (revenueChange > 50 && adrChange > 10) return 'Mükemmel';
+            if (revenueChange > 0 && adrChange > 0) return 'İyi';
+            if (revenueChange > -20 && adrChange > -10) return 'Orta';
+            return 'Zayıf';
+        }
 
-        // Optimize resize handling
+        // Filter table function
+        function filterTable(filter) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            populateAgencyTable(filter);
+        }
+
+
+
+
+
+        // Resize handling
         let resizeTimeout;
         window.addEventListener('resize', function() {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(function() {
-                if (revenueChart) revenueChart.resize();
-                if (topAgenciesChart) topAgenciesChart.resize();
+                Object.values(charts).forEach(chart => {
+                    if (chart && chart.resize) chart.resize();
+                });
             }, 100);
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9783e71467353a71',t:'MTc1NjcyMDYzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'978462c48109333e',t:'MTc1NjcyNTcwNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
