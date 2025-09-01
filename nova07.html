@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Hotel Portfolio - Advanced Analytics Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-nova: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-orion: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-nova: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --accent-orion: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --success: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --danger: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            --dark: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-primary: #1a1a1a;
+            --text-secondary: #6b7280;
+            --text-light: rgba(255, 255, 255, 0.9);
+            --surface: rgba(255, 255, 255, 0.95);
+            --surface-dark: rgba(0, 0, 0, 0.02);
+            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --shadow-medium: 0 16px 64px rgba(0, 0, 0, 0.18);
+            --shadow-strong: 0 24px 96px rgba(0, 0, 0, 0.25);
+            --border-radius: 28px;
+            --border-radius-small: 20px;
+            --transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-nova);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        body.orion-theme {
+            background: var(--primary-orion);
+        }
+
+        /* Animated background with particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+            animation: float 25s ease-in-out infinite;
+            z-index: -2;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.15), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.1), transparent),
+                radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.1), transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.1), transparent);
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: sparkle 20s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-30px) rotate(2deg); }
+            66% { transform: translateY(15px) rotate(-2deg); }
+        }
+
+        @keyframes sparkle {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 20px 0;
+            transition: var(--transition);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 2.2rem;
+            background: var(--accent-nova);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px;
+            border-radius: 60px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .nav-btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 50px;
+            background: transparent;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: var(--transition-fast);
+        }
+
+        .nav-btn:hover::before {
+            left: 100%;
+        }
+
+        .nav-btn.active {
+            background: var(--surface);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-soft);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.nova.active {
+            background: var(--accent-nova);
+            color: white;
+        }
+
+        .nav-btn.orion.active {
+            background: var(--accent-orion);
+            color: white;
+        }
+
+        .nav-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 120px 32px 32px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            padding: 60px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-strong);
+            margin-bottom: 48px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shimmer 4s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 6s ease-in-out infinite;
+            margin-bottom: 24px;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero-subtitle {
+            font-size: 1.8rem;
+            color: var(--text-light);
+            font-weight: 500;
+            margin-bottom: 32px;
+            letter-spacing: -0.01em;
+            opacity: 0.9;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-light);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .hero-stat-label {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+        }
+
+        /* Performance Cards Grid */
+        .performance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        .performance-card {
+            background: var(--surface);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-medium);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .performance-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--accent-nova);
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            transition: var(--transition);
+        }
+
+        .performance-card.orion::before {
+            background: var(--accent-orion);
+        }
+
+        .performance-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: var(--shadow-strong);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            background: var(--accent-nova);
+        }
+
+        .card-icon.orion {
+            background: var(--accent-orion);
+        }
+
+        .metrics-list {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 2px solid var(--surface-dark);
+            transition: var(--transition-fast);
+        }
+
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+
+        .metric-row:hover {
+            background: var(--surface-dark);
+            margin: 0 -20px;
+            padding: 20px;
+            border-radius: var(--border-radius-small);
+        }
+
+        .metric-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .metric-value {
+            font-weight: 800;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .trend-up {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .trend-down {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .trend-neutral {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+        }
+
+        /* Chart Sections */
+        .chart-section {
+            background: var(--surface);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 48px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-medium);
+            margin-bottom: 48px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-nova);
+            transition: var(--transition);
+        }
+
+        .chart-section.orion::before {
+            background: var(--accent-orion);
+        }
+
+        .chart-section:hover {
+            box-shadow: var(--shadow-strong);
+            transform: translateY(-4px);
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .chart-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .chart-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 12px;
+        }
+
+        .chart-btn {
+            padding: 12px 24px;
+            border: 2px solid var(--accent-nova);
+            background: transparent;
+            color: var(--text-primary);
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .chart-btn:hover {
+            background: var(--accent-nova);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .chart-btn.orion {
+            border-color: var(--accent-orion);
+        }
+
+        .chart-btn.orion:hover {
+            background: var(--accent-orion);
+        }
+
+        /* Enhanced Table Design */
+        .table-section {
+            background: var(--surface);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-medium);
+            overflow: hidden;
+            margin-bottom: 48px;
+            transition: var(--transition);
+            display: none;
+        }
+
+        .table-section.active {
+            display: block;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .table-header {
+            background: var(--dark);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .table-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        .table-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .table-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        .table-wrapper {
+            max-height: 700px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+        }
+
+        .table-wrapper::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 20px 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            font-size: 1rem;
+        }
+
+        th {
+            background: rgba(0, 0, 0, 0.03);
+            font-weight: 700;
+            color: var(--text-primary);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+
+        tbody tr {
+            transition: var(--transition-fast);
+            position: relative;
+        }
+
+        tbody tr:hover {
+            background: rgba(0, 0, 0, 0.03);
+            transform: scale(1.01);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        tbody tr:hover td {
+            color: var(--text-primary);
+        }
+
+        .agency-name {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Analysis Section */
+        .analysis-section {
+            background: var(--surface);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 48px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-medium);
+            margin-bottom: 48px;
+        }
+
+        .analysis-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 32px;
+        }
+
+        .insight-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 100%);
+            padding: 32px;
+            border-radius: var(--border-radius-small);
+            border-left: 6px solid;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insight-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(30px, -30px);
+        }
+
+        .insight-card:nth-child(1) { border-left-color: #10b981; }
+        .insight-card:nth-child(2) { border-left-color: #3b82f6; }
+        .insight-card:nth-child(3) { border-left-color: #f59e0b; }
+        .insight-card:nth-child(4) { border-left-color: #ef4444; }
+        .insight-card:nth-child(5) { border-left-color: #8b5cf6; }
+        .insight-card:nth-child(6) { border-left-color: #06b6d4; }
+
+        .insight-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .insight-title {
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            font-size: 1.3rem;
+        }
+
+        .insight-text {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            padding: 48px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-medium);
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .footer-text {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .performance-card, .chart-section, .analysis-section {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .performance-card:nth-child(1) { animation-delay: 0.1s; }
+        .performance-card:nth-child(2) { animation-delay: 0.2s; }
+        .performance-card:nth-child(3) { animation-delay: 0.3s; }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .performance-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-stats {
+                gap: 24px;
+            }
+            
+            .chart-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 100px 16px 16px;
+            }
+
+            .nav-container {
+                padding: 0 16px;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .nav-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .hero {
+                padding: 40px 24px;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.3rem;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .performance-card, .chart-section, .analysis-section {
+                padding: 32px 24px;
+            }
+
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-title {
+                font-size: 1.8rem;
+            }
+
+            .table-header {
+                padding: 32px 24px;
+            }
+
+            th, td {
+                padding: 16px 12px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .chart-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        /* Custom scrollbar for webkit browsers */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-hotel"></i>
+                <span>Elite Portfolio</span>
+            </a>
+            <div class="nav-buttons">
+                <button class="nav-btn nova active" onclick="switchHotel('nova')">
+                    <i class="fas fa-crown"></i>
+                    Nova Plaza Crystal
+                </button>
+                <button class="nav-btn orion" onclick="switchHotel('orion')">
+                    <i class="fas fa-star"></i>
+                    Orion Hotel
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1 class="hero-title">Hotel Performance Analytics</h1>
+            <div class="hero-subtitle">Advanced Multi-Property Dashboard</div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="hero-stat-value" id="heroRevenue">$636K</span>
+                    <span class="hero-stat-label">Total Revenue</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-value" id="heroOccupancy">93.5%</span>
+                    <span class="hero-stat-label">Avg Occupancy</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-value" id="heroGrowth">+31.2%</span>
+                    <span class="hero-stat-label">Growth Rate</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Performance Cards -->
+        <div class="performance-grid" id="performanceGrid">
+            <!-- Cards will be dynamically generated -->
+        </div>
+
+        <!-- Portfolio Comparison Chart -->
+        <section class="chart-section">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">
+                        <i class="fas fa-chart-line"></i>
+                        Portfolio Performance Comparison
+                    </div>
+                    <div class="chart-subtitle">Monthly revenue and occupancy trends across properties</div>
+                </div>
+                <div class="chart-controls">
+                    <button class="chart-btn" onclick="toggleChartType('revenue')">Revenue</button>
+                    <button class="chart-btn" onclick="toggleChartType('occupancy')">Occupancy</button>
+                    <button class="chart-btn" onclick="toggleChartType('both')">Combined</button>
+                </div>
+            </div>
+            <canvas id="portfolioChart" height="400"></canvas>
+        </section>
+
+        <!-- Top Agencies Chart -->
+        <section class="chart-section" id="topAgenciesSection">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">
+                        <i class="fas fa-trophy"></i>
+                        <span id="topAgenciesTitle">Top Performing Agencies</span>
+                    </div>
+                    <div class="chart-subtitle" id="topAgenciesSubtitle">August 2025 revenue leaders</div>
+                </div>
+            </div>
+            <canvas id="topAgenciesChart" height="500"></canvas>
+        </section>
+
+        <!-- Market Share Chart -->
+        <section class="chart-section" id="marketShareSection">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">
+                        <i class="fas fa-chart-pie"></i>
+                        <span id="marketShareTitle">Market Share Distribution</span>
+                    </div>
+                    <div class="chart-subtitle" id="marketShareSubtitle">Agency contribution breakdown</div>
+                </div>
+            </div>
+            <s id="marketShareChart" height="600"></canvas>
+        </section>
+
+        <!-- Agency Performance Tables -->
+        <div class="table-section active" id="nova-table">
+            <div class="table-header">
+                <div class="table-title">
+                    <i class="fas fa-crown"></i>
+                    Nova Plaza Crystal Hotel - Agency Performance
+                </div>
+                <div class="table-subtitle">Detailed July vs August 2025 comparison</div>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Agency Name</th>
+                            <th>July Revenue</th>
+                            <th>July ADR</th>
+                            <th>August Revenue</th>
+                            <th>August ADR</th>
+                            <th>Revenue Change</th>
+                            <th>ADR Change</th>
+                        </tr>
+                    </thead>
+                    <tbody id="novaTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="table-section" id="orion-table">
+            <div class="table-header">
+                <div class="table-title">
+                    <i class="fas fa-star"></i>
+                    Orion Hotel - Agency Performance
+                </div>
+                <div class="table-subtitle">Detailed July vs August 2025 comparison</div>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Agency Name</th>
+                            <th>July Revenue</th>
+                            <th>July ADR</th>
+                            <th>August Revenue</th>
+                            <th>August ADR</th>
+                            <th>Revenue Change</th>
+                            <th>ADR Change</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orionTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Analysis Section -->
+        <section class="analysis-section">
+            <h3 class="analysis-title">
+                <i class="fas fa-brain"></i>
+                Strategic Insights & Recommendations
+            </h3>
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <div class="insight-title">Portfolio Excellence</div>
+                    <div class="insight-text">Both properties achieved exceptional performance in August with Nova Plaza reaching 91.91% occupancy and Orion Hotel achieving 95.15%, demonstrating strong market positioning and operational efficiency.</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-title">Revenue Optimization</div>
+                    <div class="insight-text">Combined portfolio generated $636K in August revenue with Nova Plaza contributing $463K (+34.78%) and Orion Hotel adding $173K (+27.68%), showcasing robust growth across both properties.</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-title">Market Segmentation</div>
+                    <div class="insight-text">Nova Plaza targets premium segments with higher ADR ($81.63), while Orion Hotel captures broader market segments with competitive pricing ($68.29), creating complementary market coverage.</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-title">Channel Diversification</div>
+                    <div class="insight-text">Strong agency partnerships across both properties with Ogarite Turizm, Future Turizm, and Dilman Tour leading performance, while new channels like TBO and Moka United show promising potential.</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-title">Pricing Strategy</div>
+                    <div class="insight-text">Dynamic pricing strategies are working effectively with Nova Plaza maintaining premium positioning while Orion Hotel optimizes for volume, resulting in maximized revenue per available room across the portfolio.</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-title">Future Opportunities</div>
+                    <div class="insight-text">Focus on expanding high-performing channels, implementing AI-driven revenue management, and developing seasonal packages to maintain growth momentum through Q4 2025 and beyond.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-title">Elite Hotel Portfolio Dashboard</div>
+                <div class="footer-text">
+                    Advanced analytics platform providing real-time insights and strategic recommendations for optimal hotel performance management. Data-driven decisions for exceptional hospitality excellence.
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Enhanced hotel data with more detailed information
+        const hotelData = {
+            nova: {
+                name: "Nova Plaza Crystal Hotel",
+                icon: "fas fa-crown",
+                theme: "nova",
+                july: { revenue: 343635, adr: 75.10, occupancy: 68.94 },
+                august: { revenue: 463180, adr: 81.63, occupancy: 91.91 },
+                agencies: [
+                    ["Booking.com", 11718.2, 98.45, 3246.18, 95.48, -72.30, -3.02],
+                    ["CTrip", 1457.51, 97.17, 4087.58, 71.71, 180.45, -26.20],
+                    ["OstroVok", 13185.63, 79.86, 25273.95, 82.87, 91.68, 3.77],
+                    ["Expedia", 13961.43, 118.32, 4516.83, 125.47, -67.65, 6.04],
+                    ["Agoda", 36296.23, 75.62, 10266.19, 79.58, -71.72, 5.24],
+                    ["Keytel", 19094.86, 70.71, 14738.65, 74.44, -22.81, 5.28],
+                    ["Ogarite Turizm", 54867.92, 72.56, 81942.65, 70.88, 49.35, -2.32],
+                    ["Dilman Turizm", 27864.85, 73.91, 70887.98, 73.61, 154.40, -0.41],
+                    ["Future Turizm", 15366.65, 68.6, 30123.96, 72.59, 96.03, 5.82],
+                    ["Dentfiks", 28985.78, 84.48, 242.56, 80.85, -99.16, -4.30],
+                    ["Intra Turizm A.S.", 8170.13, 92.84, 23593.21, 82.78, 188.77, -10.84],
+                    ["TBO", 15197.65, 68.15, 29064.07, 78.13, 91.24, 14.64],
+                    ["Laluz Tour", 3949.75, 94.04, 2795.64, 84.72, -29.22, -9.91],
+                    ["Hotelistan", 5704.53, 31.17, 406.48, 4.11, -92.87, -86.81],
+                    ["World 2 Meet, S.L.U.", 13554.65, 72.81, 39724.38, 81.24, 193.07, 11.58],
+                    ["Lite Turizm", 1627.68, 90.43, 5297.45, 76.77, 225.46, -15.11],
+                    ["Renaissance Istanbul", 632.66, 105.44, 5097.3, 104.03, 705.69, -1.34],
+                    ["Adonis İstanbul Turizm A.Ş.", 3194.31, 106.48, 328.08, 109.36, -89.73, 2.70],
+                    ["Pomona Travel", 843.24, 105.41, 0, 0, 0, 0],
+                    ["Rocket DMC", 2010.02, 71.79, 899.26, 74.94, -55.26, 4.39],
+                    ["Dream İstanbul Travel", 3467.75, 91.26, 105.35, 105.35, -96.96, 15.44],
+                    ["Private VIP Turizm", 522.23, 104.45, 0, 0, 0, 0],
+                    ["One Above Turizm", 2334.73, 72.96, 1903.29, 79.3, -18.48, 8.69],
+                    ["Euromarmara Turizm", 1015.28, 112.81, 2589.72, 117.71, 155.07, 4.34],
+                    ["Tatilat Turizm", 2368.74, 84.6, 5333.81, 82.06, 125.17, -3.00],
+                    ["Nova Plus", 9752.85, 68.68, 40601.19, 75.19, 316.30, 9.48],
+                    ["Valley of Tourism", 322.54, 64.51, 7805.38, 113.12, 2319.97, 75.35],
+                    ["Zehra Turizm", 974.73, 60.92, 8871.52, 78.51, 810.15, 28.87],
+                    ["Egeo Tours", 0, 0, 1471.67, 81.76, 0, 0],
+                    ["Royal Line Turizm", 0, 0, 3711.3, 74.23, 0, 0]
+                ]
+            },
+            orion: {
+                name: "Orion Hotel",
+                icon: "fas fa-star",
+                theme: "orion",
+                july: { revenue: 135372, adr: 64.89, occupancy: 78.63 },
+                august: { revenue: 172848, adr: 68.29, occupancy: 95.15 },
+                agencies: [
+                    ["Keytel SA", 2511.07, 57.07, 3250.46, 59.1, 29.45, 3.56],
+                    ["Kor Agro Organik Gıda A.Ş", 249.7, 62.43, 0, 0, 0, 0],
+                    ["İlhan Sağlık Hizmetleri Tic. Ltd. Şti.", 124.98, 62.49, 0, 0, 0, 0],
+                    ["Canyon Holidays", 63.51, 63.51, 380.66, 63.44, 499.37, -0.11],
+                    ["Branches Travel", 255.99, 64, 0, 0, 0, 0],
+                    ["Ostrovok", 869.86, 57.99, 0, 0, 0, 0],
+                    ["Nova Plus", 3804.35, 95.11, 5333.18, 49.38, 40.19, -48.08],
+                    ["Emerging Travel Inc", 708.91, 64.45, 939.76, 78.31, 32.56, 21.51],
+                    ["Ogarite Turizm", 29014.03, 66.55, 34941.04, 66.68, 20.43, 0.20],
+                    ["Intra Turizm A.S.", 2136.36, 97.11, 5187, 92.62, 142.80, -4.62],
+                    ["Expedia", 27371.93, 68.09, 17589.9, 76.48, -35.74, 12.32],
+                    ["Zehra Turizm", 258.28, 64.57, 627.37, 69.71, 142.90, 7.96],
+                    ["Booking", 117.13, 117.13, 965.66, 160.94, 724.43, 37.40],
+                    ["Future Turizm", 18538.23, 64.59, 21559.78, 66.13, 16.30, 2.38],
+                    ["Beyes Teknoloji A.Ş", 277.61, 69.4, 0, 0, 0, 0],
+                    ["Adonis İstanbul Turizm A.Ş", 150.96, 75.48, 0, 0, 0, 0],
+                    ["Özkar Turizm", 129.16, 64.58, 64.26, 64.26, -50.25, -0.50],
+                    ["Lifmak Makina San. Tic. Ltd. Şti", 111.63, 111.63, 0, 0, 0, 0],
+                    ["İksa Ocak Sistemleri", 76.29, 76.29, 0, 0, 0, 0],
+                    ["Grandoria Tours", 1227.15, 87.65, 0, 0, 0, 0],
+                    ["Dilman Tour", 12509.99, 63.83, 47453.91, 64.3, 279.33, 0.74],
+                    ["Keytel", 3705.62, 55.31, 1431.24, 62.23, -61.38, 12.51],
+                    ["Kudos Travel", 387.82, 96.95, 0, 0, 0, 0],
+                    ["Mercan Turizm", 3220.55, 73.19, 2420.45, 65.42, -24.84, -10.62],
+                    ["Agoda", 17509.27, 57.79, 11439.95, 75.26, -34.66, 30.23],
+                    ["Roibos Travel", 80.84, 80.84, 982.48, 81.87, 1115.34, 1.27],
+                    ["World 2 Meet, S.L.U.", 3030.3, 60.61, 4573, 73.76, 50.91, 21.70],
+                    ["Abu Rass Otomotiv", 455.8, 75.97, 0, 0, 0, 0],
+                    ["Dentfiks", 248.12, 82.71, 489.9, 81.65, 97.44, -1.28],
+                    ["Lux Locations Tours", 0, 0, 1128.02, 75.2, 0, 0],
+                    ["Moka United", 0, 0, 1649.94, 82.5, 0, 0],
+                    ["TBO", 0, 0, 2051.07, 85.46, 0, 0],
+                    ["Turkan Seyahat", 0, 0, 912.55, 76.05, 0, 0],
+                    ["Tamam Global Turizm", 0, 0, 558.93, 93.16, 0, 0],
+                    ["Hepsi Travel", 0, 0, 128.11, 64.06, 0, 0],
+                    ["Makam Turizm", 0, 0, 453.13, 75.52, 0, 0],
+                    ["Laluz Tour", 0, 0, 556.65, 69.58, 0, 0],
+                    ["Yuppi Travel", 0, 0, 1101.64, 78.69, 0, 0],
+                    ["Tatilat Turizm", 0, 0, 0.04, 0.04, 0, 0],
+                    ["Hotelistan Turizm", 0, 0, 964.1, 68.86, 0, 0],
+                    ["Nova Plaza Crystal Hotel", 0, 0, 1180.4, 90.8, 0, 0]
+                ]
+            }
+        };
+
+        let currentHotel = 'nova';
+        let portfolioChart, topAgenciesChart, marketShareChart;
+        let currentChartType = 'both';
+
+        // Chart.js configuration
+        Chart.defaults.font.family = 'Poppins';
+        Chart.defaults.font.size = 13;
+        Chart.defaults.color = '#6b7280';
+        Chart.register(ChartDataLabels);
+
+        // Switch hotel function with enhanced animations
+        function switchHotel(hotel) {
+            if (currentHotel === hotel) return;
+            
+            currentHotel = hotel;
+            
+            // Update body theme
+            document.body.className = hotel === 'orion' ? 'orion-theme' : '';
+            
+            // Update navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.nav-btn.${hotel}`).classList.add('active');
+            
+            // Update performance cards with animation
+            updatePerformanceCards();
+            
+            // Update hero stats
+            updateHeroStats();
+            
+            // Update tables
+            document.querySelectorAll('.table-section').forEach(table => {
+                table.classList.remove('active');
+            });
+            document.getElementById(`${hotel}-table`).classList.add('active');
+            
+            // Update chart themes
+            updateChartThemes();
+            
+            // Update charts with new data
+            updateCharts();
+        }
+
+        // Update hero statistics
+        function updateHeroStats() {
+            const data = hotelData[currentHotel];
+            const totalRevenue = data.july.revenue + data.august.revenue;
+            const avgOccupancy = (data.july.occupancy + data.august.occupancy) / 2;
+            const growthRate = ((data.august.revenue - data.july.revenue) / data.july.revenue) * 100;
+            
+            document.getElementById('heroRevenue').textContent = `$${(totalRevenue / 1000).toFixed(0)}K`;
+            document.getElementById('heroOccupancy').textContent = `${avgOccupancy.toFixed(1)}%`;
+            document.getElementById('heroGrowth').textContent = `+${growthRate.toFixed(1)}%`;
+        }
+
+        // Generate performance cards
+        function updatePerformanceCards() {
+            const data = hotelData[currentHotel];
+            const grid = document.getElementById('performanceGrid');
+            
+            const revenueChange = data.august.revenue - data.july.revenue;
+            const revenueChangePercent = (revenueChange / data.july.revenue) * 100;
+            const occupancyChange = data.august.occupancy - data.july.occupancy;
+            const adrChange = data.august.adr - data.july.adr;
+            const adrChangePercent = (adrChange / data.july.adr) * 100;
+            
+            grid.innerHTML = `
+                <div class="performance-card ${data.theme}">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <div class="card-icon ${data.theme}">
+                                <i class="${data.icon}"></i>
+                            </div>
+                            July 2025 Performance
+                        </div>
+                    </div>
+                    <div class="metrics-list">
+                        <div class="metric-row">
+                            <div class="metric-label">
+                                <i class="fas fa-percentage"></i>
+                                Occupancy Rate
+                            </div>
+                            <div class="metric-value neutral">
+                                ${data.july.occupancy.toFixed(1)}%
+                                <span class="trend-indicator trend-neutral">
+                                    <i class="fas fa-minus"></i>
+                                    Baseline
+                                </span>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-label">
+                                <i class="fas fa-dollar-sign"></i>
+                                Total Revenue
+                            </div>
+                            <div class="metric-value neutral">$${data.july.revenue.toLocaleString()}</div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-label">
+                                <i class="fas fa-bed"></i>
+                                Average Daily Rate
+                            </div>
+                            <div class="metric-value neutral">$${data.july.adr.toFixed(2)}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="performance-card ${data.theme}">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <div class="card-icon ${data.theme}">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            August 2025 Performance
+                        </div>
+                    </div>
+                    <div class="metrics-list">
+                        <div class="metric-row">
+                            <div class="metric-label">
+                                <i class="fas fa-percentage"></i>
+                                Occupancy Rate
+                            </div>
+                            <div class="metric-value positive">
+                                ${data.august.occupancy.toFixed(1)}%
+                                <span class="trend-indicator trend-up">
+                                    <i class="fas fa-arrow-up"></i>
+                                    +${occupancyChange.toFixed(1)}%
+                                </span>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-label">
+                                <i class="fas fa-dollar-sign"></i>
+                                Total Revenue
+                            </div>
+                            <div class="metric-value positive">$${data.august.revenue.toLocaleString()}</div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-label">
+                                <i class="fas fa-bed"></i>
+                                Average Daily Rate
+                            </div>
+                            <div class="metric-value positive">$${data.august.adr.toFixed(2)}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="performance-card ${data.theme}">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <div class="card-icon ${data.theme}">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            Growth Analysis
+                        </div>
+                    </div>
+                    <div class="metrics-list">
+                        <div class="metric-row">
+                            <div class="metric-label">
+                                <i class="fas fa-chart-bar"></i>
+                                Revenue Growth
+                            </div>
+                            <div class="metric-value positive">
+                                +$${revenueChange.toLocaleString()}
+                                <span class="trend-indicator trend-up">
+                                    <i class="fas fa-arrow-up"></i>
+                                    +${revenueChangePercent.toFixed(1)}%
+                                </span>
+                            </div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-label">
+                                <i class="fas fa-trending-up"></i>
+                                Occupancy Improvement
+                            </div>
+                            <div class="metric-value positive">+${occupancyChange.toFixed(1)} points</div>
+                        </div>
+                        <div class="metric-row">
+                            <div class="metric-label">
+                                <i class="fas fa-money-bill-wave"></i>
+                                ADR Enhancement
+                            </div>
+                            <div class="metric-value positive">
+                                +$${adrChange.toFixed(2)}
+                                <span class="trend-indicator trend-up">
+                                    <i class="fas fa-arrow-up"></i>
+                                    +${adrChangePercent.toFixed(1)}%
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Update chart themes
+        function updateChartThemes() {
+            const sections = document.querySelectorAll('.chart-section');
+            sections.forEach(section => {
+                section.className = `chart-section ${currentHotel}`;
+            });
+            
+            const buttons = document.querySelectorAll('.chart-btn');
+            buttons.forEach(btn => {
+                btn.className = `chart-btn ${currentHotel}`;
+            });
+        }
+
+        // Initialize charts
+        function initializeCharts() {
+            createPortfolioChart();
+            updateCharts();
+        }
+
+        // Create portfolio comparison chart
+        function createPortfolioChart() {
+            const ctx = document.getElementById('portfolioChart').getContext('2d');
+            
+            portfolioChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['July 2025', 'August 2025'],
+                    datasets: [{
+                        label: 'Nova Plaza - Revenue ($K)',
+                        data: [343.635, 463.180],
+                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 3,
+                        borderRadius: 12,
+                        borderSkipped: false,
+                    }, {
+                        label: 'Nova Plaza - Occupancy (%)',
+                        data: [68.94, 91.91],
+                        backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                        borderColor: 'rgba(16, 185, 129, 1)',
+                        borderWidth: 3,
+                        borderRadius: 12,
+                        borderSkipped: false,
+                        yAxisID: 'y1'
+                    }, {
+                        label: 'Orion - Revenue ($K)',
+                        data: [135.372, 172.848],
+                        backgroundColor: 'rgba(240, 147, 251, 0.8)',
+                        borderColor: 'rgba(240, 147, 251, 1)',
+                        borderWidth: 3,
+                        borderRadius: 12,
+                        borderSkipped: false,
+                    }, {
+                        label: 'Orion - Occupancy (%)',
+                        data: [78.63, 95.15],
+                        backgroundColor: 'rgba(245, 87, 108, 0.8)',
+                        borderColor: 'rgba(245, 87, 108, 1)',
+                        borderWidth: 3,
+                        borderRadius: 12,
+                        borderSkipped: false,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 25,
+                                font: { 
+                                    weight: '600',
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            borderWidth: 1,
+                            cornerRadius: 12,
+                            padding: 16,
+                            titleFont: { size: 16, weight: '600' },
+                            bodyFont: { size: 14 }
+                        }
+                    },
+                    scales: {
+                        x: { 
+                            grid: { 
+                                color: 'rgba(0, 0, 0, 0.05)',
+                                lineWidth: 2
+                            },
+                            ticks: {
+                                font: { weight: '600', size: 13 }
+                            }
+                        },
+                        y: { 
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            beginAtZero: true,
+                            grid: { 
+                                color: 'rgba(0, 0, 0, 0.05)',
+                                lineWidth: 1
+                            },
+                            ticks: {
+                                font: { weight: '500', size: 12 }
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            beginAtZero: true,
+                            grid: {
+                                drawOnChartArea: false,
+                            },
+                            ticks: {
+                                font: { weight: '500', size: 12 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update all charts
+        function updateCharts() {
+            updateTopAgenciesChart();
+            updateMarketShareChart();
+            updateChartTitles();
+        }
+
+        // Update top agencies chart
+        function updateTopAgenciesChart() {
+            const data = hotelData[currentHotel];
+            const topAgencies = data.agencies
+                .filter(agency => agency[3] > 0)
+                .sort((a, b) => b[3] - a[3])
+                .slice(0, 12);
+
+            if (topAgenciesChart) {
+                topAgenciesChart.destroy();
+            }
+
+            const ctx = document.getElementById('topAgenciesChart').getContext('2d');
+            const colors = generateGradientColors(topAgencies.length, currentHotel);
+            
+            topAgenciesChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: topAgencies.map(agency => agency[0]),
+                    datasets: [{
+                        label: 'August Revenue ($)',
+                        data: topAgencies.map(agency => agency[3]),
+                        backgroundColor: colors.background,
+                        borderColor: colors.border,
+                        borderWidth: 3,
+                        borderRadius: 8,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            borderWidth: 1,
+                            cornerRadius: 12,
+                            padding: 16,
+                            callbacks: {
+                                label: function(context) {
+                                    return `Revenue: $${context.parsed.x.toLocaleString()}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { 
+                            beginAtZero: true,
+                            grid: { 
+                                color: 'rgba(0, 0, 0, 0.05)',
+                                lineWidth: 1
+                            },
+                            ticks: {
+                                font: { weight: '500', size: 12 },
+                                callback: function(value) {
+                                    return '$' + (value / 1000).toFixed(0) + 'K';
+                                }
+                            }
+                        },
+                        y: { 
+                            grid: { 
+                                color: 'rgba(0, 0, 0, 0.05)',
+                                lineWidth: 1
+                            },
+                            ticks: {
+                                font: { weight: '600', size: 11 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update market share chart
+        function updateMarketShareChart() {
+            const data = hotelData[currentHotel];
+            const augustAgencies = data.agencies.filter(agency => agency[3] > 0);
+            const totalRevenue = augustAgencies.reduce((sum, agency) => sum + agency[3], 0);
+            const sortedAgencies = augustAgencies.sort((a, b) => b[3] - a[3]).slice(0, 15);
+
+            if (marketShareChart) {
+                marketShareChart.destroy();
+            }
+
+            const ctx = document.getElementById('marketShareChart').getContext('2d');
+            const colors = generatePieColors(sortedAgencies.length, currentHotel);
+            
+            marketShareChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: sortedAgencies.map(agency => agency[0]),
+                    datasets: [{
+                        data: sortedAgencies.map(agency => agency[3]),
+                        backgroundColor: colors,
+                        borderWidth: 4,
+                        borderColor: '#fff',
+                        hoverBorderWidth: 6,
+                        hoverBorderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '40%',
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                boxWidth: 15,
+                                padding: 15,
+                                usePointStyle: true,
+                                font: { 
+                                    size: 12, 
+                                    weight: '600' 
+                                },
+                                generateLabels: function(chart) {
+                                    const data = chart.data;
+                                    if (data.labels.length && data.datasets.length) {
+                                        return data.labels.map((label, i) => {
+                                            const value = data.datasets[0].data[i];
+                                            const percentage = ((value / totalRevenue) * 100).toFixed(1);
+                                            return {
+                                                text: `${label} (${percentage}%)`,
+                                                fillStyle: data.datasets[0].backgroundColor[i],
+                                                strokeStyle: '#fff',
+                                                lineWidth: 2,
+                                                hidden: false,
+                                                index: i
+                                            };
+                                        });
+                                    }
+                                    return [];
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            borderWidth: 1,
+                            cornerRadius: 12,
+                            padding: 16,
+                            titleFont: { size: 16, weight: '600' },
+                            bodyFont: { size: 14 },
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.parsed;
+                                    const percentage = ((value / totalRevenue) * 100).toFixed(2);
+                                    return [
+                                        `Revenue: $${value.toLocaleString()}`,
+                                        `Market Share: ${percentage}%`
+                                    ];
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update chart titles
+        function updateChartTitles() {
+            const data = hotelData[currentHotel];
+            document.getElementById('topAgenciesTitle').textContent = `${data.name} - Top Agencies`;
+            document.getElementById('topAgenciesSubtitle').textContent = `August 2025 revenue performance leaders`;
+            document.getElementById('marketShareTitle').textContent = `${data.name} - Market Share`;
+            document.getElementById('marketShareSubtitle').textContent = `Agency contribution breakdown for August 2025`;
+        }
+
+        // Generate gradient colors
+        function generateGradientColors(count, theme) {
+            const colors = [];
+            const borderColors = [];
+            const baseHue = theme === 'nova' ? 220 : 300;
+            
+            for (let i = 0; i < count; i++) {
+                const hue = (baseHue + (i * 25)) % 360;
+                const saturation = 65 + (i % 3) * 10;
+                const lightness = 55 + (i % 4) * 8;
+                colors.push(`hsla(${hue}, ${saturation}%, ${lightness}%, 0.8)`);
+                borderColors.push(`hsl(${hue}, ${saturation}%, ${lightness - 10}%)`);
+            }
+            
+            return { background: colors, border: borderColors };
+        }
+
+        // Generate pie chart colors
+        function generatePieColors(count, theme) {
+            const colors = [];
+            const baseHue = theme === 'nova' ? 220 : 300;
+            
+            for (let i = 0; i < count; i++) {
+                const hue = (baseHue + (i * 360 / count)) % 360;
+                const saturation = 70 + (i % 3) * 10;
+                const lightness = 50 + (i % 4) * 10;
+                colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
+            }
+            return colors;
+        }
+
+        // Toggle chart type
+        function toggleChartType(type) {
+            currentChartType = type;
+            // Implementation for chart type switching can be added here
+            console.log(`Switching to ${type} view`);
+        }
+
+        // Populate tables
+        function populateTables() {
+            // Nova table
+            const novaTableBody = document.getElementById('novaTableBody');
+            hotelData.nova.agencies.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="agency-name">${row[0]}</td>
+                    <td>$${row[1].toLocaleString()}</td>
+                    <td>$${row[2].toFixed(2)}</td>
+                    <td>$${row[3].toLocaleString()}</td>
+                    <td>$${row[4].toFixed(2)}</td>
+                    <td class="${row[5] > 0 ? 'positive' : row[5] < 0 ? 'negative' : 'neutral'}">${row[5].toFixed(1)}%</td>
+                    <td class="${row[6] > 0 ? 'positive' : row[6] < 0 ? 'negative' : 'neutral'}">${row[6].toFixed(1)}%</td>
+                `;
+                novaTableBody.appendChild(tr);
+            });
+
+            // Orion table
+            const orionTableBody = document.getElementById('orionTableBody');
+            hotelData.orion.agencies.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="agency-name">${row[0]}</td>
+                    <td>$${row[1].toLocaleString()}</td>
+                    <td>$${row[2].toFixed(2)}</td>
+                    <td>$${row[3].toLocaleString()}</td>
+                    <td>$${row[4].toFixed(2)}</td>
+                    <td class="${row[5] > 0 ? 'positive' : row[5] < 0 ? 'negative' : 'neutral'}">${row[5].toFixed(1)}%</td>
+                    <td class="${row[6] > 0 ? 'positive' : row[6] < 0 ? 'negative' : 'neutral'}">${row[6].toFixed(1)}%</td>
+                `;
+                orionTableBody.appendChild(tr);
+            });
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePerformanceCards();
+            updateHeroStats();
+            populateTables();
+            initializeCharts();
+            
+            // Add smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+
+        // Add loading states for better UX
+        function showLoading(elementId) {
+            const element = document.getElementById(elementId);
+            element.classList.add('loading');
+        }
+
+        function hideLoading(elementId) {
+            const element = document.getElementById(elementId);
+            element.classList.remove('loading');
+        }
+
+        // Performance optimization: Debounce resize events
+        let resizeTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(function() {
+                if (portfolioChart) portfolioChart.resize();
+                if (topAgenciesChart) topAgenciesChart.resize();
+                if (marketShareChart) marketShareChart.resize();
+            }, 250);
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9783978332b64135',t:'MTc1NjcxNzM3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
