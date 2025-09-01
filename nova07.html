@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Otelciro.com - Analytics Dashboard</title>
+    <title>Elite Hotel Portfolio - Analytics Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -40,23 +40,58 @@
             min-height: 100vh;
             color: var(--text-primary);
             transition: var(--transition);
+            overflow-x: hidden;
         }
 
         body.orion-theme {
             background: linear-gradient(135deg, var(--primary-orion) 0%, #f5576c 100%);
         }
 
-        /* Simplified Navigation */
+        /* 3D and Animation Effects */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(102, 126, 234, 0.6); }
+        }
+
+        /* 3D Glassmorphism Navigation */
         .navbar {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 1000;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             padding: 16px 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: float 6s ease-in-out infinite;
         }
 
         .nav-container {
@@ -74,46 +109,61 @@
             gap: 12px;
             font-size: 1.5rem;
             font-weight: 800;
-            color: var(--text-primary);
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            animation: pulse 3s ease-in-out infinite;
         }
 
         .logo i {
-            color: var(--primary-nova);
+            color: #ffd700;
+            animation: glow 2s ease-in-out infinite;
+            transform: perspective(1000px) rotateY(15deg);
         }
 
         .nav-buttons {
             display: flex;
             gap: 8px;
-            background: var(--surface-light);
+            background: rgba(255, 255, 255, 0.1);
             padding: 4px;
-            border-radius: 8px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .nav-btn {
             padding: 12px 20px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             background: transparent;
-            color: var(--text-secondary);
+            color: rgba(255, 255, 255, 0.8);
             font-weight: 600;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            transform: perspective(1000px) rotateX(0deg);
+        }
+
+        .nav-btn:hover {
+            transform: perspective(1000px) rotateX(-5deg) translateY(-2px);
+            color: white;
         }
 
         .nav-btn.active {
-            background: var(--surface);
-            color: var(--text-primary);
-            box-shadow: var(--shadow);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            transform: perspective(1000px) rotateX(-3deg) translateY(-1px);
         }
 
         .nav-btn.nova.active {
-            background: var(--primary-nova);
-            color: white;
+            background: linear-gradient(135deg, var(--primary-nova), var(--accent-nova));
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
         }
 
         .nav-btn.orion.active {
-            background: var(--primary-orion);
-            color: white;
+            background: linear-gradient(135deg, var(--primary-orion), var(--accent-orion));
+            box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
         }
 
         /* Main Container */
@@ -123,182 +173,253 @@
             padding: 100px 24px 24px;
         }
 
-        /* Simplified Hero */
+        /* 3D Glassmorphism Hero */
         .hero {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 40px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-lg);
-            margin-bottom: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
             text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideInUp 1s ease-out;
+            transform: perspective(1000px) rotateX(2deg);
         }
 
         .hero-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            margin-bottom: 16px;
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: shimmer 3s ease-in-out infinite;
+            background-size: 200% 200%;
         }
 
         .hero-subtitle {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            margin-bottom: 32px;
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
         .hero-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 24px;
+            gap: 30px;
         }
 
         .hero-stat {
             text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: perspective(1000px) rotateY(0deg);
+        }
+
+        .hero-stat:hover {
+            transform: perspective(1000px) rotateY(5deg) translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
         }
 
         .hero-stat-value {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--primary-nova);
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #ffd700;
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 15px rgba(255, 215, 0, 0.5);
+            animation: pulse 2s ease-in-out infinite;
         }
 
         .hero-stat-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            font-weight: 500;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        /* Performance Grid */
+        /* 3D Performance Grid */
         .performance-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-            margin-bottom: 32px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
         }
 
         .performance-card {
-            background: var(--surface);
-            padding: 24px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+            animation: slideInUp 0.8s ease-out;
         }
 
         .performance-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
+            transform: perspective(1000px) rotateX(-5deg) rotateY(5deg) translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.15);
         }
 
         .card-header {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 15px;
+            margin-bottom: 25px;
         }
 
         .card-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            background: var(--primary-nova);
+            background: linear-gradient(135deg, var(--primary-nova), var(--accent-nova));
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            animation: float 3s ease-in-out infinite;
+            transform: perspective(1000px) rotateY(15deg);
         }
 
         .card-icon.orion {
-            background: var(--primary-orion);
+            background: linear-gradient(135deg, var(--primary-orion), var(--accent-orion));
+            box-shadow: 0 8px 20px rgba(240, 147, 251, 0.3);
         }
 
         .card-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-primary);
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
         .metrics-list {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 20px;
         }
 
         .metric-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: perspective(1000px) rotateX(0deg);
         }
 
-        .metric-row:last-child {
-            border-bottom: none;
+        .metric-row:hover {
+            transform: perspective(1000px) rotateX(-2deg) translateY(-2px);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
         }
 
         .metric-label {
-            font-weight: 500;
-            color: var(--text-secondary);
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
         }
 
         .metric-value {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--text-primary);
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: white;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
         .trend-up {
-            color: var(--success);
+            color: #00ff88;
+            text-shadow: 0 2px 15px rgba(0, 255, 136, 0.5);
+            animation: pulse 2s ease-in-out infinite;
         }
 
         .trend-down {
-            color: var(--danger);
+            color: #ff4757;
+            text-shadow: 0 2px 15px rgba(255, 71, 87, 0.5);
         }
 
         .neutral {
-            color: var(--text-secondary);
+            color: rgba(255, 255, 255, 0.7);
         }
 
-        /* Chart Sections */
+        /* 3D Chart Sections */
         .chart-section {
-            background: var(--surface);
-            padding: 32px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            margin-bottom: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 40px;
+            animation: slideInUp 1s ease-out;
+            transform: perspective(1000px) rotateX(1deg);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .chart-section:hover {
+            transform: perspective(1000px) rotateX(-2deg) translateY(-5px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
         }
 
         .chart-header {
             display: flex;
             align-items: center;
             justify-content: between;
-            margin-bottom: 24px;
+            margin-bottom: 30px;
         }
 
         .chart-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .chart-title i {
+            color: #ffd700;
+            animation: glow 2s ease-in-out infinite;
         }
 
         .chart-container {
             position: relative;
-            height: 300px;
+            height: 350px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Simplified Table */
+        /* 3D Glassmorphism Table */
         .table-section {
-            background: var(--surface);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             overflow: hidden;
-            margin-bottom: 32px;
+            margin-bottom: 40px;
             display: none;
+            animation: slideInUp 1.2s ease-out;
+            transform: perspective(1000px) rotateX(1deg);
         }
 
         .table-section.active {
@@ -306,20 +427,35 @@
         }
 
         .table-header {
-            background: var(--surface-light);
-            padding: 24px;
-            border-bottom: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .table-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--text-primary);
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
         .table-wrapper {
-            max-height: 400px;
+            max-height: 450px;
             overflow-y: auto;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .table-wrapper::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
         }
 
         table {
@@ -328,57 +464,92 @@
         }
 
         th, td {
-            padding: 12px 16px;
+            padding: 15px 20px;
             text-align: left;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         th {
-            background: var(--surface-light);
-            font-weight: 600;
-            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.1);
+            font-weight: 700;
+            color: white;
             position: sticky;
             top: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        tbody tr {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         tbody tr:hover {
-            background: var(--surface-light);
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
         }
 
         .agency-name {
-            font-weight: 600;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
-        /* Insights */
+        td {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        /* 3D Insights Section */
         .insights-section {
-            background: var(--surface);
-            padding: 32px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            margin-bottom: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 40px;
+            animation: slideInUp 1.4s ease-out;
         }
 
         .insights-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 24px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 30px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .insights-title i {
+            color: #ffd700;
+            animation: glow 2s ease-in-out infinite;
         }
 
         .insights-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
         }
 
         .insight-card {
-            background: var(--surface-light);
-            padding: 20px;
-            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-left: 4px solid var(--primary-nova);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: perspective(1000px) rotateY(0deg);
+        }
+
+        .insight-card:hover {
+            transform: perspective(1000px) rotateY(-5deg) translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.15);
         }
 
         .insight-card.orion {
@@ -386,15 +557,18 @@
         }
 
         .insight-title {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 8px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
         .insight-text {
-            color: var(--text-secondary);
-            line-height: 1.5;
-            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            font-size: 0.95rem;
+            font-weight: 500;
         }
 
         /* Responsive */
@@ -442,14 +616,14 @@
         <div class="nav-container">
             <div class="logo">
                 <i class="fas fa-hotel"></i>
-                <span>Hotel Analytics</span>
+                <span>Otel Analitik Paneli</span>
             </div>
             <div class="nav-buttons">
                 <button class="nav-btn nova active" onclick="switchHotel('nova')">
                     Nova Plaza Crystal
                 </button>
                 <button class="nav-btn orion" onclick="switchHotel('orion')">
-                    Orion Hotel
+                    Orion Otel
                 </button>
             </div>
         </div>
@@ -458,20 +632,20 @@
     <div class="container">
         <!-- Hero Section -->
         <section class="hero">
-            <h1 class="hero-title">Hotel Performance Dashboard</h1>
-            <div class="hero-subtitle">Real-time analytics and insights</div>
+            <h1 class="hero-title">Otel Performans Paneli</h1>
+            <div class="hero-subtitle">Gerçek zamanlı analitik ve içgörüler</div>
             <div class="hero-stats">
                 <div class="hero-stat">
                     <span class="hero-stat-value" id="heroRevenue">$636K</span>
-                    <span class="hero-stat-label">Total Revenue</span>
+                    <span class="hero-stat-label">Toplam Gelir</span>
                 </div>
                 <div class="hero-stat">
                     <span class="hero-stat-value" id="heroOccupancy">93.5%</span>
-                    <span class="hero-stat-label">Occupancy Rate</span>
+                    <span class="hero-stat-label">Doluluk Oranı</span>
                 </div>
                 <div class="hero-stat">
                     <span class="hero-stat-value" id="heroGrowth">+31%</span>
-                    <span class="hero-stat-label">Growth Rate</span>
+                    <span class="hero-stat-label">Büyüme Oranı</span>
                 </div>
             </div>
         </section>
@@ -486,7 +660,7 @@
             <div class="chart-header">
                 <div class="chart-title">
                     <i class="fas fa-chart-line"></i>
-                    Monthly Revenue Comparison
+                    Aylık Gelir Karşılaştırması
                 </div>
             </div>
             <div class="chart-container">
@@ -499,7 +673,7 @@
             <div class="chart-header">
                 <div class="chart-title">
                     <i class="fas fa-trophy"></i>
-                    <span id="topAgenciesTitle">Top 8 Agencies</span>
+                    <span id="topAgenciesTitle">En İyi 8 Acenta</span>
                 </div>
             </div>
             <div class="chart-container">
@@ -510,19 +684,19 @@
         <!-- Agency Performance Table -->
         <div class="table-section active" id="nova-table">
             <div class="table-header">
-                <div class="table-title">Nova Plaza Crystal - Complete Agency Performance</div>
+                <div class="table-title">Nova Plaza Crystal - Detaylı Acenta Performansı</div>
             </div>
             <div class="table-wrapper">
                 <table>
                     <thead>
                         <tr>
-                            <th>Agency Name</th>
-                            <th>July Revenue</th>
-                            <th>July ADR</th>
-                            <th>August Revenue</th>
-                            <th>August ADR</th>
-                            <th>Revenue Change</th>
-                            <th>ADR Change</th>
+                            <th>Acenta Adı</th>
+                            <th>Temmuz Geliri</th>
+                            <th>Temmuz ADR</th>
+                            <th>Ağustos Geliri</th>
+                            <th>Ağustos ADR</th>
+                            <th>Gelir Değişimi</th>
+                            <th>ADR Değişimi</th>
                         </tr>
                     </thead>
                     <tbody id="novaTableBody"></tbody>
@@ -532,19 +706,19 @@
 
         <div class="table-section" id="orion-table">
             <div class="table-header">
-                <div class="table-title">Orion Hotel - Complete Agency Performance</div>
+                <div class="table-title">Orion Otel - Detaylı Acenta Performansı</div>
             </div>
             <div class="table-wrapper">
                 <table>
                     <thead>
                         <tr>
-                            <th>Agency Name</th>
-                            <th>July Revenue</th>
-                            <th>July ADR</th>
-                            <th>August Revenue</th>
-                            <th>August ADR</th>
-                            <th>Revenue Change</th>
-                            <th>ADR Change</th>
+                            <th>Acenta Adı</th>
+                            <th>Temmuz Geliri</th>
+                            <th>Temmuz ADR</th>
+                            <th>Ağustos Geliri</th>
+                            <th>Ağustos ADR</th>
+                            <th>Gelir Değişimi</th>
+                            <th>ADR Değişimi</th>
                         </tr>
                     </thead>
                     <tbody id="orionTableBody"></tbody>
@@ -556,7 +730,7 @@
         <section class="insights-section">
             <h3 class="insights-title">
                 <i class="fas fa-lightbulb"></i>
-                Key Insights
+                Önemli İçgörüler
             </h3>
             <div class="insights-grid" id="insightsGrid">
                 <!-- Insights will be generated dynamically -->
@@ -726,19 +900,19 @@
                         <div class="card-icon ${data.theme}">
                             <i class="fas fa-dollar-sign"></i>
                         </div>
-                        <div class="card-title">Revenue Performance</div>
+                        <div class="card-title">Gelir Performansı</div>
                     </div>
                     <div class="metrics-list">
                         <div class="metric-row">
-                            <div class="metric-label">July Revenue</div>
+                            <div class="metric-label">Temmuz Geliri</div>
                             <div class="metric-value">$${Math.round(data.july.revenue / 1000)}K</div>
                         </div>
                         <div class="metric-row">
-                            <div class="metric-label">August Revenue</div>
+                            <div class="metric-label">Ağustos Geliri</div>
                             <div class="metric-value">$${Math.round(data.august.revenue / 1000)}K</div>
                         </div>
                         <div class="metric-row">
-                            <div class="metric-label">Growth Rate</div>
+                            <div class="metric-label">Büyüme Oranı</div>
                             <div class="metric-value trend-up">+${revenueGrowth.toFixed(1)}%</div>
                         </div>
                     </div>
@@ -749,19 +923,19 @@
                         <div class="card-icon ${data.theme}">
                             <i class="fas fa-percentage"></i>
                         </div>
-                        <div class="card-title">Occupancy Performance</div>
+                        <div class="card-title">Doluluk Performansı</div>
                     </div>
                     <div class="metrics-list">
                         <div class="metric-row">
-                            <div class="metric-label">July Occupancy</div>
+                            <div class="metric-label">Temmuz Doluluk</div>
                             <div class="metric-value">${data.july.occupancy.toFixed(1)}%</div>
                         </div>
                         <div class="metric-row">
-                            <div class="metric-label">August Occupancy</div>
+                            <div class="metric-label">Ağustos Doluluk</div>
                             <div class="metric-value">${data.august.occupancy.toFixed(1)}%</div>
                         </div>
                         <div class="metric-row">
-                            <div class="metric-label">Improvement</div>
+                            <div class="metric-label">İyileşme</div>
                             <div class="metric-value trend-up">+${occupancyGrowth.toFixed(1)}%</div>
                         </div>
                     </div>
@@ -772,19 +946,19 @@
                         <div class="card-icon ${data.theme}">
                             <i class="fas fa-chart-line"></i>
                         </div>
-                        <div class="card-title">Key Metrics</div>
+                        <div class="card-title">Temel Metrikler</div>
                     </div>
                     <div class="metrics-list">
                         <div class="metric-row">
-                            <div class="metric-label">Top Agency Revenue</div>
+                            <div class="metric-label">En İyi Acenta Geliri</div>
                             <div class="metric-value">$${Math.round(data.topAgencies[0][1] / 1000)}K</div>
                         </div>
                         <div class="metric-row">
-                            <div class="metric-label">Active Agencies</div>
+                            <div class="metric-label">Aktif Acentalar</div>
                             <div class="metric-value">${data.topAgencies.length}</div>
                         </div>
                         <div class="metric-row">
-                            <div class="metric-label">Best Growth</div>
+                            <div class="metric-label">En İyi Büyüme</div>
                             <div class="metric-value trend-up">+${Math.max(...data.topAgencies.map(a => a[2])).toFixed(0)}%</div>
                         </div>
                     </div>
@@ -805,14 +979,14 @@
             revenueChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['July 2025', 'August 2025'],
+                    labels: ['Temmuz 2025', 'Ağustos 2025'],
                     datasets: [{
                         label: 'Nova Plaza',
                         data: [343.6, 463.2],
                         backgroundColor: '#667eea',
                         borderRadius: 8
                     }, {
-                        label: 'Orion Hotel',
+                        label: 'Orion Otel',
                         data: [135.4, 172.8],
                         backgroundColor: '#f093fb',
                         borderRadius: 8
@@ -890,7 +1064,7 @@
         // Update charts
         function updateCharts() {
             updateTopAgenciesChart();
-            document.getElementById('topAgenciesTitle').textContent = `${hotelData[currentHotel].name} - Top Agencies`;
+            document.getElementById('topAgenciesTitle').textContent = `${hotelData[currentHotel].name} - En İyi Acentalar`;
         }
 
         // Update table
@@ -948,29 +1122,29 @@
             
             const insights = currentHotel === 'nova' ? [
                 {
-                    title: "Strong Growth",
-                    text: "Nova Plaza achieved 34.8% revenue growth with excellent occupancy improvement."
+                    title: "Güçlü Büyüme",
+                    text: "Nova Plaza %34.8 gelir artışı ile mükemmel doluluk iyileştirmesi sağladı."
                 },
                 {
-                    title: "Top Performer",
-                    text: "Ogarite Turizm leads with $82K revenue, showing consistent partnership value."
+                    title: "En İyi Performans",
+                    text: "Ogarite Turizm $82K gelir ile liderlik ediyor ve tutarlı ortaklık değeri gösteriyor."
                 },
                 {
-                    title: "Emerging Channels",
-                    text: "Nova Plus shows exceptional 316% growth, indicating successful new partnerships."
+                    title: "Yükselen Kanallar",
+                    text: "Nova Plus %316 büyüme ile başarılı yeni ortaklıkları işaret ediyor."
                 }
             ] : [
                 {
-                    title: "Solid Performance",
-                    text: "Orion Hotel achieved 27.7% revenue growth with 95.15% occupancy rate."
+                    title: "Sağlam Performans",
+                    text: "Orion Otel %27.7 gelir artışı ile %95.15 doluluk oranına ulaştı."
                 },
                 {
-                    title: "Channel Leader",
-                    text: "Dilman Tour dominates with $47K revenue and impressive 279% growth rate."
+                    title: "Kanal Lideri",
+                    text: "Dilman Tour $47K gelir ve etkileyici %279 büyüme oranı ile öne çıkıyor."
                 },
                 {
-                    title: "Market Position",
-                    text: "Strong performance across multiple channels with consistent growth patterns."
+                    title: "Pazar Konumu",
+                    text: "Birden fazla kanalda güçlü performans ve tutarlı büyüme modelleri."
                 }
             ];
             
@@ -1001,5 +1175,5 @@
             }, 100);
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9783a57c56d91b42',t:'MTc1NjcxNzk1MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9783b8c356e66852',t:'MTc1NjcxODc0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
