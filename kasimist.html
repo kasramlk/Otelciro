@@ -312,17 +312,248 @@
             margin-right: 10px;
         }
         
+        .scenario-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .table-header {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr 1fr 1fr 1.2fr 1fr;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            font-weight: 700;
+            padding: 20px 15px;
+            font-size: 0.9rem;
+        }
+        
+        .table-row {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr 1fr 1fr 1.2fr 1fr;
+            padding: 18px 15px;
+            border-bottom: 1px solid #ecf0f1;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+        
+        .table-row:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
+        .low-scenario {
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .base-scenario {
+            border-left: 4px solid #f39c12;
+            background: linear-gradient(135deg, #fff9e6 0%, #fef5e7 100%);
+        }
+        
+        .high-scenario {
+            border-left: 4px solid #27ae60;
+        }
+        
+        .methodology-section {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            border-left: 5px solid #27ae60;
+        }
+        
+        .methodology-section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .methodology-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .methodology-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .methodology-card h4 {
+            color: #27ae60;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .methodology-card p {
+            color: #555;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        
+        .tracking-section {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f1f8ff 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            border-left: 5px solid #2196f3;
+        }
+        
+        .tracking-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .tracking-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #2196f3;
+            font-size: 0.9rem;
+        }
+        
+        .tracking-item strong {
+            color: #1976d2;
+        }
+        
+        @media (max-width: 1200px) {
+            .table-header, .table-row {
+                grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+                font-size: 0.8rem;
+            }
+        }
+        
         @media (max-width: 768px) {
             .header h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
             }
             
             .main-content {
-                padding: 20px;
+                padding: 15px;
             }
             
             .calendar-grid {
                 grid-template-columns: repeat(4, 1fr);
+                gap: 8px;
+            }
+            
+            .calendar-day {
+                padding: 10px 5px;
+            }
+            
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            
+            .summary-card {
+                padding: 20px 15px;
+            }
+            
+            .summary-card .number {
+                font-size: 1.8rem;
+            }
+            
+            .table-header, .table-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .table-header {
+                display: none;
+            }
+            
+            .table-row {
+                display: block;
+                padding: 20px;
+                margin-bottom: 10px;
+                border-radius: 10px;
+                border-left: none;
+                border-top: 4px solid;
+            }
+            
+            .table-row div {
+                margin-bottom: 8px;
+                padding: 5px 0;
+            }
+            
+            .table-row div:first-child {
+                font-size: 1.2rem;
+                font-weight: 700;
+                margin-bottom: 15px;
+            }
+            
+            .low-scenario {
+                border-top-color: #e74c3c;
+            }
+            
+            .base-scenario {
+                border-top-color: #f39c12;
+            }
+            
+            .high-scenario {
+                border-top-color: #27ae60;
+            }
+            
+            .demand-pattern {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-guide {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .market-breakdown {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .methodology-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tracking-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header {
+                padding: 20px 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .calendar-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .pricing-guide {
+                grid-template-columns: 1fr;
+            }
+            
+            .market-breakdown {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -338,7 +569,7 @@
             <!-- Özet Görünüm -->
             <div class="summary-grid">
                 <div class="summary-card">
-                    <h3>Aylık O&D Geliş</h3>
+                    <h3>Baz Senaryo O&D</h3>
                     <div class="number">2,208,000</div>
                     <div class="subtitle">Toplam Misafir</div>
                 </div>
@@ -356,6 +587,55 @@
                     <h3>Günlük Ortalama</h3>
                     <div class="number">73,600</div>
                     <div class="subtitle">O&D Geliş</div>
+                </div>
+                <div class="summary-card">
+                    <h3>THY Kapasite Payı</h3>
+                    <div class="number">~80%</div>
+                    <div class="subtitle">Hub Baskınlığı</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Transfer Payı</h3>
+                    <div class="number">28-36%</div>
+                    <div class="subtitle">Aktarma Yolcu</div>
+                </div>
+            </div>
+            
+            <!-- Tahmin Senaryoları -->
+            <div class="section">
+                <h2 class="section-title">Tahmin Senaryoları (Kasım 2025)</h2>
+                <div class="scenario-table">
+                    <div class="table-header">
+                        <div>Senaryo</div>
+                        <div>Toplam Yolcu</div>
+                        <div>Toplam Geliş</div>
+                        <div>Aktarma Geliş</div>
+                        <div>O&D Geliş</div>
+                        <div>Büyüme/Transfer</div>
+                    </div>
+                    <div class="table-row low-scenario">
+                        <div><strong>Düşük</strong></div>
+                        <div>6,370,000</div>
+                        <div>3,185,000</div>
+                        <div>1,147,000</div>
+                        <div><strong>2,039,000</strong></div>
+                        <div>+2% / %36</div>
+                    </div>
+                    <div class="table-row base-scenario">
+                        <div><strong>Baz</strong></div>
+                        <div>6,495,000</div>
+                        <div>3,248,000</div>
+                        <div>1,039,000</div>
+                        <div><strong>2,208,000</strong></div>
+                        <div>+4% / %32</div>
+                    </div>
+                    <div class="table-row high-scenario">
+                        <div><strong>Yüksek</strong></div>
+                        <div>6,683,000</div>
+                        <div>3,341,000</div>
+                        <div>936,000</div>
+                        <div><strong>2,406,000</strong></div>
+                        <div>+7% / %28</div>
+                    </div>
                 </div>
             </div>
             
@@ -602,6 +882,54 @@
                 </div>
             </div>
             
+            <!-- Yöntem ve Varsayımlar -->
+            <div class="methodology-section">
+                <h3>Yöntem ve Varsayımlar</h3>
+                <div class="methodology-grid">
+                    <div class="methodology-card">
+                        <h4>Taban Veri</h4>
+                        <p>Kasım 2024 IST: 6,245,584 toplam yolcu (yurtiçi 1,252,556 / yurtdışı 4,993,028). 2024 toplam ≈80,07 M yolcu.</p>
+                    </div>
+                    <div class="methodology-card">
+                        <h4>2025 Büyüme Sinyalleri</h4>
+                        <p>EUROCONTROL 2025 uçuş büyümesi baz +3,7%; günlük bazda ~+4,0%. İstanbul havalimanlarında 2025 H1 ≈+%5 yolcu artışı.</p>
+                    </div>
+                    <div class="methodology-card">
+                        <h4>Geliş Hesabı</h4>
+                        <p>Toplam yolcu ÷2 = geliş; aktarma payı %28–36 bandı varsayımıyla O&D (şehir girişli) ayrıştırıldı.</p>
+                    </div>
+                    <div class="methodology-card">
+                        <h4>Hub Dinamiği</h4>
+                        <p>THY'nin IST kapasite payı ~%80 → yüksek bağlantı hacmi; piklere duyarlılık artışı.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Talep Takibi -->
+            <div class="tracking-section">
+                <h3>Talep Takibi ve İzleme Metrikleri</h3>
+                <div class="tracking-grid">
+                    <div class="tracking-item">
+                        <strong>Günlük Load-Factor:</strong> Doluluk oranı değişimleri
+                    </div>
+                    <div class="tracking-item">
+                        <strong>İleri Tarihli Pickup:</strong> Rezervasyon momentum takibi
+                    </div>
+                    <div class="tracking-item">
+                        <strong>İptal Oranı:</strong> Talep istikrarı göstergesi
+                    </div>
+                    <div class="tracking-item">
+                        <strong>Kanal Mix:</strong> Doğrudan vs OTA dağılımı
+                    </div>
+                    <div class="tracking-item">
+                        <strong>Metasearch CTR/CPA:</strong> Görünürlük ve dönüşüm
+                    </div>
+                    <div class="tracking-item">
+                        <strong>Upsell Başarı Oranı:</strong> Gelir optimizasyonu
+                    </div>
+                </div>
+            </div>
+            
             <!-- Risk ve İzleme -->
             <div class="risk-section">
                 <h3>Risk Faktörleri ve İzleme Noktaları</h3>
@@ -611,6 +939,7 @@
                     <li><strong>Makro Faktörler:</strong> Jeopolitik gelişmeler, ekonomik dalgalanmalar</li>
                     <li><strong>Thanksgiving Etkisi:</strong> 27-30 Kasım arası Amerikalı turistlerde artış beklentisi</li>
                     <li><strong>Black Friday:</strong> Alışveriş turizmi motivasyonlu kısa süreli konaklamalar</li>
+                    <li><strong>Hub Bağımlılığı:</strong> THY operasyonel değişiklikleri transfer→O&D dönüşümünü etkiler</li>
                 </ul>
             </div>
         </div>
@@ -625,19 +954,94 @@
                 
                 let demandLevel = 'Orta';
                 let recommendations = '';
+                let channelStrategy = '';
+                let operations = '';
                 
                 if (parseInt(index) >= 110) {
                     demandLevel = 'Yüksek';
-                    recommendations = 'ADR +5-10%, Min. stay 2, Maksimum vardiya';
+                    recommendations = 'ADR +5-10%, Min. stay 2 gece';
+                    channelStrategy = 'Doğrudan site + B2B odak, OTA Boost';
+                    operations = 'Maksimum vardiya, geç check-in desteği';
                 } else if (parseInt(index) >= 95) {
                     demandLevel = 'Orta';
-                    recommendations = 'ADR 0-3%, Standart operasyon';
+                    recommendations = 'ADR 0-3%, Esnek iptal sınırlı';
+                    channelStrategy = 'Pariteyi koru, düşük-orta PPC';
+                    operations = 'Standart vardiya, hedefli upsell';
                 } else {
                     demandLevel = 'Düşük';
-                    recommendations = 'ADR -3-6%, Kampanya odaklı';
+                    recommendations = 'ADR -3-6%, Yerli pazar kampanyası';
+                    channelStrategy = 'OTA vitrin artışı, son dakika promosyonu';
+                    operations = 'Vardiya optimizasyonu, CRM ile dolgu';
                 }
                 
-                alert(`${dayNumber} Kasım 2025\nTalep İndeksi: ${index}\nTalep Seviyesi: ${demandLevel}\nÖneriler: ${recommendations}`);
+                // Mobil uyumlu popup oluştur
+                const popup = document.createElement('div');
+                popup.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: white;
+                    padding: 25px;
+                    border-radius: 15px;
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+                    z-index: 1000;
+                    max-width: 90vw;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    font-family: 'Segoe UI', sans-serif;
+                `;
+                
+                popup.innerHTML = `
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h3 style="color: #2c3e50; margin-bottom: 5px; font-size: 1.5rem;">${dayNumber} Kasım 2025</h3>
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 10px; border-radius: 8px; font-weight: 700;">
+                            Talep İndeksi: ${index} - ${demandLevel} Talep
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <h4 style="color: #e74c3c; margin-bottom: 8px;">💰 Fiyatlandırma</h4>
+                        <p style="background: #fff5f5; padding: 10px; border-radius: 8px; margin: 0;">${recommendations}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <h4 style="color: #3498db; margin-bottom: 8px;">📱 Kanal Stratejisi</h4>
+                        <p style="background: #f0f8ff; padding: 10px; border-radius: 8px; margin: 0;">${channelStrategy}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #27ae60; margin-bottom: 8px;">⚙️ Operasyon</h4>
+                        <p style="background: #f0fff4; padding: 10px; border-radius: 8px; margin: 0;">${operations}</p>
+                    </div>
+                    
+                    <button onclick="this.parentElement.remove(); document.getElementById('overlay').remove();" 
+                            style="width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                                   color: white; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer;">
+                        Kapat
+                    </button>
+                `;
+                
+                // Overlay oluştur
+                const overlay = document.createElement('div');
+                overlay.id = 'overlay';
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.5);
+                    z-index: 999;
+                `;
+                
+                overlay.addEventListener('click', function() {
+                    popup.remove();
+                    overlay.remove();
+                });
+                
+                document.body.appendChild(overlay);
+                document.body.appendChild(popup);
             });
         });
         
@@ -670,5 +1074,5 @@
             });
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'978d74b02634de2d',t:'MTc1NjgyMDgxMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'978d7d27f184de2d',t:'MTc1NjgyMTE1Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
