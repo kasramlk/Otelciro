@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ağustos 2025 Otel Gelir Raporu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen p-6">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-4xl font-bold text-gray-800 mb-2">Ağustos 2025 Gelir Raporu</h1>
+                    <p class="text-gray-600 text-lg">Otel Performans Paneli</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-gray-500">Rapor Tarihi</div>
+                    <div class="text-lg font-semibold text-gray-800">Eylül 2025</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Toplam Gelir 2025</h3>
+                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                </div>
+                <div class="text-3xl font-bold text-green-600 mb-2">€56,105.88</div>
+                <div class="text-sm text-gray-600">+ ₺1,086,659.61 TL</div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Ortalama Doluluk</h3>
+                    <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                </div>
+                <div class="text-3xl font-bold text-blue-600 mb-2">65.08%</div>
+                <div class="text-sm text-gray-600">Tüm oteller ortalaması</div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Yıllık Büyüme</h3>
+                    <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                </div>
+                <div class="text-3xl font-bold text-purple-600 mb-2">+26.2%</div>
+                <div class="text-sm text-gray-600">Gelir artışı</div>
+            </div>
+        </div>
+
+        <!-- Hotel Performance Cards -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <!-- Petrion Balat Hotel -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white">
+                    <h3 class="text-xl font-bold mb-2">Petrion Balat Hotel</h3>
+                    <div class="text-3xl font-bold">€29,287.46</div>
+                    <div class="text-blue-100 text-sm">Ağustos 2025 Geliri</div>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <div class="text-2xl font-bold text-green-600">71.16%</div>
+                            <div class="text-sm text-gray-600">Doluluk Oranı</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-blue-600">€78.10</div>
+                            <div class="text-sm text-gray-600">Ort. Günlük Fiyat</div>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t pt-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-gray-600">Ağustos 2024'e göre</span>
+                            <span class="text-sm font-semibold text-green-600">+50.6% ↗</span>
+                        </div>
+                        <div class="text-sm text-gray-500">€19,446.75 (2024)</div>
+                        <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 150.6%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Taksim Nis Hotel -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="bg-gradient-to-r from-purple-600 to-purple-700 p-6 text-white">
+                    <h3 class="text-xl font-bold mb-2">Taksim Nis Hotel</h3>
+                    <div class="text-3xl font-bold">€26,818.42</div>
+                    <div class="text-purple-100 text-sm">Ağustos 2025 Geliri</div>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <div class="text-2xl font-bold text-green-600">77.04%</div>
+                            <div class="text-sm text-gray-600">Doluluk Oranı</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-blue-600">€66.06</div>
+                            <div class="text-sm text-gray-600">Ort. Günlük Fiyat</div>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t pt-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-gray-600">Ağustos 2024'e göre</span>
+                            <span class="text-sm font-semibold text-green-600">+7.1% ↗</span>
+                        </div>
+                        <div class="text-sm text-gray-500">€25,050.69 (2024)</div>
+                        <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 107.1%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Eskiciler Konagi -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="bg-gradient-to-r from-orange-600 to-orange-700 p-6 text-white">
+                    <h3 class="text-xl font-bold mb-2">Eskiciler Konağı</h3>
+                    <div class="text-3xl font-bold">₺1,086,659.61</div>
+                    <div class="text-orange-100 text-sm">Ağustos 2025 Geliri</div>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <div class="text-2xl font-bold text-green-600">47.03%</div>
+                            <div class="text-sm text-gray-600">Doluluk Oranı</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-blue-600">₺3,871.14</div>
+                            <div class="text-sm text-gray-600">Ort. Günlük Fiyat</div>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t pt-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-gray-600">Ağustos 2024'e göre</span>
+                            <span class="text-sm font-semibold text-green-600">+60.1% ↗</span>
+                        </div>
+                        <div class="text-sm text-gray-500">₺678,670.91 (2024)</div>
+                        <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 160.1%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Revenue Comparison Chart -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-6">Gelir Karşılaştırması (EUR)</h3>
+                <canvas id="revenueChart" width="400" height="300"></canvas>
+            </div>
+
+            <!-- Occupancy Rates Chart -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-6">2025 Doluluk Oranları</h3>
+                <canvas id="occupancyChart" width="400" height="300"></canvas>
+            </div>
+        </div>
+
+        <!-- Key Insights -->
+        <div class="bg-white rounded-xl shadow-lg p-8">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">Önemli Bulgular ve Performans Öne Çıkanları</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded">
+                    <div class="flex items-center mb-2">
+                        <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                        <h4 class="font-semibold text-green-800">En İyi Performans</h4>
+                    </div>
+                    <p class="text-sm text-green-700">Petrion Balat Hotel %50.6 yıllık büyüme ile en yüksek gelir artışını elde etti</p>
+                </div>
+                
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                    <div class="flex items-center mb-2">
+                        <div class="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                        <h4 class="font-semibold text-blue-800">En İyi Doluluk</h4>
+                    </div>
+                    <p class="text-sm text-blue-700">Taksim Nis Hotel Ağustos 2025'te %77.04 doluluk oranı ile öncülük ediyor</p>
+                </div>
+                
+                <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded">
+                    <div class="flex items-center mb-2">
+                        <div class="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+                        <h4 class="font-semibold text-purple-800">Pazar Toparlanması</h4>
+                    </div>
+                    <p class="text-sm text-purple-700">Tüm oteller pozitif yıllık büyüme gösteriyor, güçlü pazar toparlanmasını işaret ediyor</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Revenue Comparison Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Petrion Balat', 'Taksim Nis', 'Eskiciler Konağı*'],
+                datasets: [{
+                    label: '2024',
+                    data: [19446.75, 25050.69, 20000], // Converted TL to EUR for comparison
+                    backgroundColor: 'rgba(156, 163, 175, 0.8)',
+                    borderColor: 'rgba(156, 163, 175, 1)',
+                    borderWidth: 1
+                }, {
+                    label: '2025',
+                    data: [29287.46, 26818.42, 32000], // Converted TL to EUR for comparison
+                    backgroundColor: 'rgba(34, 197, 94, 0.8)',
+                    borderColor: 'rgba(34, 197, 94, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '€' + value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Occupancy Rates Chart
+        const occupancyCtx = document.getElementById('occupancyChart').getContext('2d');
+        new Chart(occupancyCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Petrion Balat', 'Taksim Nis', 'Eskiciler Konağı'],
+                datasets: [{
+                    data: [71.16, 77.04, 47.03],
+                    backgroundColor: [
+                        'rgba(59, 130, 246, 0.8)',
+                        'rgba(147, 51, 234, 0.8)',
+                        'rgba(249, 115, 22, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(59, 130, 246, 1)',
+                        'rgba(147, 51, 234, 1)',
+                        'rgba(249, 115, 22, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'978be53a13a13d66',t:'MTc1NjgwNDQ0OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
