@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otel Performans Raporu - Premium Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #1a202c;
+            line-height: 1.6;
+            padding: 0;
+        }
+        
+        .page-wrapper {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            padding: 60px 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 80px;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .main-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 24px;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+        
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 32px;
+            margin-bottom: 80px;
+        }
+        
+        .kpi-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px;
+            padding: 48px 32px;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .kpi-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .kpi-value {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+            line-height: 1;
+        }
+        
+        .kpi-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+        
+        .kpi-period {
+            font-size: 1rem;
+            color: #6B7280;
+            font-weight: 500;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+            gap: 32px;
+            margin-bottom: 80px;
+        }
+        
+        .chart-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px;
+            padding: 40px 32px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chart-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .chart-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .chart-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 32px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 320px;
+        }
+        
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .insight-card {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 30px;
+        }
+        
+        .insight-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #0F172A;
+            margin-bottom: 15px;
+        }
+        
+        .insight-text {
+            color: #475569;
+            line-height: 1.7;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #22C55E, #16A34A);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            color: white;
+        }
+        
+        .cta-text {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .cta-button {
+            background: white;
+            color: #22C55E;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+        
+        .scenario-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 32px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .scenario-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .scenario-card:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+        
+        .scenario-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .scenario-card.active {
+            border-color: rgba(102, 126, 234, 0.8);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 25px 50px -12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .scenario-card.active::before {
+            transform: scaleX(1);
+        }
+        
+        .scenario-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #1F2937;
+        }
+        
+        .scenario-value {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+        
+        .scenario-uplift {
+            font-size: 1rem;
+            color: #6B7280;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-card {
+                min-width: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="main-title">Fiyatı Değil, Ciroyu Büyüttük</h1>
+            <p style="font-size: 1.2rem; color: #64748B; max-width: 800px; margin: 0 auto; line-height: 1.6;">
+                Geçen yılın aynı dönemine göre fiyatlarımızı çok az esnettik. Karşılığında daha fazla oda sattık.<br>
+                <strong style="color: #22C55E;">Sonuç: Ciro ve oda başı gelir (RevPAR) güçlü arttı.</strong>
+            </p>
+        </div>
+        
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-value">+50%</div>
+                <div class="kpi-label">Ciro Artışı</div>
+                <div class="kpi-period">Ocak–Ağustos</div>
+                <div style="font-size: 0.9rem; color: #64748B; margin-top: 8px;">143,012€ → 213,737€</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">+69%</div>
+                <div class="kpi-label">RevPAR Artışı</div>
+                <div class="kpi-period">Ocak–Ağustos</div>
+                <div style="font-size: 0.9rem; color: #64748B; margin-top: 8px;">32.4€ → 54.8€</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">+20pp</div>
+                <div class="kpi-label">Ortalama Doluluk Artışı</div>
+                <div class="kpi-period">Ocak–Ağustos</div>
+                <div style="font-size: 0.9rem; color: #64748B; margin-top: 8px;">42.8% → 66.3%</div>
+            </div>
+        </div>
+        
+        <!-- 2025 Actual Performance Table -->
+        <div style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 24px; padding: 40px; margin-bottom: 60px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); position: relative; overflow: hidden;">
+            <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
+            <h3 style="font-size: 1.6rem; font-weight: 700; color: #1F2937; margin-bottom: 32px; text-align: center;">2024 vs 2025 Gerçek Performans Karşılaştırması</h3>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem; margin-bottom: 30px; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                    <thead>
+                        <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                            <th style="padding: 16px 12px; text-align: left; font-weight: 700; font-size: 1rem;">Ay</th>
+                            <th style="padding: 16px 12px; text-align: right; font-weight: 700; font-size: 1rem;">2024 ADR</th>
+                            <th style="padding: 16px 12px; text-align: right; font-weight: 700; font-size: 1rem;">2025 ADR</th>
+                            <th style="padding: 16px 12px; text-align: right; font-weight: 700; font-size: 1rem;">2024 Doluluk</th>
+                            <th style="padding: 16px 12px; text-align: right; font-weight: 700; font-size: 1rem;">2025 Doluluk</th>
+                            <th style="padding: 16px 12px; text-align: right; font-weight: 700; font-size: 1rem;">2024 Ciro</th>
+                            <th style="padding: 16px 12px; text-align: right; font-weight: 700; font-size: 1rem;">2025 Ciro</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #E2E8F0; font-weight: 500;">Ocak</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">75.92€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">73.68€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">23.3%</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">40.8%</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">9,844€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">16,310€</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #E2E8F0; font-weight: 500;">Şubat</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">70.28€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">67.71€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">31.2%</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">62.4%</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">11,078€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">21,597€</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #E2E8F0; font-weight: 500;">Mart</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">67.84€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">66.10€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">27.3%</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">56.2%</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">9,950€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">20,092€</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #E2E8F0; font-weight: 500;">Nisan</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">82.71€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">84.61€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">64.7%</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">77.6%</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">27,816€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">34,336€</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #E2E8F0; font-weight: 500;">Mayıs</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">89.40€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">79.85€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">67.9%</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">85.0%</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">32,671€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">37,553€</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #E2E8F0; font-weight: 500;">Haziran</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">90.75€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">73.68€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">33.7%</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">76.3%</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">16,074€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">29,025€</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #E2E8F0; font-weight: 500;">Temmuz</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">86.73€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">76.48€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">34.2%</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">62.6%</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">16,132€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">25,537€</td>
+                        </tr>
+                        <tr style="background: #F0FDF4;">
+                            <td style="padding: 8px; border-bottom: 1px solid #E2E8F0; font-weight: 500;">Ağustos</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">79.24€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">76.73€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">45.7%</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">71.2%</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0;">19,447€</td>
+                            <td style="padding: 8px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">29,287€</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="background: #F0FDF4; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <p style="color: #0F172A; font-weight: 600; text-align: center;">💡 <strong>Strateji Sonucu:</strong> ADR'de küçük değişiklik, dolulukta büyük artış → Ciro önemli ölçüde büyüdü!</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Charts -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3 class="chart-title">Ağustos–Aralık: Ciro Karşılaştırma</h3>
+                <div class="chart-container">
+                    <canvas id="chart1"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <h3 class="chart-title">Ocak–Ağustos: Aylık Ciro Gelişimi</h3>
+                <div class="chart-container">
+                    <canvas id="chart2"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <h3 class="chart-title">Nisan–Ekim Sezon Cirosu</h3>
+                <div class="chart-container">
+                    <canvas id="chart3"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <h3 class="chart-title">S2 Senaryosu: Aylık Ek Ciro</h3>
+                <div class="chart-container">
+                    <canvas id="chart4"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Market Analysis -->
+        <div style="background: white; border: 1px solid #E2E8F0; border-radius: 16px; padding: 30px; margin-bottom: 40px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+            <h3 style="font-size: 1.3rem; font-weight: 600; color: #0F172A; margin-bottom: 25px; text-align: center;">📊 Piyasa Analizi ve Stratejik Değerlendirme</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                <div style="background: #F8FAFC; padding: 20px; border-radius: 12px; border-left: 4px solid #22C55E;">
+                    <h4 style="color: #0F172A; font-weight: 600; margin-bottom: 12px;">🎯 2025 Başarı Faktörleri</h4>
+                    <p style="color: #475569; line-height: 1.6; font-size: 0.95rem;">
+                        • Haziran'da ADR %19 düşürüp doluluk %126 artırdık<br>
+                        • Mart'ta doluluk %106 artışı ile ciro ikiye katlandı<br>
+                        • Şubat'ta %95 ciro artışı elde ettik<br>
+                        • Yıllık ortalama doluluk %23 puan arttı
+                    </p>
+                </div>
+                
+                <div style="background: #F8FAFC; padding: 20px; border-radius: 12px; border-left: 4px solid #3B82F6;">
+                    <h4 style="color: #0F172A; font-weight: 600; margin-bottom: 12px;">💰 Kanıtlanmış Strateji</h4>
+                    <p style="color: #475569; line-height: 1.6; font-size: 0.95rem;">
+                        • ADR'de ortalama %5 düşüş kabul ettik<br>
+                        • Karşılığında doluluk %55 arttı<br>
+                        • Sonuç: Ciro %50, RevPAR %69 büyüdü<br>
+                        • Formül: Esnek fiyat + yüksek doluluk = maksimum ciro
+                    </p>
+                </div>
+                
+                <div style="background: #F8FAFC; padding: 20px; border-radius: 12px; border-left: 4px solid #F59E0B;">
+                    <h4 style="color: #0F172A; font-weight: 600; margin-bottom: 12px;">📈 Aylık Performans Analizi</h4>
+                    <p style="color: #475569; line-height: 1.6; font-size: 0.95rem;">
+                        • En iyi ay: Şubat (+95% ciro, +92% doluluk)<br>
+                        • En büyük dönüşüm: Haziran (+81% ciro)<br>
+                        • Sezon başı güçlü: Nisan-Mayıs istikrarlı<br>
+                        • Yaz ayları: Yüksek doluluk, makul ADR
+                    </p>
+                </div>
+                
+                <div style="background: #F8FAFC; padding: 20px; border-radius: 12px; border-left: 4px solid #EF4444;">
+                    <h4 style="color: #0F172A; font-weight: 600; margin-bottom: 12px;">⚠️ Dikkat Edilecek Noktalar</h4>
+                    <p style="color: #475569; line-height: 1.6; font-size: 0.95rem;">
+                        • Sezon sonu (Eylül-Aralık) performansı izlenmeli<br>
+                        • ADR düşüşü %15'i geçmemeli (marka değeri)<br>
+                        • Operasyonel kapasite %85 üzerinde zorlanabilir<br>
+                        • Müşteri memnuniyeti yüksek dolulukta kritik
+                    </p>
+                </div>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #F0FDF4, #DCFCE7); padding: 25px; border-radius: 12px; margin-top: 25px; text-align: center;">
+                <h4 style="color: #0F172A; font-weight: 700; margin-bottom: 15px; font-size: 1.2rem;">🏆 Başarı Formülümüz</h4>
+                <p style="color: #0F172A; font-weight: 600; font-size: 1.1rem; line-height: 1.6;">
+                    "Yüksek ADR Hedefi" ❌ → "Maksimum Ciro + RevPAR" ✅<br>
+                    <span style="color: #22C55E;">Sonuç: +58% ciro artışı ile kanıtlandı!</span>
+                </p>
+            </div>
+        </div>
+        
+        <!-- Scenario Selection -->
+        <div class="scenario-grid">
+            <div class="scenario-card" onclick="selectScenario('S1')">
+                <div class="scenario-title">S1</div>
+                <div class="scenario-value">350,232€</div>
+                <div class="scenario-uplift">+67,492€</div>
+                <div style="font-size: 0.8rem; color: #64748B; margin-top: 8px;">ADR -10% | Doluluk +12pp</div>
+            </div>
+            <div class="scenario-card active" onclick="selectScenario('S2')">
+                <div class="scenario-title">S2 (Önerilen)</div>
+                <div class="scenario-value">369,035€</div>
+                <div class="scenario-uplift">+86,295€</div>
+                <div style="font-size: 0.8rem; color: #64748B; margin-top: 8px;">ADR -15% | Doluluk +18pp</div>
+            </div>
+            <div class="scenario-card" onclick="selectScenario('S3')">
+                <div class="scenario-title">S3</div>
+                <div class="scenario-value">391,234€</div>
+                <div class="scenario-uplift">+108,494€</div>
+                <div style="font-size: 0.8rem; color: #64748B; margin-top: 8px;">ADR -20% | Doluluk +25pp</div>
+            </div>
+        </div>
+        
+        <!-- Monthly Scenario Table -->
+        <div style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 24px; padding: 40px; margin-bottom: 60px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); position: relative; overflow: hidden;">
+            <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
+            <h3 style="font-size: 1.6rem; font-weight: 700; color: #1F2937; margin-bottom: 32px; text-align: center;">Senaryo S2 ile Yıllık Ek Gelir Projeksiyonu (2025 Bazlı)</h3>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                    <thead>
+                        <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                            <th style="padding: 14px 10px; text-align: left; font-weight: 700; font-size: 0.95rem;">Ay</th>
+                            <th style="padding: 14px 10px; text-align: right; font-weight: 700; font-size: 0.95rem;">2025 ADR</th>
+                            <th style="padding: 14px 10px; text-align: right; font-weight: 700; font-size: 0.95rem;">2025 Doluluk</th>
+                            <th style="padding: 14px 10px; text-align: right; font-weight: 700; font-size: 0.95rem;">2025 Ciro</th>
+                            <th style="padding: 14px 10px; text-align: right; font-weight: 700; font-size: 0.95rem;">S2 ADR</th>
+                            <th style="padding: 14px 10px; text-align: right; font-weight: 700; font-size: 0.95rem;">S2 Doluluk</th>
+                            <th style="padding: 14px 10px; text-align: right; font-weight: 700; font-size: 0.95rem;">S2 Ciro</th>
+                            <th style="padding: 14px 10px; text-align: right; font-weight: 700; font-size: 0.95rem;">Uplift</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scenarioTableBody">
+                        <tr style="background: rgba(255, 255, 255, 0.5);">
+                            <td style="padding: 12px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.3); font-weight: 600; color: #374151;">Ocak</td>
+                            <td style="padding: 12px 10px; text-align: right; border-bottom: 1px solid rgba(255, 255, 255, 0.3); color: #374151;">73.68€</td>
+                            <td style="padding: 12px 10px; text-align: right; border-bottom: 1px solid rgba(255, 255, 255, 0.3); color: #374151;">40.8%</td>
+                            <td style="padding: 12px 10px; text-align: right; border-bottom: 1px solid rgba(255, 255, 255, 0.3); color: #374151;">16,310€</td>
+                            <td style="padding: 12px 10px; text-align: right; border-bottom: 1px solid rgba(255, 255, 255, 0.3); color: #667eea; font-weight: 600;">62.63€</td>
+                            <td style="padding: 12px 10px; text-align: right; border-bottom: 1px solid rgba(255, 255, 255, 0.3); color: #667eea; font-weight: 600;">48.1%</td>
+                            <td style="padding: 12px 10px; text-align: right; border-bottom: 1px solid rgba(255, 255, 255, 0.3); color: #667eea; font-weight: 600;">19,246€</td>
+                            <td style="padding: 12px 10px; text-align: right; border-bottom: 1px solid rgba(255, 255, 255, 0.3); color: #16a34a; font-weight: 700;">+2,936€</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border-bottom: 1px solid #E2E8F0; font-weight: 500;">Şubat</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">67.71</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">21,597</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">57.55</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">25,484</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 700;">+3,887</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border-bottom: 1px solid #E2E8F0; font-weight: 500;">Mart</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">66.10</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">20,092</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">56.19</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">23,709</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 700;">+3,617</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border-bottom: 1px solid #E2E8F0; font-weight: 500;">Nisan</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">84.61</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">34,336</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">71.92</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">40,517</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 700;">+6,181</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border-bottom: 1px solid #E2E8F0; font-weight: 500;">Mayıs</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">79.85</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">37,553</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">67.87</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">44,313</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 700;">+6,760</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border-bottom: 1px solid #E2E8F0; font-weight: 500;">Haziran</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">73.68</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">29,025</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">62.63</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">34,250</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 700;">+5,225</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border-bottom: 1px solid #E2E8F0; font-weight: 500;">Temmuz</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">76.48</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">25,537</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">65.01</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">30,134</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 700;">+4,597</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border-bottom: 1px solid #E2E8F0; font-weight: 500;">Ağustos</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">76.73</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">29,287</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">65.22</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">34,559</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 700;">+5,272</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border-bottom: 1px solid #E2E8F0; font-weight: 500;">Eylül</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">82.45</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">26,835</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">70.08</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">31,665</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 700;">+4,830</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border-bottom: 1px solid #E2E8F0; font-weight: 500;">Ekim</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">91.39</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">29,696</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">77.68</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">35,041</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 700;">+5,345</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border-bottom: 1px solid #E2E8F0; font-weight: 500;">Kasım</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">75.92</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">22,003</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">64.53</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">25,964</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 700;">+3,961</td>
+                        </tr>
+                        <tr style="background: #F0FDF4;">
+                            <td style="padding: 10px; border-bottom: 1px solid #E2E8F0; font-weight: 500;">Aralık</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">70.28</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0;">20,469</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">59.74</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 600;">24,153</td>
+                            <td style="padding: 10px; text-align: right; border-bottom: 1px solid #E2E8F0; color: #22C55E; font-weight: 700;">+3,684</td>
+                        </tr>
+                        <tr style="background: #22C55E; color: white;">
+                            <td style="padding: 15px; font-weight: 700; font-size: 1.1rem;">YILLIK TOPLAM</td>
+                            <td style="padding: 15px; text-align: right; font-weight: 700; font-size: 1.1rem;">-</td>
+                            <td style="padding: 15px; text-align: right; font-weight: 700; font-size: 1.1rem;">312,740</td>
+                            <td style="padding: 15px; text-align: right; font-weight: 700; font-size: 1.1rem;">-</td>
+                            <td style="padding: 15px; text-align: right; font-weight: 700; font-size: 1.1rem;">394,035</td>
+                            <td style="padding: 15px; text-align: right; font-weight: 700; font-size: 1.1rem;">+81,295</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="text-align: center; margin-top: 20px; padding: 15px; background: #F0FDF4; border-radius: 8px;">
+                <p style="color: #0F172A; font-weight: 600; font-size: 1.1rem;">Hedef ADR değil, toplam ciro ve RevPAR'dır.</p>
+            </div>
+        </div>
+        
+        <!-- Insights -->
+        <div class="insights-grid">
+            <div class="insight-card">
+                <h3 class="insight-title">Çıkarım</h3>
+                <p class="insight-text">ADR tek başına hedef değildir. Doğru ADR + daha yüksek doluluk = daha fazla ciro/RevPAR. Bu formülle kazandık.</p>
+            </div>
+            <div class="insight-card">
+                <h3 class="insight-title">Öneri</h3>
+                <p class="insight-text">S2 senaryosu (2025 ADR −%15, Doluluk +18pp) ile +86,295€ ek ciro potansiyeli. Mevcut başarımızı daha da büyütebiliriz.</p>
+            </div>
+        </div>
+        
+        <!-- CTA -->
+        <div class="cta-section">
+            <div class="cta-text">"Yüksek ADR" değil, toplam ciro ve RevPAR hedeflenmeli. Böyle kazandık; böyle devam edelim.</div>
+        </div>
+        
+        <!-- Footer -->
+        <div style="text-align: center; margin-top: 40px; padding: 20px; color: #64748B; font-size: 0.9rem; border-top: 1px solid #E2E8F0;">
+            <p>Veriler EUR, 17 oda, 2024–2025 aylık gerçekleşen.</p>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        // Chart configurations
+        Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        Chart.defaults.color = '#64748B';
+        
+        // Chart 1: Aug-Dec Revenue Comparison
+        const ctx1 = document.getElementById('chart1').getContext('2d');
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['2023', '2024'],
+                datasets: [{
+                    data: [74979, 118449],
+                    backgroundColor: ['#94A3B8', '#22C55E'],
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y.toLocaleString('tr-TR') + '€';
+                            }
+                        }
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        color: '#0F172A',
+                        font: { weight: 'bold' },
+                        formatter: function(value, context) {
+                            if (context.dataIndex === 1) {
+                                return value.toLocaleString('tr-TR') + '€\n(+58%)';
+                            }
+                            return value.toLocaleString('tr-TR') + '€';
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString('tr-TR') + '€';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Chart 2: Jan-Aug Monthly Revenue
+        const ctx2 = document.getElementById('chart2').getContext('2d');
+        new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu'],
+                datasets: [{
+                    label: '2024',
+                    data: [9844, 11078, 9950, 27816, 32671, 16074, 16132, 19447],
+                    backgroundColor: '#94A3B8',
+                    borderRadius: 4,
+                }, {
+                    label: '2025',
+                    data: [16310, 21597, 20092, 34336, 37553, 29025, 25537, 29287],
+                    backgroundColor: '#22C55E',
+                    borderRadius: 4,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        display: true,
+                        position: 'top'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y.toLocaleString('tr-TR') + '€';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString('tr-TR') + '€';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Chart 3: Apr-Oct Season Revenue
+        const ctx3 = document.getElementById('chart3').getContext('2d');
+        new Chart(ctx3, {
+            type: 'bar',
+            data: {
+                labels: ['2024', '2025'],
+                datasets: [{
+                    data: [168670, 201417],
+                    backgroundColor: ['#94A3B8', '#22C55E'],
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        color: '#0F172A',
+                        font: { weight: 'bold' },
+                        formatter: function(value, context) {
+                            if (context.dataIndex === 1) {
+                                return value.toLocaleString('tr-TR') + '€\n(+19.4%)';
+                            }
+                            return value.toLocaleString('tr-TR') + '€';
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString('tr-TR') + '€';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Chart 4: S2 Scenario Monthly Uplift
+        const ctx4 = document.getElementById('chart4').getContext('2d');
+        new Chart(ctx4, {
+            type: 'bar',
+            data: {
+                labels: ['Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki'],
+                datasets: [{
+                    label: '2025 Baz Ciro',
+                    data: [34336, 37553, 29025, 25537, 29287, 26835, 29696],
+                    backgroundColor: '#94A3B8',
+                    borderRadius: 4,
+                }, {
+                    label: 'S2 Ciro',
+                    data: [40896, 44731, 34588, 30442, 34912, 32001, 35404],
+                    backgroundColor: '#22C55E',
+                    borderRadius: 4,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        display: true,
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString('tr-TR') + '€';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        function selectScenario(scenario) {
+            // Remove active class from all cards
+            document.querySelectorAll('.scenario-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            // Add active class to selected card
+            event.target.closest('.scenario-card').classList.add('active');
+            
+            // Update chart based on scenario
+            updateScenarioChart(scenario);
+        }
+        
+        function updateScenarioChart(scenario) {
+            const chart = Chart.getChart('chart4');
+            let newData;
+            
+            switch(scenario) {
+                case 'S1':
+                    // 2025 base için S1 senaryosu
+                    newData = [38456, 42048, 32508, 28601, 32801, 30056, 33260];
+                    break;
+                case 'S2':
+                    // 2025 base için S2 senaryosu  
+                    newData = [40896, 44731, 34588, 30442, 34912, 32001, 35404];
+                    break;
+                case 'S3':
+                    // 2025 base için S3 senaryosu
+                    newData = [43336, 47414, 36668, 32283, 37023, 33946, 37548];
+                    break;
+            }
+            
+            chart.data.datasets[1].data = newData;
+            chart.update();
+            
+            // Update table
+            updateScenarioTable(scenario);
+        }
+        
+        function updateScenarioTable(scenario) {
+            // 2025 gerçek ciro, ADR ve doluluk verileri baz alınıyor
+            const baseData = [16310, 21597, 20092, 34336, 37553, 29025, 25537, 29287, 26835, 29696, 22003, 20469];
+            const baseADR = [73.68, 67.71, 66.10, 84.61, 79.85, 73.68, 76.48, 76.73, 82.45, 91.39, 75.92, 70.28];
+            const baseOccupancy = [40.8, 62.4, 56.2, 77.6, 85.0, 76.3, 62.6, 71.2, 60.5, 58.9, 53.8, 54.0];
+            const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+            let scenarioData, scenarioADR, scenarioOccupancy, totalScenario, totalUplift;
+            
+            switch(scenario) {
+                case 'S1':
+                    // ADR -10%, Doluluk +12pp
+                    scenarioData = [18267, 24177, 22503, 38456, 42048, 32508, 28601, 32801, 30056, 33260, 24643, 22912];
+                    scenarioADR = [66.31, 60.94, 59.49, 76.15, 71.87, 66.31, 68.83, 69.06, 74.21, 82.25, 68.33, 63.25];
+                    scenarioOccupancy = [52.8, 74.4, 68.2, 89.6, 97.0, 88.3, 74.6, 83.2, 72.5, 70.9, 65.8, 66.0];
+                    totalScenario = 350232;
+                    totalUplift = 67492;
+                    break;
+                case 'S2':
+                    // ADR -15%, Doluluk +18pp  
+                    scenarioData = [19246, 25484, 23709, 40517, 44313, 34250, 30134, 34559, 31665, 35041, 25964, 24153];
+                    scenarioADR = [62.63, 57.55, 56.19, 71.92, 67.87, 62.63, 65.01, 65.22, 70.08, 77.68, 64.53, 59.74];
+                    scenarioOccupancy = [58.8, 80.4, 74.2, 95.6, 103.0, 94.3, 80.6, 89.2, 78.5, 76.9, 71.8, 72.0];
+                    totalScenario = 369035;
+                    totalUplift = 86295;
+                    break;
+                case 'S3':
+                    // ADR -20%, Doluluk +25pp
+                    scenarioData = [20388, 26999, 25116, 42915, 47003, 36313, 31959, 36651, 33583, 37174, 27524, 25609];
+                    scenarioADR = [58.94, 54.17, 52.88, 67.69, 63.88, 58.94, 61.18, 61.38, 65.96, 73.11, 60.74, 56.22];
+                    scenarioOccupancy = [65.8, 87.4, 81.2, 102.6, 110.0, 101.3, 87.6, 96.2, 85.5, 83.9, 78.8, 79.0];
+                    totalScenario = 391234;
+                    totalUplift = 108494;
+                    break;
+            }
+            
+            const tableBody = document.getElementById('scenarioTableBody');
+            let html = '';
+            
+            for (let i = 0; i < months.length; i++) {
+                const uplift = scenarioData[i] - baseData[i];
+                const bgClass = i % 2 === 0 ? 'background: rgba(255, 255, 255, 0.5);' : 'background: rgba(255, 255, 255, 0.3);';
+                
+                html += `
+                    <tr style="${bgClass}">
+                        <td style="padding: 12px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.3); font-weight: 600; color: #374151;">${months[i]}</td>
+                        <td style="padding: 12px 10px; text-align: right; border-bottom: 1px solid rgba(255, 255, 255, 0.3); color: #374151;">${baseADR[i]}€</td>
+                        <td style="padding: 12px 10px; text-align: right; border-bottom: 1px solid rgba(255, 255, 255, 0.3); color: #374151;">${baseOccupancy[i]}%</td>
+                        <td style="padding: 12px 10px; text-align: right; border-bottom: 1px solid rgba(255, 255, 255, 0.3); color: #374151;">${baseData[i].toLocaleString('tr-TR')}€</td>
+                        <td style="padding: 12px 10px; text-align: right; border-bottom: 1px solid rgba(255, 255, 255, 0.3); color: #667eea; font-weight: 600;">${scenarioADR[i]}€</td>
+                        <td style="padding: 12px 10px; text-align: right; border-bottom: 1px solid rgba(255, 255, 255, 0.3); color: #667eea; font-weight: 600;">${scenarioOccupancy[i]}%</td>
+                        <td style="padding: 12px 10px; text-align: right; border-bottom: 1px solid rgba(255, 255, 255, 0.3); color: #667eea; font-weight: 600;">${scenarioData[i].toLocaleString('tr-TR')}€</td>
+                        <td style="padding: 12px 10px; text-align: right; border-bottom: 1px solid rgba(255, 255, 255, 0.3); color: #16a34a; font-weight: 700;">+${uplift.toLocaleString('tr-TR')}€</td>
+                    </tr>
+                `;
+            }
+            
+            html += `
+                <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <td style="padding: 16px 10px; font-weight: 800; font-size: 1.1rem;">YILLIK TOPLAM</td>
+                    <td style="padding: 16px 10px; text-align: right; font-weight: 800; font-size: 1.1rem;">-</td>
+                    <td style="padding: 16px 10px; text-align: right; font-weight: 800; font-size: 1.1rem;">-</td>
+                    <td style="padding: 16px 10px; text-align: right; font-weight: 800; font-size: 1.1rem;">312,740€</td>
+                    <td style="padding: 16px 10px; text-align: right; font-weight: 800; font-size: 1.1rem;">-</td>
+                    <td style="padding: 16px 10px; text-align: right; font-weight: 800; font-size: 1.1rem;">-</td>
+                    <td style="padding: 16px 10px; text-align: right; font-weight: 800; font-size: 1.1rem;">${totalScenario.toLocaleString('tr-TR')}€</td>
+                    <td style="padding: 16px 10px; text-align: right; font-weight: 800; font-size: 1.1rem;">+${totalUplift.toLocaleString('tr-TR')}€</td>
+                </tr>
+            `;
+            
+            tableBody.innerHTML = html;
+            
+            // Update table title
+            document.querySelector('.scenario-grid').nextElementSibling.querySelector('h3').textContent = `Senaryo ${scenario} ile Yıllık Ek Gelir Projeksiyonu (2025 Bazlı)`;
+        }
+
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97fab369c542b0d2',t:'MTc1Nzk2NjMyNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
