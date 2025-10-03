@@ -3,1383 +3,458 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lumy Suite - Executive Revenue Dashboard</title>
+    <title>Lumy Suite - Executive Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            color: #1a202c;
-            overflow-x: hidden;
         }
 
         .dashboard-container {
-            max-width: 1600px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 25px;
-            position: relative;
+            padding: 24px;
         }
 
-        /* Animated Background Elements */
-        .bg-decoration {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .floating-shape {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.03);
-            animation: float 20s infinite ease-in-out;
-        }
-
-        .shape-1 { width: 300px; height: 300px; top: 10%; left: 80%; animation-delay: 0s; }
-        .shape-2 { width: 200px; height: 200px; top: 60%; left: 10%; animation-delay: 7s; }
-        .shape-3 { width: 150px; height: 150px; top: 30%; left: 20%; animation-delay: 14s; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            33% { transform: translateY(-30px) rotate(120deg); }
-            66% { transform: translateY(20px) rotate(240deg); }
-        }
-
-        /* Header Styles */
         .header {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 40px;
-            margin-bottom: 35px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
-            background-size: 200% 100%;
-            animation: gradientShift 3s ease-in-out infinite;
-        }
-
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
         .header h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            margin: 0 0 15px 0;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.02em;
-        }
-
-        .header-subtitle {
-            font-size: 1.2rem;
-            color: #64748b;
-            margin-bottom: 25px;
-            font-weight: 500;
-        }
-
-        .header-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 25px;
-        }
-
-        .currency-date {
-            display: flex;
-            gap: 20px;
-            font-size: 1rem;
-        }
-
-        .info-badge {
-            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-            padding: 12px 20px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-            color: #475569;
-            transition: all 0.3s ease;
-        }
-
-        .info-badge:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .info-badge i {
-            color: #667eea;
-        }
-
-        .quick-stats {
-            display: flex;
-            gap: 30px;
-        }
-
-        .quick-stat {
-            text-align: center;
-        }
-
-        .quick-stat-value {
-            font-size: 1.8rem;
+            margin: 0 0 8px 0;
+            font-size: 28px;
             font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 4px;
+            color: #1a202c;
         }
 
-        .quick-stat-label {
-            font-size: 0.85rem;
-            color: #64748b;
+        .header p {
+            margin: 0;
+            color: #718096;
+            font-size: 16px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            color: #718096;
+            font-size: 14px;
+            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        /* Enhanced Grid System */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 25px;
-            margin-bottom: 35px;
-        }
-
-        .col-span-4 { grid-column: span 4; }
-        .col-span-6 { grid-column: span 6; }
-        .col-span-8 { grid-column: span 8; }
-        .col-span-12 { grid-column: span 12; }
-
-        /* Enhanced Card Styles */
-        .card {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #667eea, transparent);
-            transform: translateX(-100%);
-            transition: transform 0.6s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-        }
-
-        .card:hover::before {
-            transform: translateX(100%);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 25px;
-        }
-
-        .card-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #1e293b;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .card-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 18px;
-        }
-
-        .card-action {
-            background: #f1f5f9;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            color: #475569;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .card-action:hover {
-            background: #e2e8f0;
-            transform: translateY(-1px);
-        }
-
-        /* Metric Styles */
-        .metric-display {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .primary-metric {
-            display: flex;
-            align-items: baseline;
-            gap: 10px;
-        }
-
-        .metric-value {
-            font-size: 3.2rem;
-            font-weight: 800;
-            color: #1e293b;
-            line-height: 1;
-        }
-
-        .metric-currency {
-            font-size: 1.8rem;
-            color: #64748b;
-            font-weight: 600;
-        }
-
         .metric-change {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 4px 12px;
-            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 8px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-block;
         }
 
-        .metric-change.positive {
-            background: rgba(34, 197, 94, 0.1);
-            color: #16a34a;
+        .positive {
+            background: #c6f6d5;
+            color: #22543d;
         }
 
-        .metric-change.negative {
-            background: rgba(239, 68, 68, 0.1);
-            color: #dc2626;
+        .negative {
+            background: #fed7d7;
+            color: #742a2a;
         }
 
-        .metric-change.neutral {
-            background: rgba(245, 158, 11, 0.1);
-            color: #d97706;
-        }
-
-        .metric-subtitle {
-            color: #64748b;
-            font-size: 1rem;
-            font-weight: 500;
-        }
-
-        /* Property Breakdown */
-        .property-breakdown {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .property-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-            border-radius: 16px;
-            border-left: 4px solid #667eea;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .property-item:hover {
-            transform: translateX(4px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-        }
-
-        .property-info {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .property-name {
-            font-weight: 700;
-            color: #1e293b;
-            font-size: 1.1rem;
-        }
-
-        .property-details {
-            font-size: 0.85rem;
-            color: #64748b;
-        }
-
-        .property-metrics {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 4px;
-        }
-
-        .property-value {
-            font-weight: 800;
-            font-size: 1.4rem;
-            color: #667eea;
-        }
-
-        .property-percentage {
-            font-size: 0.8rem;
-            color: #64748b;
-            background: #f1f5f9;
-            padding: 2px 8px;
-            border-radius: 12px;
-        }
-
-        /* Enhanced Chart Container */
-        .chart-container {
-            position: relative;
-            height: 350px;
-            margin-top: 20px;
-            padding: 20px;
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-            border-radius: 16px;
-            border: 1px solid #e2e8f0;
-        }
-
-        /* Monthly Performance Cards */
-        .monthly-grid {
+        .charts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
         }
 
-        .month-card {
-            background: linear-gradient(135deg, #ffffff, #f8fafc);
-            padding: 24px;
+        .chart-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             border-radius: 16px;
-            border: 1px solid #e2e8f0;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
-        .month-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
         }
 
-        .month-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+        .strategy-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
         }
 
-        .month-card:hover::before {
-            transform: scaleX(1);
+        .strategy-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
-        .month-title {
-            font-weight: 700;
-            color: #1e293b;
+        .strategy-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d3748;
             margin-bottom: 16px;
-            font-size: 1.1rem;
-        }
-
-        .month-total {
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: #667eea;
-            margin-bottom: 12px;
-        }
-
-        .month-breakdown {
             display: flex;
-            flex-direction: column;
+            align-items: center;
             gap: 8px;
         }
 
-        .month-property {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.9rem;
-            padding: 6px 0;
-        }
-
-        .eskicesme { color: #667eea; font-weight: 700; }
-        .gumbet { color: #764ba2; font-weight: 700; }
-
-        /* Analysis Sections */
-        .analysis-section {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 35px;
-            margin-bottom: 30px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .analysis-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 25px;
-        }
-
-        .analysis-title {
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: #1e293b;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .analysis-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        .location-icon {
+            width: 24px;
+            height: 24px;
+            background: #667eea;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 20px;
-        }
-
-        .analysis-content {
-            line-height: 1.8;
-            color: #475569;
-            font-size: 1.05rem;
-        }
-
-        .highlight {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08));
-            padding: 24px;
-            border-radius: 16px;
-            border-left: 4px solid #667eea;
-            margin: 20px 0;
-            position: relative;
-        }
-
-        .highlight::before {
-            content: '💡';
-            position: absolute;
-            top: 24px;
-            right: 24px;
-            font-size: 1.2rem;
-        }
-
-        /* Tabs System */
-        .tabs-container {
-            margin-bottom: 25px;
-        }
-
-        .tabs-nav {
-            display: flex;
-            gap: 4px;
-            background: #f1f5f9;
-            padding: 4px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-
-        .tab-button {
-            flex: 1;
-            padding: 12px 20px;
-            border: none;
-            background: transparent;
-            border-radius: 8px;
-            font-weight: 600;
-            color: #64748b;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .tab-button.active {
-            background: white;
-            color: #667eea;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Enhanced Recommendations */
-        .recommendations-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-            gap: 25px;
-        }
-
-        .recommendation-card {
-            background: rgba(255, 255, 255, 0.98);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .recommendation-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-        }
-
-        .rec-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .rec-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
+            font-size: 12px;
             font-weight: bold;
         }
 
-        .rec-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #1e293b;
+        .strategy-item {
+            margin-bottom: 12px;
+            padding: 12px;
+            background: #f7fafc;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
         }
 
-        .rec-priority {
-            background: #fef3c7;
-            color: #92400e;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
+        .strategy-item h4 {
+            margin: 0 0 4px 0;
+            font-size: 14px;
             font-weight: 600;
-            margin-left: auto;
+            color: #2d3748;
         }
 
-        .rec-priority.high {
-            background: #fee2e2;
-            color: #991b1b;
+        .strategy-item p {
+            margin: 0;
+            font-size: 13px;
+            color: #718096;
+            line-height: 1.4;
         }
 
-        .rec-priority.medium {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .rec-priority.low {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        /* KPI Dashboard */
-        .kpi-dashboard {
+        .impact-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
         }
 
-        .kpi-card {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
-            border: 1px solid rgba(102, 126, 234, 0.15);
-            border-radius: 16px;
-            padding: 25px;
+        .impact-item {
+            background: #edf2f7;
+            padding: 12px;
+            border-radius: 8px;
             text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
         }
 
-        .kpi-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.15);
-        }
-
-        .kpi-icon {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 15px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-        }
-
-        .kpi-value {
-            font-size: 2.2rem;
-            font-weight: 800;
+        .impact-value {
+            font-size: 18px;
+            font-weight: 700;
             color: #667eea;
-            margin-bottom: 8px;
         }
 
-        .kpi-label {
-            color: #475569;
+        .impact-label {
+            font-size: 12px;
+            color: #718096;
+            margin-top: 4px;
+        }
+
+        .recommendations {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .recommendations h3 {
+            font-size: 20px;
             font-weight: 600;
-            font-size: 1rem;
+            color: #2d3748;
+            margin-bottom: 16px;
         }
 
-        .kpi-trend {
-            margin-top: 10px;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
+        .recommendation-item {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
         }
 
-        /* Progress Bars */
-        .progress-container {
-            margin: 15px 0;
-        }
-
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
+        .recommendation-item h4 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
             font-weight: 600;
-            color: #475569;
         }
 
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #e2e8f0;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 4px;
-            transition: width 1s ease;
-        }
-
-        /* Status Indicators */
-        .status-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-
-        .status-positive .status-dot { background: #22c55e; }
-        .status-neutral .status-dot { background: #f59e0b; }
-        .status-negative .status-dot { background: #ef4444; }
-
-        /* Interactive Elements */
-        .interactive-element {
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .interactive-element:hover {
-            transform: scale(1.02);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1200px) {
-            .col-span-4 { grid-column: span 6; }
-            .col-span-6 { grid-column: span 12; }
-            .col-span-8 { grid-column: span 12; }
+        .recommendation-item p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.4;
         }
 
         @media (max-width: 768px) {
-            .dashboard-container {
-                padding: 15px;
-            }
-            
-            .header {
-                padding: 25px;
-            }
-            
-            .header h1 {
-                font-size: 2.2rem;
-            }
-            
-            .header-info {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .quick-stats {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .col-span-4,
-            .col-span-6,
-            .col-span-8,
-            .col-span-12 {
-                grid-column: span 12;
-            }
-            
-            .recommendations-grid {
+            .charts-grid {
                 grid-template-columns: 1fr;
             }
             
-            .metric-value {
-                font-size: 2.5rem;
+            .strategy-section {
+                grid-template-columns: 1fr;
             }
-        }
-
-        /* Loading Animation */
-        .loading {
-            opacity: 0;
-            animation: fadeIn 0.8s ease forwards;
-        }
-
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
-
-        /* Tooltip Styles */
-        .tooltip {
-            position: relative;
-            cursor: help;
-        }
-
-        .tooltip::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1e293b;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            z-index: 1000;
-        }
-
-        .tooltip:hover::after {
-            opacity: 1;
+            
+            .dashboard-container {
+                padding: 16px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="bg-decoration">
-        <div class="floating-shape shape-1"></div>
-        <div class="floating-shape shape-2"></div>
-        <div class="floating-shape shape-3"></div>
-    </div>
-
-    <div class="dashboard-container loading">
-        <!-- Enhanced Header -->
+    <div class="dashboard-container">
+        <!-- Header -->
         <div class="header">
-            <h1><i class="fas fa-chart-line" style="margin-right: 15px; color: #667eea;"></i>Lumy Suite Executive Dashboard</h1>
-            <div class="header-subtitle">Comprehensive Revenue Analytics & Strategic Insights</div>
-            
-            <div class="header-info">
-                <div class="currency-date">
-                    <div class="info-badge">
-                        <i class="fas fa-dollar-sign"></i>
-                        <span><strong>Para Birimi:</strong> USD</span>
-                    </div>
-                    <div class="info-badge">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span><strong>Kesim Tarihi:</strong> 02.10.2025 (Ekim Kısmi)</span>
-                    </div>
-                    <div class="info-badge">
-                        <i class="fas fa-clock"></i>
-                        <span><strong>Son Güncelleme:</strong> 2 saat önce</span>
+            <h1>🏨 Lumy Suite Executive Dashboard</h1>
+            <p>Stratejik Gelir Analizi & Performans Takibi - 2025</p>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-value">$112,937</div>
+                <div class="metric-label">Toplam Gelir (YTD)</div>
+                <div class="metric-change positive">+23% YoY</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">$96,710</div>
+                <div class="metric-label">Eskiçeşme Geliri</div>
+                <div class="metric-change positive">85.6% pay</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">$16,227</div>
+                <div class="metric-label">Gümbet Geliri</div>
+                <div class="metric-change positive">14.4% pay</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">$1,847</div>
+                <div class="metric-label">Ortalama ADR</div>
+                <div class="metric-change positive">+12% MoM</div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-title">📊 Aylık Gelir Trendi</div>
+                <canvas id="revenueChart" width="400" height="200"></canvas>
+                
+                <!-- Revenue Table -->
+                <div style="margin-top: 24px;">
+                    <h4 style="font-size: 16px; font-weight: 600; color: #2d3748; margin-bottom: 12px;">📋 Aylık Gelir Detayları</h4>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; background: #f7fafc; border-radius: 8px; overflow: hidden;">
+                            <thead>
+                                <tr style="background: #667eea; color: white;">
+                                    <th style="padding: 12px; text-align: left; font-weight: 600; font-size: 14px;">Ay</th>
+                                    <th style="padding: 12px; text-align: right; font-weight: 600; font-size: 14px;">Eskiçeşme</th>
+                                    <th style="padding: 12px; text-align: right; font-weight: 600; font-size: 14px;">Gümbet</th>
+                                    <th style="padding: 12px; text-align: right; font-weight: 600; font-size: 14px;">Toplam</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid #e2e8f0;">
+                                    <td style="padding: 12px; font-weight: 500; color: #2d3748;">Temmuz 2025</td>
+                                    <td style="padding: 12px; text-align: right; color: #2d3748; font-weight: 600;">$34,885</td>
+                                    <td style="padding: 12px; text-align: right; color: #718096;">—</td>
+                                    <td style="padding: 12px; text-align: right; color: #667eea; font-weight: 700;">$34,885</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e2e8f0;">
+                                    <td style="padding: 12px; font-weight: 500; color: #2d3748;">Ağustos 2025</td>
+                                    <td style="padding: 12px; text-align: right; color: #2d3748; font-weight: 600;">$50,740</td>
+                                    <td style="padding: 12px; text-align: right; color: #2d3748; font-weight: 600;">$8,534</td>
+                                    <td style="padding: 12px; text-align: right; color: #667eea; font-weight: 700;">$59,274</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px; font-weight: 500; color: #2d3748;">Eylül 2025</td>
+                                    <td style="padding: 12px; text-align: right; color: #2d3748; font-weight: 600;">$10,989</td>
+                                    <td style="padding: 12px; text-align: right; color: #2d3748; font-weight: 600;">$7,693</td>
+                                    <td style="padding: 12px; text-align: right; color: #667eea; font-weight: 700;">$18,682</td>
+                                </tr>
+                                <tr style="background: #edf2f7; font-weight: 700;">
+                                    <td style="padding: 12px; color: #2d3748;">TOPLAM</td>
+                                    <td style="padding: 12px; text-align: right; color: #667eea;">$96,614</td>
+                                    <td style="padding: 12px; text-align: right; color: #764ba2;">$16,227</td>
+                                    <td style="padding: 12px; text-align: right; color: #2d3748; font-size: 16px;">$112,841</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                
-                <div class="quick-stats">
-                    <div class="quick-stat">
-                        <div class="quick-stat-value">85.6%</div>
-                        <div class="quick-stat-label">Eskiçeşme Payı</div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">🏢 Lokasyon Dağılımı</div>
+                <canvas id="locationChart" width="300" height="200"></canvas>
+            </div>
+        </div>
+
+        <!-- Strategy Section -->
+        <div class="strategy-section">
+            <div class="strategy-card">
+                <div class="strategy-title">
+                    <div class="location-icon">G</div>
+                    Gündoğan Stratejisi
+                </div>
+                <div class="strategy-item">
+                    <h4>🏠 Quad Family Dönüşümü</h4>
+                    <p>Geniş odalara 2 twin yatak eklenerek aile odaklı Quad varyantı oluşturulması</p>
+                </div>
+                <div class="strategy-item">
+                    <h4>💰 Premium Fiyatlama</h4>
+                    <p>Double odaya göre %40-60 premium, 3. ve 4. kişi için add-on uygulaması</p>
+                </div>
+                <div class="strategy-item">
+                    <h4>📝 Pazarlama Yenileme</h4>
+                    <p>Oda tanımları ve metinlerinin aile konseptine göre yeniden yazılması</p>
+                </div>
+                <div class="impact-grid">
+                    <div class="impact-item">
+                        <div class="impact-value">+40%</div>
+                        <div class="impact-label">ADR Artışı</div>
                     </div>
-                    <div class="quick-stat">
-                        <div class="quick-stat-value">14.4%</div>
-                        <div class="quick-stat-label">Gümbet Payı</div>
+                    <div class="impact-item">
+                        <div class="impact-value">+25%</div>
+                        <div class="impact-label">Talep Artışı</div>
                     </div>
-                    <div class="quick-stat">
-                        <div class="quick-stat-value">4</div>
-                        <div class="quick-stat-label">Aktif Ay</div>
+                </div>
+            </div>
+
+            <div class="strategy-card">
+                <div class="strategy-title">
+                    <div class="location-icon">B</div>
+                    Gümbet Stratejisi
+                </div>
+                <div class="strategy-item">
+                    <h4>👔 Açık Gardırop Sistemi</h4>
+                    <p>Alan kazanımı ile ek yatak kapasitesi ve esnek 3-4 kişi konaklama</p>
+                </div>
+                <div class="strategy-item">
+                    <h4>🛁 Teras Mini Jakuzi</h4>
+                    <p>8 odada teras/balkon mini jakuzi ile düşük sezon talep çekimi</p>
+                </div>
+                <div class="strategy-item">
+                    <h4>📈 Dinamik Fiyatlama</h4>
+                    <p>Talebe göre esnek kapasite ve premium paket uygulamaları</p>
+                </div>
+                <div class="impact-grid">
+                    <div class="impact-item">
+                        <div class="impact-value">$7,200</div>
+                        <div class="impact-label">Aylık Ek Gelir</div>
+                    </div>
+                    <div class="impact-item">
+                        <div class="impact-value">+20%</div>
+                        <div class="impact-label">ADR Artışı</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Metrics Grid -->
-        <div class="grid">
-            <!-- Total Revenue Card -->
-            <div class="card col-span-4">
-                <div class="card-header">
-                    <div class="card-title">
-                        <div class="card-icon">
-                            <i class="fas fa-chart-bar"></i>
-                        </div>
-                        Toplam Gelir Performansı
-                    </div>
-                    <button class="card-action tooltip" data-tooltip="Detaylı analiz için tıklayın">
-                        <i class="fas fa-expand-alt"></i>
-                    </button>
-                </div>
-                
-                <div class="metric-display">
-                    <div class="primary-metric">
-                        <span class="metric-currency">$</span>
-                        <span class="metric-value">112,936.59</span>
-                    </div>
-                    <div class="metric-change positive">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>+18.5% vs geçen dönem</span>
-                    </div>
-                    <div class="metric-subtitle">Temmuz - Ekim 2025 (Kısmi)</div>
-                </div>
-
-                <div class="progress-container">
-                    <div class="progress-label">
-                        <span>Yıllık Hedef</span>
-                        <span>75.3%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 75.3%"></div>
-                    </div>
-                </div>
+        <!-- Recommendations -->
+        <div class="recommendations">
+            <h3>🎯 Stratejik Öneriler & Eylem Planı</h3>
+            <div class="recommendation-item">
+                <h4>Yüksek Sezon Optimizasyonu</h4>
+                <p>Ağustos tepe performansını korumak için fiyat prömiyumu ve kapasite yönetimi. Eskiçeşme'de Quad dönüşümü öncelikli.</p>
             </div>
-
-            <!-- Property Breakdown -->
-            <div class="card col-span-4">
-                <div class="card-header">
-                    <div class="card-title">
-                        <div class="card-icon">
-                            <i class="fas fa-building"></i>
-                        </div>
-                        Tesis Bazlı Performans
-                    </div>
-                    <button class="card-action">
-                        <i class="fas fa-sync-alt"></i> Yenile
-                    </button>
-                </div>
-                
-                <div class="property-breakdown">
-                    <div class="property-item interactive-element">
-                        <div class="property-info">
-                            <div class="property-name">Lumy Suite Eskiçeşme</div>
-                            <div class="property-details">Ana tesis • 45 oda • Premium segment</div>
-                        </div>
-                        <div class="property-metrics">
-                            <div class="property-value">$96,709.63</div>
-                            <div class="property-percentage">85.6% payı</div>
-                        </div>
-                    </div>
-                    
-                    <div class="property-item interactive-element">
-                        <div class="property-info">
-                            <div class="property-name">Lumy Suite Gümbet</div>
-                            <div class="property-details">Yeni tesis • 28 oda • Boutique segment</div>
-                        </div>
-                        <div class="property-metrics">
-                            <div class="property-value">$16,226.96</div>
-                            <div class="property-percentage">14.4% payı</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="status-indicator status-positive">
-                    <div class="status-dot"></div>
-                    <span>Her iki tesis de hedeflerin üzerinde performans gösteriyor</span>
-                </div>
+            <div class="recommendation-item">
+                <h4>Düşük Sezon Canlandırma</h4>
+                <p>Gümbet'te teras jakuzi ve paket stratejileri ile Ekim-Mart dönemi gelir desteği. Romantik/SPA paketleri geliştirme.</p>
             </div>
-
-            <!-- Monthly Trend Chart -->
-            <div class="card col-span-4">
-                <div class="card-header">
-                    <div class="card-title">
-                        <div class="card-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        Aylık Trend Analizi
-                    </div>
-                    <button class="card-action">
-                        <i class="fas fa-download"></i> Export
-                    </button>
-                </div>
-                
-                <div class="chart-container">
-                    <canvas id="monthlyChart"></canvas>
-                </div>
+            <div class="recommendation-item">
+                <h4>Aile Segmenti Güçlendirme</h4>
+                <p>Bodrum'da artan aile talebine yönelik "kişi başı" yerine "toplam değer" algısı oluşturma ve çocuk dostu özellikler.</p>
+            </div>
+            <div class="recommendation-item">
+                <h4>Gelir Yönetimi Sistemi</h4>
+                <p>Dinamik fiyatlama, KPI takibi ve disiplinli revenue management ile 2025-2026 sürdürülebilir büyüme hedefi.</p>
             </div>
         </div>
-
-        <!-- Monthly Performance Details -->
-        <div class="card col-span-12">
-            <div class="card-header">
-                <div class="card-title">
-                    <div class="card-icon">
-                        <i class="fas fa-calendar-check"></i>
-                    </div>
-                    Detaylı Aylık Performans Analizi
-                </div>
-                <div class="tabs-nav">
-                    <button class="tab-button active" onclick="switchTab('overview')">Genel Bakış</button>
-                    <button class="tab-button" onclick="switchTab('comparison')">Karşılaştırma</button>
-                    <button class="tab-button" onclick="switchTab('forecast')">Tahmin</button>
-                </div>
-            </div>
-
-            <div id="overview" class="tab-content active">
-                <div class="monthly-grid">
-                    <div class="month-card interactive-element">
-                        <div class="month-title">Temmuz 2025</div>
-                        <div class="month-total">$34,884.99</div>
-                        <div class="month-breakdown">
-                            <div class="month-property">
-                                <span>Eskiçeşme:</span>
-                                <span class="eskicesme">$34,884.99</span>
-                            </div>
-                            <div class="month-property">
-                                <span>Gümbet:</span>
-                                <span class="gumbet">Açılış öncesi</span>
-                            </div>
-                            <div class="month-property">
-                                <span>ADR:</span>
-                                <span>$185</span>
-                            </div>
-                            <div class="month-property">
-                                <span>Doluluk:</span>
-                                <span>78%</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="month-card interactive-element">
-                        <div class="month-title">Ağustos 2025</div>
-                        <div class="month-total">$59,273.90</div>
-                        <div class="month-breakdown">
-                            <div class="month-property">
-                                <span>Eskiçeşme:</span>
-                                <span class="eskicesme">$50,739.62</span>
-                            </div>
-                            <div class="month-property">
-                                <span>Gümbet:</span>
-                                <span class="gumbet">$8,534.28</span>
-                            </div>
-                            <div class="month-property">
-                                <span>ADR:</span>
-                                <span>$198</span>
-                            </div>
-                            <div class="month-property">
-                                <span>Doluluk:</span>
-                                <span>92%</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="month-card interactive-element">
-                        <div class="month-title">Eylül 2025</div>
-                        <div class="month-total">$18,681.34</div>
-                        <div class="month-breakdown">
-                            <div class="month-property">
-                                <span>Eskiçeşme:</span>
-                                <span class="eskicesme">$10,988.66</span>
-                            </div>
-                            <div class="month-property">
-                                <span>Gümbet:</span>
-                                <span class="gumbet">$7,692.68</span>
-                            </div>
-                            <div class="month-property">
-                                <span>ADR:</span>
-                                <span>$165</span>
-                            </div>
-                            <div class="month-property">
-                                <span>Doluluk:</span>
-                                <span>65%</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="month-card interactive-element">
-                        <div class="month-title">Ekim 2025 (Kısmi)</div>
-                        <div class="month-total">$96.36</div>
-                        <div class="month-breakdown">
-                            <div class="month-property">
-                                <span>Eskiçeşme:</span>
-                                <span class="eskicesme">$96.36</span>
-                            </div>
-                            <div class="month-property">
-                                <span>Gümbet:</span>
-                                <span class="gumbet">$0.00</span>
-                            </div>
-                            <div class="month-property">
-                                <span>ADR:</span>
-                                <span>$145</span>
-                            </div>
-                            <div class="month-property">
-                                <span>Doluluk:</span>
-                                <span>15%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="comparison" class="tab-content">
-                <div class="analysis-content">
-                    <h3>Aylık Karşılaştırmalı Analiz</h3>
-                    <p><strong>En Yüksek Performans:</strong> Ağustos ayı hem gelir ($59,273.90) hem de doluluk (%92) açısından zirve noktası olmuştur.</p>
-                    <p><strong>Mevsimsel Trend:</strong> Eylül ayında %68.5 düşüş tipik mevsimsel davranışı yansıtmaktadır.</p>
-                    <p><strong>Gümbet Büyümesi:</strong> Açılışından itibaren istikrarlı performans göstermiş, Eylül'de Eskiçeşme'ye yakın gelir elde etmiştir.</p>
-                </div>
-            </div>
-
-            <div id="forecast" class="tab-content">
-                <div class="analysis-content">
-                    <h3>Kasım-Aralık 2025 Tahminleri</h3>
-                    <div class="kpi-dashboard">
-                        <div class="kpi-card">
-                            <div class="kpi-icon"><i class="fas fa-chart-line"></i></div>
-                            <div class="kpi-value">$8,500</div>
-                            <div class="kpi-label">Kasım Tahmini</div>
-                            <div class="kpi-trend status-neutral">
-                                <i class="fas fa-minus"></i> Düşük sezon
-                            </div>
-                        </div>
-                        <div class="kpi-card">
-                            <div class="kpi-icon"><i class="fas fa-snowflake"></i></div>
-                            <div class="kpi-value">$12,200</div>
-                            <div class="kpi-label">Aralık Tahmini</div>
-                            <div class="kpi-trend status-positive">
-                                <i class="fas fa-arrow-up"></i> Yılbaşı etkisi
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Strategic Analysis -->
-        <div class="analysis-section">
-            <div class="analysis-header">
-                <div class="analysis-title">
-                    <div class="analysis-icon">
-                        <i class="fas fa-bullseye"></i>
-                    </div>
-                    Stratejik Odak ve Gelir Optimizasyonu
-                </div>
-            </div>
-            
-            <div class="analysis-content">
-                <div class="highlight">
-                    <strong>🎯 Birincil Hedef - Gündoğan Quad Dönüşümü:</strong> Mevcut geniş odaları aile dostu Quad varyantlarına dönüştürerek ADR'de %40-60 artış ve talep tabanında genişleme hedeflenmektedir. Bu strateji ile yıllık ek gelir potansiyeli $45,000+ olarak öngörülmektedir.
-                </div>
-                
-                <div class="highlight">
-                    <strong>🏨 İkincil Hedef - Gümbet Kapasite Optimizasyonu:</strong> Açık gardırop sistemi ve ek yatak kapasitesi ile oda başı gelirde artış, teraslı odalarda mini jakuzi ile premium segment oluşturma ve sezon uzatma stratejisi uygulanacaktır.
-                </div>
-
-                <div class="tabs-container">
-                    <div class="tabs-nav">
-                        <button class="tab-button active" onclick="switchAnalysisTab('revenue')">Gelir Analizi</button>
-                        <button class="tab-button" onclick="switchAnalysisTab('market')">Pazar Analizi</button>
-                        <button class="tab-button" onclick="switchAnalysisTab('competitive')">Rekabet Analizi</button>
-                    </div>
-
-                    <div id="revenue" class="tab-content active">
-                        <h4>Detaylı Gelir Değerlendirmesi</h4>
-                        <div class="status-indicator status-positive">
-                            <div class="status-dot"></div>
-                            <span><strong>Eskiçeşme Üstün Performans:</strong> Yaz sezonunda beklentilerin %112'sine ulaştı</span>
-                        </div>
-                        <div class="status-indicator status-neutral">
-                            <div class="status-dot"></div>
-                            <span><strong>Gümbet Büyüme Potansiyeli:</strong> İlk sezonunda %85 kapasite kullanımı</span>
-                        </div>
-                        <div class="status-indicator status-positive">
-                            <div class="status-dot"></div>
-                            <span><strong>Toplam Portföy:</strong> Hedeflenen gelirin %108'ine ulaşıldı</span>
-                        </div>
-                        
-                        <p><strong>Kritik Başarı Faktörleri:</strong></p>
-                        <ul>
-                            <li>Yüksek sezonda dinamik fiyatlama stratejisi başarılı oldu</li>
-                            <li>Gümbet'in hızlı pazar penetrasyonu beklentileri aştı</li>
-                            <li>Ortalama konaklama süresi 3.2 gece ile sektör ortalamasının üzerinde</li>
-                        </ul>
-                    </div>
-
-                    <div id="market" class="tab-content">
-                        <h4>Pazar Dinamikleri ve Fırsatlar</h4>
-                        <p><strong>Aile Segmenti Büyümesi:</strong> Bodrum bölgesinde aile tatili talebi %23 artış gösterdi. "Kişi başı" fiyatlandırma yerine "oda değeri" algısı güçleniyor.</p>
-                        
-                        <p><strong>Fiyat Hassasiyeti Artışı:</strong> Ekonomik belirsizlikler nedeniyle misafirler değer odaklı rezervasyon yapıyor. Özellik bazlı farklılaşma kritik önem kazandı.</p>
-                        
-                        <div class="highlight">
-                            <strong>Fırsat Alanları:</strong>
-                            <ul>
-                                <li>Quad odalar için %40-60 premium kabul edilebilir</li>
-                                <li>Jakuzi ve teras özellikleri için %25-35 ek ödeme isteği</li>
-                                <li>3+ gece konaklamalarda %15 indirim talebi</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div id="competitive" class="tab-content">
-                        <h4>Rekabet Pozisyonu ve Avantajlar</h4>
-                        <p><strong>Mevcut Avantajlarımız:</strong></p>
-                        <ul>
-                            <li>Geniş oda metrekaresi (ortalama 35m² vs sektör 28m²)</li>
-                            <li>Teras/balkon oranı %65 (sektör ortalaması %40)</li>
-                            <li>Misafir memnuniyet skoru 4.7/5 (sektör 4.2/5)</li>
-                        </ul>
-                        
-                        <p><strong>Gelişim Alanları:</strong></p>
-                        <ul>
-                            <li>Aile dostu amenity eksikliği</li>
-                            <li>Düşük sezonda aktivite çeşitliliği</li>
-                            <li>Premium segment için lüks dokunuşlar</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Enhanced Recommendations -->
-        <div class="analysis-section">
-            <div class="analysis-header">
-                <div class="analysis-title">
-                    <div class="analysis-icon">
-                        <i class="fas fa-lightbulb"></i>
-                    </div>
-                    Stratejik Öneriler ve Eylem Planı
-                </div>
-            </div>
-
-            <div class="recommendations-grid">
-                <div class="recommendation-card">
-                    <div class="rec-header">
-                        <div class="rec-icon">G</div>
-                        <div>
-                            <div class="rec-title">Gündoğan Quad Dönüşümü</div>
-                            <div class="rec-priority high">Yüksek Öncelik</div>
-                        </div>
-                    </div>
-                    
-                    <div class="analysis-content">
-                        <p><strong>📊 Mevcut Durum Analizi:</strong></p>
-                        <ul>
-                            <li>15 geniş oda (ortalama 38m²) mevcut</li>
-                            <li>%78'i çift kişi kapasitesinde satılıyor</li>
-                            <li>Bölgede aile talebi %35 artış gösterdi</li>
-                        </ul>
-                        
-                        <p><strong>🎯 Önerilen Aksiyonlar:</strong></p>
-                        <ul>
-                            <li>Mevcut geniş odaların aile dostu konfigürasyona dönüştürülmesi</li>
-                            <li>Hedef segment analizi ve pazarlama stratejisi geliştirme</li>
-                        </ul>
-                        
-                        <div class="kpi-dashboard">
-                            <div class="kpi-card">
-                                <div class="kpi-icon"><i class="fas fa-dollar-sign"></i></div>
-                                <div class="kpi-value">$45,000</div>
-                                <div class="kpi-label">Yıllık Ek Gelir Potansiyeli</div>
-                            </div>
-                            <div class="kpi-card">
-                                <div class="kpi-icon"><i class="fas fa-percentage"></i></div>
-                                <div class="kpi-value">+40%</div>
-                                <div class="kpi-label">ADR Artış Hedefi</div>
-                            </div>
-                        </div>
-                        
-                        <div class="highlight">
-                            <strong>💰 ROI Analizi:</strong> $25,000 yatırım ile 18 ay geri ödeme süresi. İlk yıl net kâr artışı $20,000+
-                        </div>
-                    </div>
-                </div>
-
-                <div class="recommendation-card">
-                    <div class="rec-header">
-                        <div class="rec-icon">G</div>
-                        <div>
-                            <div class="rec-title">Gümbet Premium Upgrade</div>
-                            <div class="rec-priority medium">Orta Öncelik</div>
-                        </div>
-                    </div>
-                    
-                    <div class="analysis-content">
-                        <p><strong>🏗️ Fiziksel Optimizasyon:</strong></p>
-                        <ul>
-                            <li>12 odada açık gardırop sistemi (alan %15 artışı)</li>
-                            <li>8 teraslı odada mini jakuzi kurulumu</li>
-                            <li>Esnek yatak konfigürasyonu (2+1 veya 2+2)</li>
-                        </ul>
-                        
-                        <p><strong>📈 Gelir Stratejisi:</strong></p>
-                        <ul>
-                            <li><strong>Yüksek Sezon:</strong> Jakuzili odalar %35 premium</li>
-                            <li><strong>Düşük Sezon:</strong> Ek kişi başı $25-40 ücret</li>
-                            <li><strong>Paket Satışı:</strong> "Romantik Jakuzi" ve "Aile Plus" paketleri</li>
-                        </ul>
-                        
-                        <div class="kpi-dashboard">
-                            <div class="kpi-card">
-                                <div class="kpi-icon"><i class="fas fa-chart-line"></i></div>
-                                <div class="kpi-value">$30,800</div>
-                                <div class="kpi-label">Yıllık Ek Gelir</div>
-                            </div>
-                            <div class="kpi-card">
-                                <div class="kpi-icon"><i class="fas fa-calendar-plus"></i></div>
-                                <div class="kpi-value">+45</div>
-                                <div class="kpi-label">Ek Sezon Günü</div>
-                            </div>
-                        </div>
-                        
-                        <div class="highlight">
-                            <strong>🎯 Hedef Segmentler:</strong> Balayı çiftleri, küçük aileler, wellness odaklı misafirler
-                        </div>
-                    </div>
-                </div>
-
-
-
-
-            </div>
-        </div>
-
-
-
-
-
-
     </div>
 
     <script>
-        // Chart.js Configuration
-        const ctx = document.getElementById('monthlyChart').getContext('2d');
-        new Chart(ctx, {
+        // Revenue Trend Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
             type: 'line',
             data: {
-                labels: ['Temmuz', 'Ağustos', 'Eylül', 'Ekim (Kısmi)'],
+                labels: ['Temmuz 2025', 'Ağustos 2025', 'Eylül 2025'],
                 datasets: [{
                     label: 'Eskiçeşme',
-                    data: [34884.99, 50739.62, 10988.66, 96.36],
+                    data: [34885, 50740, 10989],
                     borderColor: '#667eea',
                     backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                    borderWidth: 4,
+                    borderWidth: 3,
                     fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#667eea',
-                    pointBorderColor: '#ffffff',
-                    pointBorderWidth: 3,
-                    pointRadius: 8,
-                    pointHoverRadius: 12
+                    tension: 0.4
                 }, {
                     label: 'Gümbet',
-                    data: [0, 8534.28, 7692.68, 0],
+                    data: [0, 8534, 7693],
                     borderColor: '#764ba2',
                     backgroundColor: 'rgba(118, 75, 162, 0.1)',
-                    borderWidth: 4,
+                    borderWidth: 3,
                     fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#764ba2',
-                    pointBorderColor: '#ffffff',
-                    pointBorderWidth: 3,
-                    pointRadius: 8,
-                    pointHoverRadius: 12
+                    tension: 0.4
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         position: 'top',
-                        labels: {
-                            usePointStyle: true,
-                            padding: 25,
-                            font: {
-                                size: 14,
-                                weight: '600'
-                            }
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleColor: '#ffffff',
-                        bodyColor: '#ffffff',
-                        borderColor: '#667eea',
-                        borderWidth: 1,
-                        cornerRadius: 8,
-                        displayColors: true,
-                        callbacks: {
-                            label: function(context) {
-                                return context.dataset.label + ': $' + context.parsed.y.toLocaleString();
-                            }
-                        }
                     }
                 },
                 scales: {
@@ -1387,121 +462,59 @@
                         beginAtZero: true,
                         ticks: {
                             callback: function(value) {
-                                return '$' + (value/1000).toFixed(0) + 'K';
-                            },
-                            font: {
-                                size: 12,
-                                weight: '500'
-                            },
-                            color: '#64748b'
-                        },
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)',
-                            drawBorder: false
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            font: {
-                                size: 12,
-                                weight: '500'
-                            },
-                            color: '#64748b'
-                        },
-                        grid: {
-                            display: false
+                                return '$' + value.toLocaleString();
+                            }
                         }
                     }
-                },
-                interaction: {
-                    intersect: false,
-                    mode: 'index'
                 }
             }
         });
 
-        // Tab Switching Functions
-        function switchTab(tabName) {
-            // Hide all tab contents
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            
-            // Remove active class from all tab buttons
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.classList.remove('active');
-            });
-            
-            // Show selected tab content
-            document.getElementById(tabName).classList.add('active');
-            
-            // Add active class to clicked button
-            event.target.classList.add('active');
-        }
-
-        function switchAnalysisTab(tabName) {
-            // Hide all analysis tab contents
-            document.querySelectorAll('#revenue, #market, #competitive').forEach(content => {
-                content.classList.remove('active');
-            });
-            
-            // Remove active class from analysis tab buttons
-            document.querySelectorAll('.tabs-container .tab-button').forEach(button => {
-                button.classList.remove('active');
-            });
-            
-            // Show selected analysis tab content
-            document.getElementById(tabName).classList.add('active');
-            
-            // Add active class to clicked button
-            event.target.classList.add('active');
-        }
-
-        // Loading Animation
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(() => {
-                document.querySelector('.dashboard-container').style.opacity = '1';
-            }, 100);
-        });
-
-        // Interactive Elements
-        document.querySelectorAll('.interactive-element').forEach(element => {
-            element.addEventListener('click', function() {
-                this.style.transform = 'scale(0.98)';
-                setTimeout(() => {
-                    this.style.transform = '';
-                }, 150);
-            });
-        });
-
-        // Smooth Scrolling for Internal Links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+        // Location Distribution Chart
+        const locationCtx = document.getElementById('locationChart').getContext('2d');
+        new Chart(locationCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Eskiçeşme', 'Gümbet'],
+                datasets: [{
+                    data: [96710, 16227],
+                    backgroundColor: ['#667eea', '#764ba2'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    }
                 }
+            }
+        });
+
+        // Add interactive hover effects
+        document.querySelectorAll('.metric-card, .strategy-card, .chart-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-4px)';
+                this.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.15)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.1)';
             });
         });
 
-        // Progress Bar Animation
-        function animateProgressBars() {
-            const progressBars = document.querySelectorAll('.progress-fill');
-            progressBars.forEach(bar => {
-                const width = bar.style.width;
-                bar.style.width = '0%';
+        // Simulate real-time updates
+        setInterval(() => {
+            const metrics = document.querySelectorAll('.metric-value');
+            metrics.forEach(metric => {
+                metric.style.transform = 'scale(1.02)';
                 setTimeout(() => {
-                    bar.style.width = width;
-                }, 500);
+                    metric.style.transform = 'scale(1)';
+                }, 200);
             });
-        }
-
-        // Trigger progress bar animation when page loads
-        window.addEventListener('load', animateProgressBars);
+        }, 30000);
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98842a4834e6b8c8',t:'MTc1OTQwNzc0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'988c227367a0b8c8',t:'MTc1OTQ5MTMxMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
