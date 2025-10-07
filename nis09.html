@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nis Otel İşletmeleri - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .metric-card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fade-in {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        .status-excellent { color: #10b981; }
+        .status-good { color: #f59e0b; }
+        .status-warning { color: #ef4444; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-white bg-opacity-20 p-3 rounded-lg">
+                        <i class="fas fa-hotel text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold">Nis Otel İşletmeleri</h1>
+                        <p class="text-blue-100">Eylül 2025 Satış Raporu</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-blue-100">Son Güncelleme</div>
+                    <div class="text-lg font-semibold">01 Ekim 2025</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <!-- KPI Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="metric-card rounded-xl p-6 card-hover animate-fade-in">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Ortalama Doluluk</p>
+                        <p class="text-3xl font-bold text-gray-900">79.0%</p>
+                        <p class="text-sm text-green-600 mt-1">
+                            <i class="fas fa-arrow-up"></i> Hedef üstü
+                        </p>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-full">
+                        <i class="fas fa-bed text-blue-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card rounded-xl p-6 card-hover animate-fade-in" style="animation-delay: 0.1s">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Ortalama ADR</p>
+                        <p class="text-3xl font-bold text-gray-900">€71.0</p>
+                        <p class="text-sm text-green-600 mt-1">
+                            <i class="fas fa-arrow-up"></i> Optimum seviye
+                        </p>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-full">
+                        <i class="fas fa-euro-sign text-green-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card rounded-xl p-6 card-hover animate-fade-in" style="animation-delay: 0.2s">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Hedef Başarı</p>
+                        <p class="text-3xl font-bold text-gray-900">112%</p>
+                        <p class="text-sm text-green-600 mt-1">
+                            <i class="fas fa-trophy"></i> Hedef aşıldı
+                        </p>
+                    </div>
+                    <div class="bg-yellow-100 p-3 rounded-full">
+                        <i class="fas fa-target text-yellow-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card rounded-xl p-6 card-hover animate-fade-in" style="animation-delay: 0.3s">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">YoY Büyüme</p>
+                        <p class="text-3xl font-bold text-gray-900">+72.9%</p>
+                        <p class="text-sm text-green-600 mt-1">
+                            <i class="fas fa-chart-line"></i> Güçlü büyüme
+                        </p>
+                    </div>
+                    <div class="bg-purple-100 p-3 rounded-full">
+                        <i class="fas fa-chart-line text-purple-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hotel Performance Cards -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <!-- Petrion Hotel Balat -->
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover animate-fade-in" style="animation-delay: 0.4s">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-blue-100 p-2 rounded-lg">
+                            <i class="fas fa-building text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">Petrion Hotel Balat</h3>
+                            <p class="text-sm text-gray-600">İstanbul</p>
+                        </div>
+                    </div>
+                    <span class="status-excellent text-sm font-semibold bg-green-100 px-3 py-1 rounded-full">
+                        <i class="fas fa-check-circle"></i> Mükemmel
+                    </span>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium text-gray-600">Toplam Gelir</span>
+                        <span class="text-xl font-bold text-gray-900">€31,092.72</span>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium text-gray-600">Hedef</span>
+                        <span class="text-lg font-semibold text-blue-600">€30,345</span>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span>Hedef Başarısı</span>
+                            <span class="font-semibold">102%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="progress-bar h-2 rounded-full" style="width: 102%"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 pt-2">
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-blue-600">74.12%</p>
+                            <p class="text-xs text-gray-600">Doluluk</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-green-600">€80.08</p>
+                            <p class="text-xs text-gray-600">ADR</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-green-50 p-3 rounded-lg">
+                        <p class="text-sm text-green-800">
+                            <i class="fas fa-arrow-up"></i> Geçen yıla göre <strong>%15.9</strong> artış
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NIS Hotel Taksim -->
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover animate-fade-in" style="animation-delay: 0.5s">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-orange-100 p-2 rounded-lg">
+                            <i class="fas fa-building text-orange-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">NIS Hotel Taksim</h3>
+                            <p class="text-sm text-gray-600">İstanbul</p>
+                        </div>
+                    </div>
+                    <span class="status-good text-sm font-semibold bg-yellow-100 px-3 py-1 rounded-full">
+                        <i class="fas fa-star"></i> İyi
+                    </span>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium text-gray-600">Toplam Gelir</span>
+                        <span class="text-xl font-bold text-gray-900">€26,508.67</span>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium text-gray-600">Hedef</span>
+                        <span class="text-lg font-semibold text-blue-600">€27,500</span>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span>Hedef Başarısı</span>
+                            <span class="font-semibold">96%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-yellow-500 h-2 rounded-full" style="width: 96%"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 pt-2">
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-blue-600">82.55%</p>
+                            <p class="text-xs text-gray-600">Doluluk</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-green-600">€62.97</p>
+                            <p class="text-xs text-gray-600">ADR</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-3 rounded-lg">
+                        <p class="text-sm text-blue-800">
+                            <i class="fas fa-info-circle"></i> ADR optimizasyonu ile hedef aşılabilir
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Eskiciler Konağı -->
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover animate-fade-in" style="animation-delay: 0.6s">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-green-100 p-2 rounded-lg">
+                            <i class="fas fa-home text-green-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">Eskiciler Konağı</h3>
+                            <p class="text-sm text-gray-600">Isparta Eğirdir</p>
+                        </div>
+                    </div>
+                    <span class="status-excellent text-sm font-semibold bg-green-100 px-3 py-1 rounded-full">
+                        <i class="fas fa-trophy"></i> Olağanüstü
+                    </span>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium text-gray-600">Toplam Gelir</span>
+                        <span class="text-xl font-bold text-gray-900">₺1,406,886.92</span>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium text-gray-600">Hedef</span>
+                        <span class="text-lg font-semibold text-blue-600">₺1,000,000</span>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span>Hedef Başarısı</span>
+                            <span class="font-semibold">140%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="progress-bar h-2 rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 pt-2">
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-blue-600">80.35%</p>
+                            <p class="text-xs text-gray-600">Doluluk</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-green-600">₺3,071.81</p>
+                            <p class="text-xs text-gray-600">ADR</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-green-50 p-3 rounded-lg">
+                        <p class="text-sm text-green-800">
+                            <i class="fas fa-rocket"></i> Geçen yıla göre <strong>%201</strong> artış
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Revenue Comparison Chart -->
+            <div class="bg-white rounded-xl shadow-lg p-6 animate-fade-in" style="animation-delay: 0.7s">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">Gelir Karşılaştırması</h3>
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="bg-white rounded-xl shadow-lg p-6 animate-fade-in" style="animation-delay: 0.8s">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">Performans Metrikleri</h3>
+                <div class="chart-container">
+                    <canvas id="metricsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="bg-white rounded-xl shadow-lg p-8 animate-fade-in" style="animation-delay: 0.9s">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="bg-blue-100 p-3 rounded-lg">
+                    <i class="fas fa-chart-bar text-blue-600 text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900">Genel Değerlendirme</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-4">
+                    <h4 class="text-lg font-semibold text-gray-800">Başarı Faktörleri</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-check-circle text-green-500"></i>
+                            <span class="text-gray-700">Dinamik fiyatlandırma stratejileri</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-check-circle text-green-500"></i>
+                            <span class="text-gray-700">OTA görünürlük optimizasyonları</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-check-circle text-green-500"></i>
+                            <span class="text-gray-700">Etkili kampanya yönetimi</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-check-circle text-green-500"></i>
+                            <span class="text-gray-700">Sezonluk talep optimizasyonu</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="space-y-4">
+                    <h4 class="text-lg font-semibold text-gray-800">Gelişim Alanları</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-arrow-right text-blue-500"></i>
+                            <span class="text-gray-700">NIS Hotel Taksim ADR optimizasyonu</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-arrow-right text-blue-500"></i>
+                            <span class="text-gray-700">Hafta içi doluluk artırımı</span>
+                        </li>
+                        <li class="flex items-center space-x-2">
+                            <i class="fas fa-arrow-right text-blue-500"></i>
+                            <span class="text-gray-700">Fiyat optimizasyon stratejileri</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Revenue Comparison Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Petrion Hotel', 'NIS Hotel', 'Eskiciler Konağı'],
+                datasets: [{
+                    label: 'Eylül 2025',
+                    data: [31092.72, 26508.67, 46896.23], // Converted TL to EUR for comparison
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Eylül 2024',
+                    data: [26834, 26000, 15552.40], // Converted TL to EUR for comparison
+                    backgroundColor: 'rgba(156, 163, 175, 0.8)',
+                    borderColor: 'rgba(156, 163, 175, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '€' + value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Performance Metrics Chart
+        const metricsCtx = document.getElementById('metricsChart').getContext('2d');
+        new Chart(metricsCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Doluluk %', 'ADR', 'RevPAR', 'Hedef Başarısı', 'YoY Büyüme'],
+                datasets: [{
+                    label: 'Petrion Hotel',
+                    data: [74.12, 80, 59.36, 102, 115.9],
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+                }, {
+                    label: 'NIS Hotel',
+                    data: [82.55, 63, 51.96, 96, 101.9],
+                    borderColor: 'rgba(245, 158, 11, 1)',
+                    backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                    pointBackgroundColor: 'rgba(245, 158, 11, 1)',
+                }, {
+                    label: 'Eskiciler Konağı',
+                    data: [80.35, 85, 68.27, 140, 301],
+                    borderColor: 'rgba(16, 185, 129, 1)',
+                    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                    pointBackgroundColor: 'rgba(16, 185, 129, 1)',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 150
+                    }
+                }
+            }
+        });
+
+        // Add interactive hover effects
+        document.querySelectorAll('.card-hover').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-4px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Animate numbers on scroll
+        function animateNumbers() {
+            const numbers = document.querySelectorAll('.text-3xl.font-bold');
+            numbers.forEach(number => {
+                const finalValue = number.textContent;
+                const numericValue = parseFloat(finalValue.replace(/[^0-9.]/g, ''));
+                if (!isNaN(numericValue)) {
+                    let currentValue = 0;
+                    const increment = numericValue / 50;
+                    const timer = setInterval(() => {
+                        currentValue += increment;
+                        if (currentValue >= numericValue) {
+                            currentValue = numericValue;
+                            clearInterval(timer);
+                        }
+                        number.textContent = finalValue.replace(numericValue.toString(), Math.floor(currentValue).toString());
+                    }, 30);
+                }
+            });
+        }
+
+        // Trigger animations on load
+        window.addEventListener('load', () => {
+            setTimeout(animateNumbers, 1000);
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98abc9545255bc7a',t:'MTc1OTgyMzIwNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
