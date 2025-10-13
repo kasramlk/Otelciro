@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OtelCiro - Your Decentralized Revenue Engine</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    <!-- Three.js 3D Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+
+    <style>
+        :root {
+            --background: #000000;
+            --text-primary: #F0F2F5;
+            --text-secondary: #A8B2C2;
+            --accent-primary: #8A3FFC;
+            --accent-secondary: #EC4899;
+            --accent-tertiary: #00F5D4; /* New Neon Teal */
+        }
+
+        /* Custom Cursor */
+        .custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--accent-tertiary);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, border-color 0.2s;
+            z-index: 9999;
+        }
+        .custom-cursor.pointer {
+            width: 40px;
+            height: 40px;
+            border-color: var(--accent-secondary);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            cursor: none; /* Hide default cursor */
+        }
+        
+        #webgl-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            outline: none;
+            z-index: -1;
+        }
+        
+        .section-content {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 8rem 1.5rem;
+            width: 100%;
+        }
+        
+        .glass-panel {
+            background: rgba(16, 16, 16, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            border-radius: 1.5rem;
+            border: 2px solid transparent;
+            background: linear-gradient(120deg, var(--accent-primary), var(--accent-tertiary)) border-box;
+            -webkit-mask:
+                linear-gradient(#fff 0 0) padding-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .glass-panel:hover::before {
+           opacity: 1;
+        }
+
+        .glass-panel:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .cta-button {
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .cta-button:hover:before {
+            left: 100%;
+        }
+        
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 35px rgba(138, 63, 252, 0.6);
+        }
+        
+        .nav-header {
+            transition: background-color 0.4s ease-in-out;
+        }
+        
+        .nav-scrolled {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1, h2, h3 {
+             font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        /* AI Modal Styles */
+        .ai-modal {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: scale(0.95);
+        }
+
+        .ai-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1);
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-left-color: var(--accent-primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .form-input {
+            background-color: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 15px rgba(138, 63, 252, 0.4);
+        }
+
+        /* Preloader styles */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--background);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 0.5s ease-out;
+        }
+    </style>
+</head>
+<body class="w-full antialiased">
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="text-4xl font-bold tracking-wider font-space-grotesk">Otel<span class="gradient-text">Ciro</span></div>
+        <p class="mt-4 text-text-secondary">Initializing Growth Matrix...</p>
+    </div>
+
+    <!-- 3D Canvas -->
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- Navigation Header -->
+    <header id="main-header" class="nav-header fixed top-0 left-0 w-full p-6 z-50">
+        <nav class="container mx-auto flex justify-between items-center">
+            <div class="text-3xl font-bold tracking-wider font-space-grotesk">Otel<span class="gradient-text">Ciro</span></div>
+            <div class="hidden md:flex items-center space-x-8 text-sm">
+                <a href="#solution" class="hover:text-purple-400 transition-colors duration-300">Solution</a>
+                <a href="#how-it-works" class="hover:text-purple-400 transition-colors duration-300">Process</a>
+                <a href="#features" class="hover:text-purple-400 transition-colors duration-300">Features</a>
+                <a href="#ecosystem" class="hover:text-purple-400 transition-colors duration-300">Ecosystem</a>
+                <a href="#cta" class="bg-white/10 text-white font-semibold py-2 px-5 rounded-full hover:bg-white/20 transition-all duration-300">Book a Demo</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="relative z-10">
+        
+        <!-- SECTION 1: The Hook -->
+        <section id="hero" class="section-content text-center h-screen">
+            <h1 class="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-none z-10">
+                Beyond Hotel Software.
+            </h1>
+            <p class="mt-6 text-xl md:text-2xl max-w-3xl text-gray-300 z-10">
+                Your hotel doesn't need another subscription. It needs a <span class="gradient-text font-bold">Decentralized Revenue Engine.</span>
+            </p>
+            <div class="mt-12 z-10">
+                <a href="#cta" class="cta-button text-white font-bold py-4 px-8 rounded-full text-lg">
+                    Initiate Your Free Revenue Analysis
+                </a>
+            </div>
+            <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-10">
+                <div class="w-6 h-10 border-2 border-gray-400 rounded-full flex justify-center items-start p-1">
+                    <div class="w-1 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: The Problem -->
+        <section id="problem" class="section-content text-center">
+            <h2 class="text-4xl md:text-6xl font-bold max-w-4xl">
+                Juggling <span class="text-red-400">5 tools</span>, hiring <span class="text-red-400">4 experts</span>, and still guessing at your revenue?
+            </h2>
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl w-full">
+                <div class="glass-panel p-8 text-left">
+                    <h3 class="font-bold text-xl">Fragmented Data Silos</h3>
+                    <p class="text-text-secondary mt-2">Wasting capital trying to sync your PMS, Channel Manager, and marketing protocols.</p>
+                </div>
+                <div class="glass-panel p-8 text-left">
+                     <h3 class="font-bold text-xl">Centralized Expertise Bottleneck</h3>
+                    <p class="text-text-secondary mt-2">Can't afford a full-time Sales, Revenue, and Social Media team? You're not alone.</p>
+                </div>
+                <div class="glass-panel p-8 text-left">
+                     <h3 class="font-bold text-xl">Suboptimal Pricing Algorithms</h3>
+                    <p class="text-text-secondary mt-2">Losing bookings to competitors with superior pricing strategies and market insights.</p>
+                </div>
+                <div class="glass-panel p-8 text-left">
+                     <h3 class="font-bold text-xl">Weak Digital Presence</h3>
+                    <p class="text-text-secondary mt-2">Struggling to build a professional brand on social media that actually drives bookings.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: The Solution -->
+        <section id="solution" class="section-content text-center">
+            <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-tight max-w-5xl">
+                We Don't Just Provide Tools. <br/><span class="gradient-text">We Become Your Growth DAO.</span>
+            </h2>
+            <div class="mt-12 max-w-6xl grid md:grid-cols-2 gap-8 text-left">
+                <div class="glass-panel p-10">
+                    <h3 class="text-3xl font-bold">Your Expert Revenue Team</h3>
+                    <p class="text-text-secondary mt-4 text-lg">We provide a complete Sales, Revenue, and Marketing department that works for you daily. Our 20+ years of expertise drive your strategy and execution.</p>
+                </div>
+                 <div class="glass-panel p-10">
+                    <h3 class="text-3xl font-bold">Your Unified Growth Protocol</h3>
+                    <p class="text-text-secondary mt-4 text-lg">You get our entire technology suite—PMS, GDS, AI Analytics, and more—<span class="font-bold text-white">absolutely free</span> as part of the partnership. One unified platform, zero license fees.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: How It Works with 3D & AI -->
+        <section id="how-it-works" class="section-content">
+            <div class="text-center">
+                <h2 class="text-4xl md:text-6xl font-bold mb-4">A Simple Path to Predictable Growth</h2>
+                <p class="text-xl text-text-secondary mb-16 max-w-3xl mx-auto">Our partnership protocol is transparent, data-driven, and designed for results.</p>
+            </div>
+            <div id="process-container" class="w-full h-[500px] cursor-pointer relative">
+                <div id="process-text" class="absolute top-8 left-1/2 -translate-x-1/2 text-center pointer-events-none w-full max-w-lg">
+                    <h3 id="process-title" class="text-3xl font-bold transition-opacity duration-500"></h3>
+                    <p id="process-description" class="text-text-secondary mt-2 transition-opacity duration-500"></p>
+                </div>
+            </div>
+            <div class="mt-8 text-center">
+                 <button id="open-strategy-modal" class="cta-button text-white font-bold py-3 px-6 rounded-full text-lg">
+                      ✨ Generate a Sample AI Revenue Strategy
+                 </button>
+            </div>
+        </section>
+
+        <!-- SECTION 5: The Unbeatable Offer -->
+        <section id="guarantee" class="section-content text-center">
+            <div class="glass-panel p-10 md:p-16 max-w-4xl border-2 border-purple-500/50 shadow-2xl shadow-purple-500/10">
+                 <h2 class="text-3xl md:text-5xl font-bold">
+                      The OtelCiro Performance Guarantee
+                 </h2>
+                <p class="mt-6 text-xl md:text-2xl text-gray-200">
+                      If your revenue doesn't increase in <span class="font-bold text-white">6 months</span>, we work for free until it does.
+                </p>
+                <p class="mt-8 text-lg text-purple-300 font-semibold">We only succeed when you succeed. It's a true partnership.</p>
+            </div>
+        </section>
+        
+        <!-- SECTION 6: Features -->
+        <section id="features" class="section-content">
+             <div class="text-center">
+                <h2 class="text-4xl md:text-6xl font-bold mb-4">An Unrivaled Technology Suite</h2>
+                <p class="text-xl text-text-secondary mb-12 max-w-3xl mx-auto">Every tool you need to grow, fully integrated and provided free of charge.</p>
+            </div>
+            <div class="w-full max-w-6xl space-y-8">
+                <!-- PMS -->
+                <div class="glass-panel p-8 grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-2xl font-bold">Property Management System</h3>
+                        <p class="text-text-secondary mt-2">The operational heart of your hotel. Manage reservations, check-in/out, housekeeping, billing, and guest relations from one central hub.</p>
+                         <div class="mt-4">
+                              <button id="open-social-modal" class="bg-white/10 text-white font-semibold py-2 px-5 rounded-full hover:bg-white/20 transition-all duration-300">
+                                   ✨ Create AI Social Post
+                              </button>
+                         </div>
+                    </div>
+                    <ul class="text-text-secondary grid grid-cols-2 gap-3 text-sm">
+                        <li class="flex items-center"><svg class="w-4 h-4 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Room Management</li>
+                        <li class="flex items-center"><svg class="w-4 h-4 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Check-in / Checkout</li>
+                        <li class="flex items-center"><svg class="w-4 h-4 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Invoices / Folio</li>
+                        <li class="flex items-center"><svg class="w-4 h-4 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Housekeeping</li>
+                    </ul>
+                </div>
+                <!-- Channel Manager -->
+                <div class="glass-panel p-8 grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-2xl font-bold">Channel Manager</h3>
+                        <p class="text-text-secondary mt-2">Sync your rates, availability, and restrictions across all OTAs in real-time. Prevent overbookings and maximize your online presence effortlessly.</p>
+                    </div>
+                    <ul class="text-text-secondary grid grid-cols-2 gap-3 text-sm">
+                          <li class="flex items-center"><svg class="w-4 h-4 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Real-time ARI Sync</li>
+                          <li class="flex items-center"><svg class="w-4 h-4 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>OTA Bookings</li>
+                          <li class="flex items-center"><svg class="w-4 h-4 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Inventory Control</li>
+                          <li class="flex items-center"><svg class="w-4 h-4 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>PMS Integration</li>
+                    </ul>
+                </div>
+                <!-- More Features -->
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="glass-panel p-6">
+                        <h3 class="font-bold text-lg">CRM & Leads Management</h3>
+                        <p class="text-text-secondary mt-2">Automate guest communication and payment collection. Integrate with Google Ads to track your marketing ROI.</p>
+                        <button id="open-review-modal" class="mt-4 bg-white/10 text-white text-sm font-semibold py-2 px-4 rounded-full hover:bg-white/20 transition-all duration-300">
+                             ✨ Draft Review Response
+                        </button>
+                    </div>
+                     <div class="glass-panel p-6">
+                        <h3 class="font-bold text-lg">Expense & Accounting</h3>
+                        <p class="text-text-secondary mt-2">Manage accounts payable/receivable, track expenses, handle bank reconciliation, and oversee finances for hotel chains.</p>
+                    </div>
+                     <div class="glass-panel p-6">
+                        <h3 class="font-bold text-lg">Housekeeping & Maintenance</h3>
+                        <p class="text-text-secondary mt-2">Track room status, manage cleaning schedules, and handle maintenance tickets with IoT device integration.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7: The Ecosystem with 3D Logos -->
+        <section id="ecosystem" class="section-content">
+            <div id="ecosystem-content" class="text-center">
+                <h2 class="text-center text-4xl md:text-6xl font-bold mb-4">A World of Partners, Integrated.</h2>
+                <p class="text-center text-xl text-text-secondary mb-16 max-w-3xl mx-auto">We connect you to a vast network of global travel leaders.</p>
+            </div>
+            <div id="ecosystem-canvas-container" class="w-full h-[600px] cursor-grab"></div>
+             <div id="rate-chart-container" class="mt-16 glass-panel p-6 w-full max-w-4xl h-96 cursor-grab">
+                <h3 class="font-bold text-center text-white mb-4">Interactive Rate Variation Example</h3>
+                <!-- 3D Chart will be rendered here -->
+            </div>
+            <div class="mt-8 text-center w-full max-w-4xl">
+                <button id="analyze-chart-data" class="cta-button text-white font-bold py-3 px-6 rounded-full text-lg">
+                    ✨ Analyze This Rate Data
+                </button>
+                <div id="chart-analysis-loading" class="hidden mt-6 flex-col items-center justify-center">
+                    <div class="spinner !w-8 !h-8"></div>
+                    <p class="mt-2 text-text-secondary text-sm">AI is analyzing the trends...</p>
+                </div>
+                <div id="chart-analysis-result" class="hidden mt-6 glass-panel p-6 text-left">
+                    <h4 class="font-bold text-white mb-2">AI Data Insights:</h4>
+                    <p id="chart-analysis-output" class="text-text-secondary"></p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- SECTION 8: Call to Action -->
+        <section id="cta" class="section-content text-center">
+            <h2 class="text-4xl md:text-6xl font-bold">
+                Ready to trade complexity for <span class="gradient-text">Ciro</span>?
+            </h2>
+            <p class="mt-4 text-lg text-text-secondary max-w-2xl mx-auto">
+                Let us X-Ray your hotel's potential in a no-obligation 30-minute call.
+            </p>
+
+            <div class="mt-12 w-full max-w-lg">
+                <form class="glass-panel p-8">
+                    <div class="space-y-6">
+                          <input type="text" placeholder="Your Name" class="form-input w-full rounded-lg p-3 text-white placeholder-gray-400">
+                          <input type="email" placeholder="Email Address" class="form-input w-full rounded-lg p-3 text-white placeholder-gray-400">
+                    </div>
+                    <button type="submit" class="cta-button w-full mt-8 text-white font-bold py-4 px-8 rounded-full text-lg">
+                        Claim My Free Analysis
+                    </button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+    
+    <!-- AI Modals -->
+    <!-- Strategy Modal -->
+    <div id="strategy-modal" class="ai-modal fixed inset-0 bg-black/80 flex items-center justify-center z-[100] opacity-0 pointer-events-none">
+        <div class="glass-panel p-8 rounded-lg max-w-2xl w-full relative">
+            <button id="close-strategy-modal" class="absolute top-4 right-4 text-white text-3xl hover:text-red-500 transition-colors">&times;</button>
+            <h2 class="text-2xl font-bold mb-4">✨ AI Revenue Strategy Generator</h2>
+            <div id="strategy-form-container">
+                <p class="text-text-secondary mb-4">Enter some details about a hypothetical hotel to see an example of our AI-driven strategy.</p>
+                <div class="space-y-4">
+                    <input id="hotel-type" type="text" placeholder="e.g., Boutique Hotel, Beach Resort" class="form-input w-full rounded-lg p-3">
+                    <input id="hotel-rooms" type="number" placeholder="e.g., 50 (Number of Rooms)" class="form-input w-full rounded-lg p-3">
+                    <input id="hotel-audience" type="text" placeholder="e.g., Couples, Families, Business Travelers" class="form-input w-full rounded-lg p-3">
+                </div>
+                <button id="generate-strategy" class="cta-button w-full mt-6 py-3 rounded-full font-bold">Generate Strategy</button>
+            </div>
+            <div id="strategy-loading" class="hidden flex-col items-center justify-center min-h-[200px]">
+                <div class="spinner"></div>
+                <p class="mt-4 text-text-secondary">Our AI is crafting your strategy...</p>
+            </div>
+            <div id="strategy-result" class="hidden">
+                 <h3 class="font-bold text-lg mb-2">Generated 6-Month Strategy:</h3>
+                 <div id="strategy-output" class="text-left text-text-secondary bg-black/20 p-4 rounded-lg max-h-64 overflow-y-auto"></div>
+                 <button id="strategy-regenerate" class="w-full mt-4 bg-white/10 py-2 rounded-full hover:bg-white/20 transition-colors">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Social Post Modal -->
+    <div id="social-modal" class="ai-modal fixed inset-0 bg-black/80 flex items-center justify-center z-[100] opacity-0 pointer-events-none">
+        <div class="glass-panel p-8 rounded-lg max-w-lg w-full relative">
+            <button id="close-social-modal" class="absolute top-4 right-4 text-white text-3xl hover:text-red-500 transition-colors">&times;</button>
+            <h2 class="text-2xl font-bold mb-4">✨ AI Social Post Creator</h2>
+            <div id="social-form-container">
+                <p class="text-text-secondary mb-4">Describe an event or promotion, and our AI will write a social media post for you.</p>
+                <textarea id="social-prompt" placeholder="e.g., 20% off weekend stays in November" class="form-input w-full rounded-lg p-3 h-24"></textarea>
+                <button id="generate-social" class="cta-button w-full mt-4 py-3 rounded-full font-bold">Generate Post</button>
+            </div>
+            <div id="social-loading" class="hidden flex-col items-center justify-center min-h-[200px]">
+                <div class="spinner"></div>
+                <p class="mt-4 text-text-secondary">Our AI is writing your post...</p>
+            </div>
+            <div id="social-result" class="hidden">
+                 <h3 class="font-bold text-lg mb-2">Generated Instagram Post:</h3>
+                 <div id="social-output" class="text-left text-text-secondary bg-black/20 p-4 rounded-lg max-h-64 overflow-y-auto whitespace-pre-wrap"></div>
+                 <button id="social-regenerate" class="w-full mt-4 bg-white/10 py-2 rounded-full hover:bg-white/20 transition-colors">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Responder Modal -->
+    <div id="review-modal" class="ai-modal fixed inset-0 bg-black/80 flex items-center justify-center z-[100] opacity-0 pointer-events-none">
+        <div class="glass-panel p-8 rounded-lg max-w-lg w-full relative">
+            <button id="close-review-modal" class="absolute top-4 right-4 text-white text-3xl hover:text-red-500 transition-colors">&times;</button>
+            <h2 class="text-2xl font-bold mb-4">✨ AI Guest Review Responder</h2>
+            <div id="review-form-container">
+                <p class="text-text-secondary mb-4">Paste a customer's review below, and our AI will draft a professional response.</p>
+                <textarea id="review-prompt" placeholder="e.g., 'The location was great, but the room was a bit small and the Wi-Fi was slow.'" class="form-input w-full rounded-lg p-3 h-32"></textarea>
+                <div class="mt-4">
+                    <label class="text-text-secondary text-sm">Response Tone:</label>
+                    <div class="flex gap-4 mt-2" id="review-tone-selector">
+                        <button data-tone="Positive" class="flex-1 bg-white/10 text-white font-semibold py-2 px-4 rounded-full hover:bg-white/20 transition-all duration-300 border-2 border-transparent focus:outline-none">Positive</button>
+                        <button data-tone="Apologetic" class="flex-1 bg-white/10 text-white font-semibold py-2 px-4 rounded-full hover:bg-white/20 transition-all duration-300 border-2 border-transparent focus:outline-none">Apologetic</button>
+                        <button data-tone="Neutral" class="flex-1 bg-white/10 text-white font-semibold py-2 px-4 rounded-full hover:bg-white/20 transition-all duration-300 border-2 border-transparent focus:outline-none">Neutral</button>
+                    </div>
+                </div>
+                <button id="generate-review" class="cta-button w-full mt-6 py-3 rounded-full font-bold">Draft Response</button>
+            </div>
+            <div id="review-loading" class="hidden flex-col items-center justify-center min-h-[200px]">
+                <div class="spinner"></div>
+                <p class="mt-4 text-text-secondary">Our AI is drafting the response...</p>
+            </div>
+            <div id="review-result" class="hidden">
+                 <h3 class="font-bold text-lg mb-2">Generated Response:</h3>
+                 <div id="review-output" class="text-left text-text-secondary bg-black/20 p-4 rounded-lg max-h-64 overflow-y-auto whitespace-pre-wrap"></div>
+                 <button id="review-regenerate" class="w-full mt-4 bg-white/10 py-2 rounded-full hover:bg-white/20 transition-colors">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="module">
+        // --- GSAP & ScrollTrigger Setup ---
+        gsap.registerPlugin(ScrollTrigger);
+
+        // --- Main 3D Scene Setup ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({
+            canvas: document.querySelector('#webgl-canvas'),
+            alpha: true,
+            antialias: true,
+        });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.position.z = 5;
+        
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(5, 5, 5);
+        scene.add(directionalLight);
+
+
+        // --- New Central Data Crystal ---
+        const crystalGroup = new THREE.Group();
+        const icosahedronGeometry = new THREE.IcosahedronGeometry(1.5, 0);
+        
+        // Wireframe
+        const wireframeMaterial = new THREE.MeshBasicMaterial({ color: 0x8A3FFC, wireframe: true, transparent: true, opacity: 0.3 });
+        const wireframe = new THREE.Mesh(icosahedronGeometry, wireframeMaterial);
+        crystalGroup.add(wireframe);
+
+        // Points
+        const pointsMaterial = new THREE.PointsMaterial({ color: 0x00F5D4, size: 0.03 });
+        const points = new THREE.Points(icosahedronGeometry, pointsMaterial);
+        crystalGroup.add(points);
+        scene.add(crystalGroup);
+
+        // --- Background Data Stream ---
+        const lineCount = 400;
+        const lineSegments = 50;
+        const linesGroup = new THREE.Group();
+        for (let i = 0; i < lineCount; i++) {
+            const positions = new Float32Array((lineSegments + 1) * 3);
+            const startZ = (Math.random() - 0.5) * 100;
+            const speed = Math.random() * 0.1 + 0.02;
+            for (let j = 0; j <= lineSegments; j++) {
+                positions[j * 3] = (Math.random() - 0.5) * 30;
+                positions[j * 3 + 1] = (Math.random() - 0.5) * 30;
+                positions[j * 3 + 2] = startZ + (j * (50 / lineSegments));
+            }
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const material = new THREE.LineBasicMaterial({ color: 0x555555, transparent: true, opacity: 0.3 });
+            const line = new THREE.Line(geometry, material);
+            line.userData.speed = speed;
+            linesGroup.add(line);
+        }
+        scene.add(linesGroup);
+
+
+        // --- Interactive 3D Process Scene ---
+        const processContainer = document.getElementById('process-container');
+        const processScene = new THREE.Scene();
+        const processCamera = new THREE.PerspectiveCamera(75, processContainer.clientWidth / processContainer.clientHeight, 0.1, 1000);
+        const processRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        processRenderer.setSize(processContainer.clientWidth, processContainer.clientHeight);
+        processContainer.appendChild(processRenderer.domElement);
+        processCamera.position.z = 12;
+        processScene.add(new THREE.AmbientLight(0xffffff, 0.7));
+        const processLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        processLight.position.set(5,5,5);
+        processScene.add(processLight);
+
+        const spotLight = new THREE.SpotLight(0xffffff, 2, 30, Math.PI * 0.15, 0.5);
+        spotLight.position.set(0, 5, 15);
+        spotLight.target.position.set(0, 0, 0);
+        processScene.add(spotLight);
+        processScene.add(spotLight.target);
+
+        const processModels = new THREE.Group();
+        processScene.add(processModels);
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        
+        const processSteps = [
+            { name: "Analysis", title: "1. Deep-Dive Analysis", description: "We start by analyzing your market position, competitor pricing, and historical performance data to identify key growth opportunities." },
+            { name: "Strategy", title: "2. AI-Powered Strategy", description: "Our team, supported by proprietary AI, crafts a dynamic pricing and distribution strategy tailored to your hotel's unique goals." },
+            { name: "Execution", title: "3. Daily Execution & Optimization", description: "This is where we become your team. We manage your rates, inventory, and marketing daily, adapting to market changes in real-time." }
+        ];
+        let currentProcessStep = 0;
+
+        // --- Revamped Process Models ---
+        // Analysis Model: Deconstructing Cube
+        const analysisGroup = new THREE.Group();
+        const boxSize = 2;
+        const divisions = 3;
+        const smallCubeSize = boxSize / divisions;
+        for (let x = 0; x < divisions; x++) {
+            for (let y = 0; y < divisions; y++) {
+                for (let z = 0; z < divisions; z++) {
+                    const geo = new THREE.BoxGeometry(smallCubeSize * 0.8, smallCubeSize * 0.8, smallCubeSize * 0.8);
+                    const mat = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.8, roughness: 0.3 });
+                    const mesh = new THREE.Mesh(geo, mat);
+                    mesh.position.set(
+                        (x - (divisions - 1) / 2) * smallCubeSize,
+                        (y - (divisions - 1) / 2) * smallCubeSize,
+                        (z - (divisions - 1) / 2) * smallCubeSize
+                    );
+                    analysisGroup.add(mesh);
+                }
+            }
+        }
+        analysisGroup.position.x = -8;
+        analysisGroup.name = "Analysis";
+        processModels.add(analysisGroup);
+        
+        // Strategy Model: Interconnected Node Graph
+        const strategyGroup = new THREE.Group();
+        const s_mat = new THREE.MeshStandardMaterial({ color: 0xA855F7, emissive: new THREE.Color(0x000000), metalness: 0.5, roughness: 0.4});
+        const s_geo = new THREE.SphereGeometry(0.5, 32, 32);
+        const nodePoints = [new THREE.Vector3(0,0,0), new THREE.Vector3(3,1.5,0), new THREE.Vector3(-3,-1.5,0), new THREE.Vector3(2,-2,1), new THREE.Vector3(-2, 2, -1)];
+        const lineMat = new THREE.LineBasicMaterial({color: 0xA855F7, transparent: true, opacity: 0.7});
+        nodePoints.forEach(p => {
+            const node = new THREE.Mesh(s_geo, s_mat);
+            node.position.copy(p);
+            strategyGroup.add(node);
+            if (p.length() > 0) { // Connect to center node
+                const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints([nodePoints[0], p]), lineMat);
+                strategyGroup.add(line);
+            }
+        });
+        strategyGroup.name = "Strategy";
+        processModels.add(strategyGroup);
+        
+        // Execution Model: Interlocking Rings
+        const executionGroup = new THREE.Group();
+        const ringMat = new THREE.MeshStandardMaterial({ color: 0x4F46E5, emissive: new THREE.Color(0x000000), metalness: 0.6, roughness: 0.4, side: THREE.DoubleSide });
+        const ring1 = new THREE.Mesh(new THREE.TorusGeometry(1.5, 0.15, 16, 100), ringMat);
+        const ring2 = ring1.clone();
+        ring2.rotation.x = Math.PI / 2;
+        const ring3 = ring1.clone();
+        ring3.rotation.y = Math.PI / 2;
+        executionGroup.add(ring1, ring2, ring3);
+        executionGroup.position.x = 8;
+        executionGroup.name = "Execution";
+        processModels.add(executionGroup);
+
+
+        // --- 3D Ecosystem Logos ---
+        let ecosystemScene, ecosystemCamera, ecosystemRenderer, logoGroup, ecosystemConnections = [];
+        const otelCiroCoreMaterial = new THREE.MeshStandardMaterial({
+            color: 0x8A3FFC,
+            emissive: 0x8A3FFC,
+            metalness: 0.8,
+            roughness: 0.2,
+            transparent: true,
+            opacity: 0.8
+        });
+        
+        function initEcosystem() {
+            const container = document.getElementById('ecosystem-canvas-container');
+            if (container.childElementCount > 0) return;
+            ecosystemScene = new THREE.Scene();
+            ecosystemCamera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            ecosystemRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            ecosystemRenderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(ecosystemRenderer.domElement);
+            ecosystemCamera.position.z = 25;
+            logoGroup = new THREE.Group();
+            ecosystemScene.add(logoGroup);
+            const light = new THREE.DirectionalLight(0xffffff, 1.5);
+            light.position.set(5,10,15);
+            ecosystemScene.add(light);
+            ecosystemScene.add(new THREE.AmbientLight(0xffffff, 0.5));
+            
+            // --- OtelCiro Core ---
+            const coreGroup = new THREE.Group();
+            const coreSphere = new THREE.Mesh(new THREE.IcosahedronGeometry(1.8, 1), otelCiroCoreMaterial);
+            const coreWire = new THREE.Mesh(new THREE.IcosahedronGeometry(2.2, 1), new THREE.MeshBasicMaterial({color: 0x00F5D4, wireframe: true, transparent: true, opacity: 0.5}));
+            coreGroup.add(coreSphere, coreWire);
+            logoGroup.add(coreGroup);
+
+            // --- Expanded Logo List ---
+            const logoUrls = ['https://logo.clearbit.com/booking.com', 'https://logo.clearbit.com/expediagroup.com', 'https://logo.clearbit.com/airbnb.com', 'https://logo.clearbit.com/trip.com', 'https://logo.clearbit.com/agoda.com', 'https://logo.clearbit.com/google.com', 'https://logo.clearbit.com/amadeus.com', 'https://logo.clearbit.com/sabre.com', 'https://logo.clearbit.com/oracle.com', 'https://logo.clearbit.com/siteminder.com', 'https://logo.clearbit.com/clock-software.com', 'https://logo.clearbit.com/tripadvisor.com', 'https://logo.clearbit.com/trivago.com', 'https://logo.clearbit.com/makemytrip.com', 'https://logo.clearbit.com/traveloka.com', 'https://logo.clearbit.com/hotelbeds.com', 'https://logo.clearbit.com/webbeds.com', 'https://logo.clearbit.com/stripe.com', 'https://logo.clearbit.com/paypal.com', 'https://logo.clearbit.com/skyscanner.net', 'https://logo.clearbit.com/kayak.com', 'https://logo.clearbit.com/hostelworld.com', 'https://logo.clearbit.com/hrs.com', 'https://logo.clearbit.com/gds.com', 'https://logo.clearbit.com/travelport.com'];
+            const loader = new THREE.TextureLoader();
+            const points = [];
+            const phi = Math.PI * (3. - Math.sqrt(5.)); // Golden angle formula
+            for (let i = 0; i < logoUrls.length; i++) {
+                const y = 1 - (i / (logoUrls.length - 1)) * 2;  // y goes from 1 to -1
+                const radius = Math.sqrt(1 - y * y);
+                const theta = phi * i;
+                points.push(new THREE.Vector3(Math.cos(theta) * radius,y,Math.sin(theta) * radius).multiplyScalar(15));
+            }
+
+            logoUrls.forEach((url, i) => {
+                loader.load(url, (texture) => {
+                    const material = new THREE.MeshStandardMaterial({ 
+                        map: texture, 
+                        metalness: 0.3, 
+                        roughness: 0.6,
+                        transparent: true,
+                        opacity: 0.9,
+                        side: THREE.DoubleSide
+                    });
+                    const plaque = new THREE.Mesh(new THREE.PlaneGeometry(3, 1.5), material);
+                    plaque.position.copy(points[i]);
+                    plaque.lookAt(0,0,0);
+                    logoGroup.add(plaque);
+                    
+                    // --- Add Connection Line ---
+                    const lineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0), plaque.position]);
+                    const lineMat = new THREE.LineBasicMaterial({color: 0x00F5D4, transparent: true, opacity: 0.3});
+                    const line = new THREE.Line(lineGeo, lineMat);
+                    logoGroup.add(line);
+                    ecosystemConnections.push(line);
+
+                }, undefined, () => {
+                   const placeholderMat = new THREE.MeshBasicMaterial({color: 0x333333});
+                   const placeholder = new THREE.Mesh(new THREE.BoxGeometry(3, 1.5, 0.1), placeholderMat);
+                   placeholder.position.copy(points[i]);
+                   placeholder.lookAt(0,0,0);
+                   logoGroup.add(placeholder);
+                });
+            });
+
+            let isDragging = false, previousMouseX = 0, autoRotate = true;
+            container.addEventListener('mousedown', (e) => { isDragging = true; previousMouseX = e.clientX; autoRotate = false; });
+            document.addEventListener('mouseup', () => { isDragging = false; setTimeout(() => autoRotate = true, 5000); });
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const delta = e.clientX - previousMouseX;
+                logoGroup.rotation.y += delta * 0.005;
+                previousMouseX = e.clientX;
+            });
+            
+            function animateEcosystem() {
+                requestAnimationFrame(animateEcosystem);
+                if (autoRotate && logoGroup) {
+                    logoGroup.rotation.y += 0.0008;
+                    logoGroup.rotation.x += 0.0003;
+                }
+                // Animate core
+                coreSphere.material.emissiveIntensity = Math.sin(clock.getElapsedTime() * 2) * 0.5 + 0.5;
+                coreWire.rotation.y += 0.005;
+                
+                if (ecosystemScene) {
+                    ecosystemRenderer.render(ecosystemScene, ecosystemCamera);
+                }
+            }
+            animateEcosystem();
+        }
+        
+        // --- 3D Rate Chart ---
+        const rateData = [2580, 2620, 2590, 2550, 2480, 2450, 2350, 2280, 2390, 2480, 2520, 2690, 2810, 2780]; 
+        let chartScene, chartCamera, chartRenderer, chartGroup, chartTracer;
+        function initChart() {
+             const container = document.getElementById('rate-chart-container');
+             chartScene = new THREE.Scene();
+             chartCamera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
+             chartRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+             chartRenderer.setSize(container.clientWidth, container.clientHeight);
+             container.appendChild(chartRenderer.domElement);
+             chartCamera.position.set(0, 5, 20);
+             chartCamera.lookAt(0,0,0);
+             chartScene.add(new THREE.AmbientLight(0xffffff, 0.8));
+             const chartLight = new THREE.DirectionalLight(0xffffff, 1);
+             chartLight.position.set(5, 10, 7);
+             chartScene.add(chartLight);
+             chartGroup = new THREE.Group();
+             chartScene.add(chartGroup);
+             
+             // Add a point light tracer
+             chartTracer = new THREE.PointLight(0x00F5D4, 2, 5);
+             chartScene.add(chartTracer);
+        }
+        initChart();
+
+
+        // --- Animation Loop ---
+        const clock = new THREE.Clock();
+        function animate() {
+            requestAnimationFrame(animate);
+            const elapsedTime = clock.getElapsedTime();
+            
+            // Animate main scene
+            crystalGroup.rotation.y += 0.002;
+            crystalGroup.rotation.x += 0.001;
+            linesGroup.children.forEach(line => {
+                line.position.z += line.userData.speed;
+                if (line.position.z > 50) {
+                    line.position.z = -50;
+                }
+            });
+            
+            // Animate passive process models
+            analysisGroup.children.forEach((cube, i) => {
+                cube.rotation.x += 0.001 * (i % 3 + 1);
+                cube.rotation.y += 0.001 * (i % 5 + 1);
+            });
+            strategyGroup.rotation.y -= 0.001;
+            
+            if (chartScene) {
+                chartRenderer.render(chartScene, chartCamera);
+            }
+
+            processRenderer.render(processScene, processCamera);
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // --- Scroll Animations ---
+        gsap.to(crystalGroup.rotation, { x: 1, y: 1.5, scrollTrigger: { trigger: "body", start: "top top", end: "bottom bottom", scrub: 1.5 }});
+        gsap.to(camera.position, { z: 2.5, scrollTrigger: { trigger: "body", start: "top top", end: "bottom bottom", scrub: 1.5 }});
+        
+        document.querySelectorAll('section').forEach((section) => {
+            gsap.fromTo(section.children, 
+                { y: 50, opacity: 0 }, 
+                { 
+                    y: 0, 
+                    opacity: 1, 
+                    duration: 1,
+                    stagger: 0.2,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: section,
+                        start: 'top 80%',
+                    }
+                }
+            );
+        });
+        
+        // --- Process Section Animation ---
+        function updateProcessText() {
+            const step = processSteps[currentProcessStep];
+            document.getElementById('process-title').textContent = step.title;
+            document.getElementById('process-description').textContent = step.description;
+        }
+        updateProcessText();
+
+        ScrollTrigger.create({
+            trigger: "#how-it-works",
+            start: "top top",
+            end: "+=2000",
+            pin: true,
+            scrub: 1,
+            onUpdate: (self) => {
+                const progress = self.progress;
+                const step = Math.min(2, Math.floor(progress * 3));
+
+                // Animate the main group's position to slide between models
+                gsap.to(processModels.position, {
+                    x: -step * 8 + (self.progress * 3 - step) * -8, // Smooth transition between steps
+                    duration: 0.5,
+                    ease: "power2.out"
+                });
+
+                if (step !== currentProcessStep) {
+                    gsap.to(['#process-title', '#process-description'], {
+                        opacity: 0,
+                        duration: 0.3,
+                        onComplete: () => {
+                            currentProcessStep = step;
+                            updateProcessText();
+                            gsap.to(['#process-title', '#process-description'], { opacity: 1, duration: 0.3 });
+                        }
+                    });
+
+                    const targetObject = processModels.children[step];
+                    gsap.to(spotLight.target.position, {
+                        x: targetObject.position.x,
+                        y: targetObject.position.y,
+                        z: targetObject.position.z,
+                        duration: 1.5,
+                        ease: "power3.inOut"
+                    });
+                    
+                    // Animate the models themselves based on which is active
+                    processModels.children.forEach((model, index) => {
+                         const materials = [];
+                         model.traverse(child => { if(child.isMesh) materials.push(child.material) });
+
+                        if (index === step) {
+                             // Animate IN
+                            if (model.name === "Execution") {
+                                model.children.forEach((ring, i) => {
+                                    gsap.to(ring.rotation, { [i === 0 ? 'z' : (i === 1 ? 'x' : 'y')] : "+=6.28", duration: 8, ease: "none", repeat: -1, overwrite: true });
+                                });
+                            }
+                            materials.forEach(mat => {
+                                if(mat.emissive) gsap.to(mat.emissive, { r: 0.3, g: 0.1, b: 0.5, duration: 1, ease: 'power2.out' });
+                            });
+                        } else {
+                            // Animate OUT
+                            if (model.name === "Execution") {
+                                model.children.forEach(ring => gsap.killTweensOf(ring.rotation));
+                            }
+                            materials.forEach(mat => {
+                                if(mat.emissive) gsap.to(mat.emissive, { r: 0, g: 0, b: 0, duration: 1, ease: 'power2.out' });
+                            });
+                        }
+                    });
+                }
+            }
+        });
+
+        // --- Process Scene Hover Effects ---
+        let hoveredObject = null;
+        processContainer.addEventListener('mousemove', (event) => {
+            const rect = processContainer.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, processCamera);
+            const intersects = raycaster.intersectObjects(processModels.children, true);
+
+            if (intersects.length > 0) {
+                let topObject = intersects[0].object;
+                while(topObject.parent && topObject.parent !== processModels) {
+                    topObject = topObject.parent;
+                }
+                if (hoveredObject !== topObject) {
+                    if (hoveredObject) { 
+                        gsap.to(hoveredObject.scale, { x: 1, y: 1, z: 1, duration: 0.3, ease: 'power2.out' });
+                    }
+                    hoveredObject = topObject;
+                    gsap.to(hoveredObject.scale, { x: 1.1, y: 1.1, z: 1.1, duration: 0.3, ease: 'power2.out' });
+                }
+            } else {
+                 if (hoveredObject) {
+                    gsap.to(hoveredObject.scale, { x: 1, y: 1, z: 1, duration: 0.3, ease: 'power2.out' });
+                    hoveredObject = null;
+                }
+            }
+        }, false);
+
+
+        // --- UI & Event Listeners ---
+        const header = document.getElementById('main-header');
+        ScrollTrigger.create({ start: 'top -80', end: 99999, toggleClass: { className: 'nav-scrolled', targets: header } });
+        ScrollTrigger.create({ trigger: '#ecosystem', start: 'top center', onEnter: initEcosystem, once: true });
+
+        // Custom cursor logic
+        const cursor = document.querySelector('.custom-cursor');
+        window.addEventListener('mousemove', e => {
+            gsap.to(cursor, {
+                duration: 0.2,
+                x: e.clientX,
+                y: e.clientY,
+                ease: 'power2.out'
+            });
+        });
+        document.querySelectorAll('a, button, input, textarea, [class*="cursor-grab"]').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('pointer'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('pointer'));
+        });
+
+        // --- Preloader ---
+        window.addEventListener('load', () => {
+            gsap.to('#preloader', {
+                opacity: 0,
+                duration: 0.5,
+                onComplete: () => {
+                    document.getElementById('preloader').style.display = 'none';
+                }
+            });
+        });
+
+
+        // --- Gemini API Function ---
+        async function callGeminiAPI(prompt, systemPrompt) {
+            // IMPORTANT: PASTE YOUR GOOGLE AI API KEY HERE
+             const apiKey = ""; 
+             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+             const payload = {
+                 contents: [{ parts: [{ text: prompt }] }],
+             };
+            if(systemPrompt) {
+                payload.systemInstruction = { parts: [{ text: systemPrompt }] };
+            }
+
+             try {
+                 const response = await fetch(apiUrl, {
+                     method: 'POST',
+                     headers: { 'Content-Type': 'application/json' },
+                     body: JSON.stringify(payload)
+                 });
+                 if (!response.ok) {
+                     throw new Error(`API call failed with status: ${response.status}`);
+                 }
+                 const result = await response.json();
+                 // Add this check for safety
+                 if (result.candidates && result.candidates.length > 0 && result.candidates[0].content.parts.length > 0) {
+                    return result.candidates[0].content.parts[0].text;
+                 }
+                 return "The AI returned an empty response. Please try again.";
+             } catch (error) {
+                 console.error("Gemini API call error:", error);
+                 return `Sorry, there was an error generating the content. Please check if your API key is valid and try again. Error: ${error.message}`;
+             }
+        }
+
+        // --- AI Modal Logic ---
+        function setupModal(openBtnId, closeBtnId, regenerateBtnId, modalId, formContainerId, loadingId, resultId, generateBtnId, promptHandler) {
+            const modal = document.getElementById(modalId);
+            const formContainer = document.getElementById(formContainerId);
+            const loading = document.getElementById(loadingId);
+            const result = document.getElementById(resultId);
+            
+            document.getElementById(openBtnId).addEventListener('click', () => modal.classList.add('active'));
+            document.getElementById(closeBtnId).addEventListener('click', () => modal.classList.remove('active'));
+            
+            document.getElementById(regenerateBtnId).addEventListener('click', () => {
+                result.classList.add('hidden');
+                formContainer.classList.remove('hidden');
+            });
+
+            document.getElementById(generateBtnId).addEventListener('click', async () => {
+                const { prompt, systemPrompt, outputElement } = promptHandler();
+                if (!prompt) {
+                    alert("Please fill out all fields to generate a response.");
+                    return;
+                }
+                
+                formContainer.classList.add('hidden');
+                loading.classList.remove('hidden');
+                loading.classList.add('flex'); // Ensure it's visible
+
+                const apiResult = await callGeminiAPI(prompt, systemPrompt);
+
+                outputElement.innerText = apiResult;
+                loading.classList.add('hidden');
+                loading.classList.remove('flex');
+                result.classList.remove('hidden');
+            });
+        }
+        
+        setupModal('open-strategy-modal', 'close-strategy-modal', 'strategy-regenerate', 'strategy-modal', 'strategy-form-container', 'strategy-loading', 'strategy-result', 'generate-strategy', () => {
+             const hotelType = document.getElementById('hotel-type').value;
+             const roomCount = document.getElementById('hotel-rooms').value;
+             const audience = document.getElementById('hotel-audience').value;
+             if (!hotelType || !roomCount || !audience) return {};
+             
+             return {
+                 prompt: `Generate a concise, bulleted, 6-month revenue growth strategy for a ${roomCount}-room ${hotelType} targeting ${audience}. Focus on actionable steps across pricing, distribution, and direct bookings.`,
+                 systemPrompt: "You are an expert hotel revenue manager providing a sample strategy for a potential client. Be professional, concise, and insightful.",
+                 outputElement: document.getElementById('strategy-output'),
+             };
+        });
+
+        setupModal('open-social-modal', 'close-social-modal', 'social-regenerate', 'social-modal', 'social-form-container', 'social-loading', 'social-result', 'generate-social', () => {
+            const socialPrompt = document.getElementById('social-prompt').value;
+            if (!socialPrompt) return {};
+
+            return {
+                prompt: `Write a captivating Instagram post for a hotel promotion. The promotion is: "${socialPrompt}". Include an enticing opening, key details, a call to action, and relevant hashtags.`,
+                systemPrompt: "You are a creative social media manager for luxury and boutique hotels. Your tone is engaging, aspirational, and friendly.",
+                outputElement: document.getElementById('social-output'),
+            };
+        });
+
+        // --- NEW: Review Responder Modal Setup ---
+        const toneSelector = document.getElementById('review-tone-selector');
+        let selectedTone = 'Positive'; // Default
+        toneSelector.children[0].classList.add('!border-accent-primary', 'bg-white/20');
+
+        toneSelector.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                Array.from(toneSelector.children).forEach(btn => {
+                    btn.classList.remove('!border-accent-primary', 'bg-white/20');
+                });
+                e.target.classList.add('!border-accent-primary', 'bg-white/20');
+                selectedTone = e.target.dataset.tone;
+            }
+        });
+
+        setupModal('open-review-modal', 'close-review-modal', 'review-regenerate', 'review-modal', 'review-form-container', 'review-loading', 'review-result', 'generate-review', () => {
+            const reviewPrompt = document.getElementById('review-prompt').value;
+            if (!reviewPrompt) return {};
+
+            return {
+                prompt: `You are a hotel manager responding to a guest review. The review is: "${reviewPrompt}". Write a professional, empathetic response with a ${selectedTone} tone. Keep it concise and thank the guest for their feedback. Address the specific points mentioned in the review.`,
+                systemPrompt: "You are a helpful and professional assistant for hotel managers. Your tone should be courteous and reflect the hospitality industry's standards.",
+                outputElement: document.getElementById('review-output'),
+            };
+        });
+        
+        // --- NEW: Chart Analysis Logic ---
+        document.getElementById('analyze-chart-data').addEventListener('click', async () => {
+            const loadingDiv = document.getElementById('chart-analysis-loading');
+            const resultDiv = document.getElementById('chart-analysis-result');
+            const outputP = document.getElementById('chart-analysis-output');
+
+            resultDiv.classList.add('hidden');
+            loadingDiv.classList.remove('hidden');
+            loadingDiv.classList.add('flex');
+
+            const prompt = `You are a hotel revenue analyst. The following array represents the average daily rate for a hotel over a 14-day period: [${rateData.join(', ')}]. Provide a brief, one-paragraph analysis of these rate fluctuations. Identify any obvious trends (e.g., weekend spikes, mid-week dips) and suggest one actionable strategy based on this data.`;
+            
+            const analysis = await callGeminiAPI(prompt, "You are an expert hotel revenue analyst providing concise insights.");
+
+            outputP.innerText = analysis;
+            loadingDiv.classList.add('hidden');
+            loadingDiv.classList.remove('flex');
+            resultDiv.classList.remove('hidden');
+        });
+
+        // --- Rate Chart Drag & Interaction Logic ---
+        let isChartDragging = false, previousChartMouseX = 0;
+        const chartContainer = document.getElementById('rate-chart-container');
+        chartContainer.addEventListener('mousedown', (e) => { isChartDragging = true; previousChartMouseX = e.clientX; });
+        document.addEventListener('mouseup', () => isChartDragging = false );
+        document.addEventListener('mousemove', (e) => {
+            if (!isChartDragging) return;
+            const delta = e.clientX - previousChartMouseX;
+            chartGroup.rotation.y += delta * 0.01;
+            previousChartMouseX = e.clientX;
+        });
+
+        let chartCurve;
+        chartContainer.addEventListener('mousemove', (event) => {
+            if (isChartDragging || !chartCurve) return;
+            const rect = chartContainer.getBoundingClientRect();
+            const mouseX = ((event.clientX - rect.left) / rect.width); // 0 to 1
+            const pointOnCurve = chartCurve.getPointAt(Math.max(0, Math.min(1, mouseX)));
+            
+            // Convert local chart group coords to world coords for light
+            const worldPosition = chartGroup.localToWorld(pointOnCurve.clone());
+            chartTracer.position.copy(worldPosition);
+        });
+        chartContainer.addEventListener('mouseleave', () => {
+            chartTracer.position.set(1000, 1000, 1000); // Move light off-screen
+        });
+
+
+        // --- Rate Data & Chart Creation ---
+        const createRateChart = () => {
+             if(chartGroup.children.length > 0) { // Clear previous chart if any
+                while(chartGroup.children.length > 0){ 
+                    chartGroup.remove(chartGroup.children[0]); 
+                }
+             }
+             const points = rateData.map((d, i) => new THREE.Vector3(i * 1.5 - (rateData.length * 1.5 / 2), (d - 2500)/40, 0));
+             
+             chartCurve = new THREE.CatmullRomCurve3(points);
+             const curvePoints = chartCurve.getPoints( 100 );
+             const geometry = new THREE.BufferGeometry().setFromPoints( curvePoints );
+             const colors = [];
+             const color = new THREE.Color();
+             const color1 = new THREE.Color(0x8A3FFC);
+             const color2 = new THREE.Color(0xEC4899);
+
+             for (let i = 0; i < curvePoints.length; i++) {
+                 color.lerpColors(color1, color2, i/curvePoints.length);
+                 colors.push(color.r, color.g, color.b);
+             }
+             geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+             
+             const material = new THREE.LineBasicMaterial( { vertexColors: true, linewidth: 4 } );
+             const curveObject = new THREE.Line( geometry, material );
+             chartGroup.add(curveObject);
+
+             const pointGeo = new THREE.SphereGeometry(0.15, 16, 16);
+             const pointMat = new THREE.MeshStandardMaterial({color: 0xffffff, emissive: 0xaaaaaa, metalness: 0.2, roughness: 0.5});
+             points.forEach(p => {
+                 const pointMesh = new THREE.Mesh(pointGeo, pointMat);
+                 pointMesh.position.copy(p);
+                 chartGroup.add(pointMesh);
+             });
+
+             const grid = new THREE.GridHelper(22, 10, 0x444444, 0x444444);
+             grid.rotation.x = Math.PI / 2;
+             grid.position.y = -3;
+             chartGroup.add(grid);
+        };
+        createRateChart();
+
+    </script>
+</body>
+</html>
+
