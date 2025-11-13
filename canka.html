@@ -1,0 +1,1160 @@
+<!doctype html>
+<html lang="tr">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canka Residence Hotel - OTA Optimizasyon Önerisi</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100%;
+            color: #0f172a;
+            line-height: 1.6;
+            font-size: 15px;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 100px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4, #10b981, #f59e0b);
+            z-index: 1000;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 64px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header h1 {
+            color: #ffffff;
+            font-size: 42px;
+            font-weight: 800;
+            margin: 0 0 12px 0;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .subtitle {
+            color: #cbd5e1;
+            font-size: 20px;
+            font-weight: 500;
+            margin: 0 0 24px 0;
+            opacity: 0.9;
+        }
+
+        .header .intro-text {
+            color: #e2e8f0;
+            font-size: 17px;
+            max-width: 900px;
+            margin: 0;
+            line-height: 1.7;
+            opacity: 0.85;
+        }
+
+        .nav-tabs {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 80px;
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .nav-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-tab {
+            padding: 20px 28px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            color: #64748b;
+            border-bottom: 3px solid transparent;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transform: translateY(0);
+        }
+
+        .nav-tab:hover {
+            transform: translateY(-2px);
+        }
+
+        .nav-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(-50%);
+            z-index: -1;
+        }
+
+        .nav-tab:hover::before {
+            width: 100%;
+        }
+
+        .nav-tab:hover {
+            color: #1e293b;
+        }
+
+        .nav-tab.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+            background: transparent;
+            font-weight: 600;
+        }
+
+        .nav-tab.active::before {
+            width: 100%;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        }
+
+        .content-section {
+            display: none;
+            background: #ffffff;
+            padding: 64px 80px;
+            min-height: 80vh;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes staggerIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .objectives-grid .objective-card {
+            animation: staggerIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 0;
+        }
+
+        .objectives-grid .objective-card:nth-child(1) { animation-delay: 0.1s; }
+        .objectives-grid .objective-card:nth-child(2) { animation-delay: 0.2s; }
+        .objectives-grid .objective-card:nth-child(3) { animation-delay: 0.3s; }
+        .objectives-grid .objective-card:nth-child(4) { animation-delay: 0.4s; }
+        .objectives-grid .objective-card:nth-child(5) { animation-delay: 0.5s; }
+
+        .section-title {
+            color: #0f172a;
+            font-size: 36px;
+            font-weight: 800;
+            margin: 0 0 48px 0;
+            letter-spacing: -0.02em;
+            position: relative;
+            padding-bottom: 16px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 2px;
+        }
+
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 32px;
+            margin-top: 48px;
+        }
+
+        .objective-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid #e2e8f0;
+            padding: 40px 32px;
+            border-radius: 16px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .objective-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            transform: scaleX(0);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .objective-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .objective-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: translateY(-12px) scale(1.02);
+        }
+
+        .objective-card .icon {
+            font-size: 32px;
+            margin-bottom: 24px;
+            display: block;
+            filter: grayscale(0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(1);
+        }
+
+        .objective-card:hover .icon {
+            filter: grayscale(0);
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .objective-card h3 {
+            color: #0f172a;
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0 0 12px 0;
+            letter-spacing: -0.01em;
+        }
+
+        .objective-card p {
+            color: #64748b;
+            font-size: 15px;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .pricing-plans {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 40px;
+            margin-top: 48px;
+        }
+
+        .pricing-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 40px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        }
+
+        .pricing-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 32px 64px -12px rgba(59, 130, 246, 0.35), 0 20px 25px -5px rgba(59, 130, 246, 0.1);
+            transform: translateY(-8px) scale(1.02);
+        }
+
+        .pricing-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, rgba(147, 197, 253, 0.02) 100%);
+            opacity: 0;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 20px;
+            pointer-events: none;
+        }
+
+        .pricing-card:hover::after {
+            opacity: 1;
+        }
+
+        .pricing-card h3 {
+            color: #0f172a;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 0 24px 0;
+            letter-spacing: -0.01em;
+        }
+
+        .pricing-card .price-highlight {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border: 1px solid #93c5fd;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 24px 0;
+            font-weight: 600;
+            color: #1d4ed8;
+            font-size: 15px;
+        }
+
+        .room-types-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 48px;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .room-types-table th {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: #ffffff;
+            padding: 20px 24px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .room-types-table td {
+            padding: 24px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 15px;
+            transition: all 0.2s ease;
+        }
+
+        .room-types-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .room-types-table tbody tr {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .room-types-table tbody tr:hover {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            transform: translateX(4px);
+            box-shadow: 4px 0 12px rgba(59, 130, 246, 0.1);
+        }
+
+        .room-types-table .room-name {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .room-types-table .price {
+            font-weight: 700;
+            color: #059669;
+            font-size: 16px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 24px 0;
+        }
+
+        .feature-list li {
+            padding: 16px 0;
+            position: relative;
+            padding-left: 36px;
+            font-size: 15px;
+            color: #475569;
+            border-bottom: 1px solid #f1f5f9;
+            transition: all 0.2s ease;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-list li:hover {
+            color: #0f172a;
+            padding-left: 40px;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            top: 16px;
+            color: #059669;
+            font-weight: 700;
+            font-size: 16px;
+            width: 24px;
+            height: 24px;
+            background: #dcfce7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 1px solid #f59e0b;
+            padding: 32px;
+            border-radius: 16px;
+            margin: 48px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .highlight-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .highlight-box h4 {
+            color: #92400e;
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0 0 16px 0;
+            letter-spacing: -0.01em;
+        }
+
+        .highlight-box p {
+            color: #a16207;
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 32px;
+            margin-top: 48px;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid #e2e8f0;
+            padding: 32px;
+            border-radius: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .info-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border-color: #3b82f6;
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, rgba(147, 197, 253, 0.02) 100%);
+            opacity: 0;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 16px;
+            pointer-events: none;
+        }
+
+        .info-card:hover::before {
+            opacity: 1;
+        }
+
+        .info-card h4 {
+            color: #0f172a;
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0 0 16px 0;
+            letter-spacing: -0.01em;
+        }
+
+        .info-card p {
+            color: #475569;
+            font-size: 15px;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .name-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 48px;
+        }
+
+        .name-option {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid #cbd5e1;
+            padding: 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            color: #1e293b;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .name-option:hover {
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            transform: translateX(12px) scale(1.01);
+            box-shadow: 0 8px 25px -8px rgba(59, 130, 246, 0.3);
+        }
+
+        .name-option::before {
+            content: '→';
+            position: absolute;
+            right: 24px;
+            top: 50%;
+            transform: translateY(-50%) translateX(20px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #3b82f6;
+            font-weight: 700;
+        }
+
+        .name-option:hover::before {
+            transform: translateY(-50%) translateX(0);
+            opacity: 1;
+        }
+
+        .conclusion-box {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 48px;
+            border-radius: 20px;
+            margin-top: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .conclusion-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+        }
+
+        .conclusion-box-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .conclusion-box h3 {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0 0 20px 0;
+            letter-spacing: -0.01em;
+        }
+
+        .conclusion-box p {
+            font-size: 17px;
+            margin: 0;
+            opacity: 0.9;
+            line-height: 1.7;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 32px;
+            margin: 48px 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 32px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 40px;
+            font-weight: 800;
+            color: #3b82f6;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .stat-label {
+            font-size: 15px;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        @media (max-width: 1024px) {
+            .header,
+            .nav-tabs,
+            .content-section {
+                padding-left: 40px;
+                padding-right: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header,
+            .nav-tabs,
+            .content-section {
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+            
+            .header {
+                padding-top: 40px;
+                padding-bottom: 40px;
+            }
+            
+            .content-section {
+                padding-top: 40px;
+                padding-bottom: 40px;
+            }
+            
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .section-title {
+                font-size: 28px;
+            }
+            
+            .nav-tab {
+                padding: 16px 20px;
+                font-size: 13px;
+            }
+            
+            .pricing-plans {
+                grid-template-columns: 1fr;
+            }
+            
+            .objectives-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .room-types-table {
+                font-size: 13px;
+            }
+            
+            .room-types-table th,
+            .room-types-table td {
+                padding: 16px 12px;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="container">
+   <div class="header">
+    <div class="header-content">
+     <h1 id="main-title">Canka Residence Hotel</h1>
+     <div class="subtitle" id="subtitle">
+      OTA Satış ve Gelir Optimizasyonu Önerisi
+     </div>
+     <p class="intro-text" id="intro-text">Nişantaşı'nın merkezinde, aile konseptli, konforlu ve temiz bir şehir içi rezidans olarak otelinizin çevrimiçi kanallarda çok daha yüksek görünürlük ve gelir potansiyeline sahip olduğuna inanıyoruz.</p>
+    </div>
+   </div>
+   <div class="nav-tabs"><button class="nav-tab active" onclick="showSection('objectives')">Amaç &amp; Hedefler</button> <button class="nav-tab" onclick="showSection('pricing')">Fiyatlandırma</button> <button class="nav-tab" onclick="showSection('dynamic')">Dinamik Fiyat</button> <button class="nav-tab" onclick="showSection('rooms')">Oda Tipleri</button> <button class="nav-tab" onclick="showSection('ota')">OTA Yönetimi</button> <button class="nav-tab" onclick="showSection('seo')">SEO &amp; İsimlendirme</button> <button class="nav-tab" onclick="showSection('services')">Ek Hizmetler</button> <button class="nav-tab" onclick="showSection('conclusion')">Sonuç</button>
+   </div>
+   <div id="objectives" class="content-section active">
+    <h2 class="section-title">Amaç ve Hedefler</h2>
+    <div class="objectives-grid">
+     <div class="objective-card"><span class="icon">💰</span>
+      <h3>Ciro Artışı</h3>
+      <p>Online satış kanallarından gelen ciroyu artırmak</p>
+     </div>
+     <div class="objective-card"><span class="icon">📈</span>
+      <h3>Doluluk Oranı</h3>
+      <p>Yıllık ortalama doluluk oranını yükseltmek</p>
+     </div>
+     <div class="objective-card"><span class="icon">🎯</span>
+      <h3>Gelir Optimizasyonu</h3>
+      <p>Oda başı gelir (ADR) ve toplam oda gelirinizi optimize etmek</p>
+     </div>
+     <div class="objective-card"><span class="icon">❌</span>
+      <h3>İptal Minimizasyonu</h3>
+      <p>İptaller ve son dakika boşluklarını minimuma indirmek</p>
+     </div>
+     <div class="objective-card"><span class="icon">⭐</span>
+      <h3>Misafir Memnuniyeti</h3>
+      <p>Puanlarınızı ve sıralamanızı yukarı taşımak</p>
+     </div>
+    </div>
+   </div>
+   <div id="pricing" class="content-section">
+    <h2 class="section-title">Önerilen Fiyatlandırma Yapısı</h2>
+    <div class="pricing-plans">
+     <div class="pricing-card">
+      <h3>Standart Esnek Fiyat</h3>
+      <ul class="feature-list">
+       <li>Check-in tarihinden 3 gün öncesine kadar ücretsiz iptal</li>
+       <li>3 günden az süre kala iptal: %100 tahsilat</li>
+       <li>No-show durumunda: %100 tahsilat</li>
+      </ul>
+      <div class="price-highlight">
+       Örnek: 3.000 TL (3 gün öncesine kadar ücretsiz iptal)
+      </div>
+     </div>
+     <div class="pricing-card">
+      <h3>İade Edilemez Fiyat</h3>
+      <ul class="feature-list">
+       <li>İade edilmez rezervasyon</li>
+       <li>Standart fiyata göre %10 indirim</li>
+       <li>Nakit akışı güvencesi</li>
+       <li>Tarih değişiklik hakkı (1 kez)</li>
+      </ul>
+      <div class="price-highlight">
+       Örnek: 2.700 TL (%10 indirim, iptal ve iade yok)
+      </div>
+     </div>
+    </div>
+    <div class="highlight-box">
+     <h4>Tarih Değişiklik Hakkı</h4>
+     <p>İade edilemez rezervasyonlarda, check-in tarihinden 3 gün veya daha fazla süre varken sadece bir kez tarih değişikliği yapılabilir. Yeni rezervasyon aynı oda tipi, aynı veya daha yüksek fiyatlı tarih aralığı ve aynı şartlarla olmalıdır.</p>
+    </div>
+   </div>
+   <div id="dynamic" class="content-section">
+    <h2 class="section-title">Booking.com Genius Dinamik Fiyatlandırma</h2>
+    <div class="info-grid">
+     <div class="info-card">
+      <h4>🎯 Dinamik İndirim Aralığı</h4>
+      <p>Genius indirimleriniz 0% – 30% aralığında dinamik hale getirilecek. Ortalama %15 indirim seviyesinde çalışması beklenir.</p>
+     </div>
+     <div class="info-card">
+      <h4>📊 Otomatik Optimizasyon</h4>
+      <p>Sistem, doluluğunuza ve talebe göre ne zaman ne kadar indirim verilmesi gerektiğini otomatik belirler.</p>
+     </div>
+     <div class="info-card">
+      <h4>🔝 Yüksek Talep Yönetimi</h4>
+      <p>Talebin yüksek olduğu dönemlerde indirim otomatik olarak düşürülür veya tamamen kaldırılır.</p>
+     </div>
+     <div class="info-card">
+      <h4>⚡ Esnek Kontrol</h4>
+      <p>İstediğiniz zaman bu özelliği devre dışı bırakma esnekliğiniz olacaktır.</p>
+     </div>
+    </div>
+    <div class="highlight-box">
+     <h4>🎁 Ücretsiz Oda Terfi Promosyonu</h4>
+     <p>Günde 1 adet Ekonomik Oda rezervasyonu, Standart Suite oda tipine ücretsiz yükseltilecektir. Promosyonlar komisyon sonrası net kazancı koruyacak şekilde ayarlanacaktır.</p>
+    </div>
+   </div>
+   <div id="rooms" class="content-section">
+    <h2 class="section-title">Oda Tipleri ve Fiyatlandırma</h2>
+    <table class="room-types-table">
+     <thead>
+      <tr>
+       <th>Mevcut Oda Tipi</th>
+       <th>Kapasite</th>
+       <th>Refundable Net</th>
+       <th>Non-Refundable Net</th>
+       <th>Önerilen Yeni İsim</th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td class="room-name">Economy Suite</td>
+       <td>2 kişi</td>
+       <td class="price">45 EUR</td>
+       <td class="price">40 EUR</td>
+       <td>Economy Suite</td>
+      </tr>
+      <tr>
+       <td class="room-name">Standard Suite</td>
+       <td>3 kişi</td>
+       <td class="price">50 EUR</td>
+       <td class="price">45 EUR</td>
+       <td>One Bedroom Apartment</td>
+      </tr>
+      <tr>
+       <td class="room-name">Superior Suite</td>
+       <td>4 kişi</td>
+       <td class="price">58 EUR</td>
+       <td class="price">52 EUR</td>
+       <td>One Bedroom Standard Apartment</td>
+      </tr>
+      <tr>
+       <td class="room-name">Deluxe Suite</td>
+       <td>5 kişi</td>
+       <td class="price">63 EUR</td>
+       <td class="price">57 EUR</td>
+       <td>One Bedroom Family Apartment</td>
+      </tr>
+      <tr>
+       <td class="room-name">Junior Family Suite</td>
+       <td>6 kişi</td>
+       <td class="price">75 EUR</td>
+       <td class="price">67 EUR</td>
+       <td>Duplex Apartment</td>
+      </tr>
+      <tr>
+       <td class="room-name">Penthouse Family Suite</td>
+       <td>7 kişi</td>
+       <td class="price">84 EUR</td>
+       <td class="price">75 EUR</td>
+       <td>Penthouse Family Suite</td>
+      </tr>
+     </tbody>
+    </table>
+    <div class="highlight-box">
+     <h4>🍽️ Yeni Pansiyon Tipleri</h4>
+     <div class="info-grid">
+      <div class="info-card">
+       <h4>Yarım Pansiyon (Half Board)</h4>
+       <p>Odada servis edilen fix menü akşam yemeği + kahvaltı</p>
+      </div>
+      <div class="info-card">
+       <h4>Oda Kahvaltı (B&amp;B)</h4>
+       <p>Kahvaltı odada servis (kahvaltı salonu açılana kadar)</p>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div id="ota" class="content-section">
+    <h2 class="section-title">OTA Yönetimi ve Komisyon Yapısı</h2>
+    <div class="info-grid">
+     <div class="info-card">
+      <h4>💼 Komisyon Oranları</h4>
+      <p>Expedia, Agoda ve benzeri tüm kanallarda komisyon oranları %25 olarak ayarlanacaktır.</p>
+     </div>
+     <div class="info-card">
+      <h4>💰 Net Fiyat Mantığı</h4>
+      <p>Otelle aramızdaki anlaşma "net fiyat" üzerinden olacak. Otelin cebine giren net tutar her kanalda aynı kalacaktır.</p>
+     </div>
+     <div class="info-card">
+      <h4>👥 Genius Kitle Yönetimi</h4>
+      <p>İstediğimiz Genius segmentlerine (G1, G2, G3) özel görünürlük verilebilir.</p>
+     </div>
+     <div class="info-card">
+      <h4>🔗 Rate Sharing</h4>
+      <p>Booking Holdings grubu ve meta arama motorlarında görünürlüğünüz artırılacaktır.</p>
+     </div>
+    </div>
+   </div>
+   <div id="seo" class="content-section">
+    <h2 class="section-title">SEO Dostu İsimlendirme Önerileri</h2>
+    <p>Otelinizin yasal adı değişmeyecek; sadece OTA'larda daha fazla aramada görünmesi için pazarlama odaklı anahtar kelimeler kullanılacaktır.</p>
+    <div class="name-options">
+     <div class="name-option"><strong>Canka Nisantasi Residence &amp; Family Suites – City Center</strong>
+     </div>
+     <div class="name-option"><strong>Canka Nisantasi Family Suites &amp; Residence – City Center</strong>
+     </div>
+     <div class="name-option"><strong>Canka Nisantasi Residence &amp; Family Suites – Near Taksim</strong>
+     </div>
+     <div class="name-option"><strong>Canka Nisantasi Residence – Family Suites | City Center</strong>
+     </div>
+     <div class="name-option"><strong>Canka Nisantasi City Center Residence &amp; Family Suites</strong>
+     </div>
+     <div class="name-option"><strong>Canka Nisantasi Residence – Family Suites, Taksim Access</strong>
+     </div>
+    </div>
+    <div class="highlight-box">
+     <h4>🔍 Anahtar Kelime Avantajları</h4>
+     <p>"Nişantaşı", "City Center", "Taksim", "Family Suites", "Residence" gibi popüler arama kelimeleri başlıkta yer alarak Google ve OTA içi aramalarda görünürlüğünüz artacaktır.</p>
+    </div>
+   </div>
+   <div id="services" class="content-section">
+    <h2 class="section-title">Profesyonel Misafir Mesajları &amp; Transfer Satışı</h2>
+    <div class="info-grid">
+     <div class="info-card">
+      <h4>📧 Otomatik Mesajlar</h4>
+      <p>Rezervasyon sonrası ve check-in öncesi misafire gidecek otomatik, planlı mesajlar hazırlanacaktır.</p>
+     </div>
+     <div class="info-card">
+      <h4>🏨 Hoş Geldiniz Mesajı</h4>
+      <p>Otele hoş geldiniz ve ön bilgilendirme mesajları</p>
+     </div>
+     <div class="info-card">
+      <h4>🚗 Ulaşım Bilgileri</h4>
+      <p>Otele ulaşım bilgileri ve havalimanı transfer fiyatları</p>
+     </div>
+     <div class="info-card">
+      <h4>📞 7/24 Destek</h4>
+      <p>Herhangi bir sorun durumunda 7/24 ulaşabilecekleri iletişim kanalları</p>
+     </div>
+    </div>
+    <div class="highlight-box">
+     <h4>💡 Beklenen Faydalar</h4>
+     <ul class="feature-list">
+      <li>Misafir, daha otele gelmeden kendini güvende hisseder</li>
+      <li>Transfer ve ek hizmet satışlarından ilave gelir elde edilir</li>
+      <li>Misafir yorumları ve puanlarına doğrudan pozitif katkı sağlanır</li>
+     </ul>
+    </div>
+   </div>
+   <div id="conclusion" class="content-section">
+    <h2 class="section-title">Sonuç ve İş Birliği Önerisi</h2>
+    <div class="conclusion-box">
+     <div class="conclusion-box-content">
+      <h3>🤝 İş Birliği Hedefleri</h3>
+      <p>Bu çalışma kapsamında OTA'lardaki tüm fiyat planlarınız, promosyonlarınız, komisyon oranlarınız ve görünürlük ayarlarınız profesyonel şekilde yönetilecektir.</p>
+     </div>
+    </div>
+    <div class="info-grid">
+     <div class="info-card">
+      <h4>💰 Gelir Garantisi</h4>
+      <p>İade edilemez ve esnek fiyat dengesini doğru kurarak geliri garanti altına almak</p>
+     </div>
+     <div class="info-card">
+      <h4>📈 Doluluk Artışı</h4>
+      <p>Dinamik fiyatlandırma ile doluluğu artırmak</p>
+     </div>
+     <div class="info-card">
+      <h4>❌ İptal Azaltma</h4>
+      <p>Son dakika iptallerini azaltmak</p>
+     </div>
+     <div class="info-card">
+      <h4>🎯 Potansiyel Gerçekleştirme</h4>
+      <p>Nişantaşı konumu, aile konsepti ve rezidans yapısının potansiyelini gerçekleştirmek</p>
+     </div>
+    </div>
+    <div class="highlight-box">
+     <h4>🏆 Sonuç</h4>
+     <p><strong>Canka Residence Hotel'in Nişantaşı'ndaki konumu, aile konsepti ve rezidans yapısı; doğru dijital strateji ile birleştiğinde, online kanallardan çok daha yüksek gelir yaratma potansiyeline sahiptir.</strong></p>
+    </div>
+   </div>
+  </div>
+  <script>
+        const defaultConfig = {
+            main_title: "Canka Residence Hotel",
+            subtitle: "OTA Satış ve Gelir Optimizasyonu Önerisi",
+            intro_text: "Nişantaşı'nın merkezinde, aile konseptli, konforlu ve temiz bir şehir içi rezidans olarak otelinizin çevrimiçi kanallarda çok daha yüksek görünürlük ve gelir potansiyeline sahip olduğuna inanıyoruz.",
+            primary_color: "#3498db",
+            secondary_color: "#667eea",
+            text_color: "#2c3e50",
+            background_color: "#ffffff",
+            accent_color: "#27ae60"
+        };
+
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        async function onConfigChange(config) {
+            const mainTitle = config.main_title || defaultConfig.main_title;
+            const subtitle = config.subtitle || defaultConfig.subtitle;
+            const introText = config.intro_text || defaultConfig.intro_text;
+            const primaryColor = config.primary_color || defaultConfig.primary_color;
+            const secondaryColor = config.secondary_color || defaultConfig.secondary_color;
+            const textColor = config.text_color || defaultConfig.text_color;
+            const backgroundColor = config.background_color || defaultConfig.background_color;
+            const accentColor = config.accent_color || defaultConfig.accent_color;
+
+            // Update text content
+            document.getElementById('main-title').textContent = mainTitle;
+            document.getElementById('subtitle').textContent = subtitle;
+            document.getElementById('intro-text').textContent = introText;
+
+            // Update colors
+            document.documentElement.style.setProperty('--primary-color', primaryColor);
+            document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+            document.documentElement.style.setProperty('--text-color', textColor);
+            document.documentElement.style.setProperty('--background-color', backgroundColor);
+            document.documentElement.style.setProperty('--accent-color', accentColor);
+
+            // Apply colors to elements
+            const activeTab = document.querySelector('.nav-tab.active');
+            if (activeTab) {
+                activeTab.style.backgroundColor = primaryColor;
+            }
+
+            const sectionTitles = document.querySelectorAll('.section-title');
+            sectionTitles.forEach(title => {
+                title.style.borderBottomColor = primaryColor;
+                title.style.color = textColor;
+            });
+
+
+
+            const conclusionBox = document.querySelector('.conclusion-box');
+            if (conclusionBox) {
+                conclusionBox.style.background = `linear-gradient(135deg, ${secondaryColor}, ${primaryColor})`;
+            }
+
+            const contentSections = document.querySelectorAll('.content-section');
+            contentSections.forEach(section => {
+                section.style.backgroundColor = backgroundColor;
+                section.style.color = textColor;
+            });
+
+            const header = document.querySelector('.header');
+            if (header) {
+                header.style.backgroundColor = backgroundColor;
+                header.style.color = textColor;
+            }
+        }
+
+        // Initialize the element SDK
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities: (config) => ({
+                    recolorables: [
+                        {
+                            get: () => config.primary_color || defaultConfig.primary_color,
+                            set: (value) => {
+                                config.primary_color = value;
+                                window.elementSdk.setConfig({ primary_color: value });
+                            }
+                        },
+                        {
+                            get: () => config.secondary_color || defaultConfig.secondary_color,
+                            set: (value) => {
+                                config.secondary_color = value;
+                                window.elementSdk.setConfig({ secondary_color: value });
+                            }
+                        },
+                        {
+                            get: () => config.text_color || defaultConfig.text_color,
+                            set: (value) => {
+                                config.text_color = value;
+                                window.elementSdk.setConfig({ text_color: value });
+                            }
+                        },
+                        {
+                            get: () => config.background_color || defaultConfig.background_color,
+                            set: (value) => {
+                                config.background_color = value;
+                                window.elementSdk.setConfig({ background_color: value });
+                            }
+                        },
+                        {
+                            get: () => config.accent_color || defaultConfig.accent_color,
+                            set: (value) => {
+                                config.accent_color = value;
+                                window.elementSdk.setConfig({ accent_color: value });
+                            }
+                        }
+                    ],
+                    borderables: [],
+                    fontEditable: undefined,
+                    fontSizeable: undefined
+                }),
+                mapToEditPanelValues: (config) => new Map([
+                    ["main_title", config.main_title || defaultConfig.main_title],
+                    ["subtitle", config.subtitle || defaultConfig.subtitle],
+                    ["intro_text", config.intro_text || defaultConfig.intro_text]
+                ])
+            });
+        }
+
+        // Initialize with default config
+        onConfigChange(defaultConfig);
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99dcae36e3e3d613',t:'MTc2MzAyMDI1MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
