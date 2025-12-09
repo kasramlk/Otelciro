@@ -1,598 +1,618 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fimka Hotel - Satış & Gelir Yönetimi Teklifi | Otelciro.com</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome removed: using emoji-based icons for full compatibility -->
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#003366', /* Dark Blue from your branding */
-                        secondary: '#0070e0', /* Lighter Blue */
-                        accent: '#ff6b6b', /* Contrast color for call to actions */
-                        light: '#f4f7f6',
-                        dark: '#1a1a1a'
+                        primary: '#0f172a', /* Slate 900 */
+                        secondary: '#2563eb', /* Blue 600 */
+                        accent: '#d97706', /* Amber 600 */
+                        success: '#10b981', /* Emerald 500 */
+                        surface: '#ffffff',
+                        light: '#f1f5f9',
                     },
                     fontFamily: {
-                        sans: ['Montserrat', 'sans-serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(0,0,0,0.08)',
+                        'glow': '0 0 20px rgba(37, 99, 235, 0.2)',
+                    },
+                    animation: {
+                        'blob': 'blob 10s infinite',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
-        body {
-            scroll-behavior: smooth;
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
         }
-        .hero-bg {
-            background: radial-gradient(circle at top left, #0056b3, #003366 45%, #001933 100%);
-            background-size: cover;
-            background-position: center;
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
-        .card-hover {
-            transition: all 0.3s ease;
+        .hero-pattern {
+            background-color: #0f172a;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
         }
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        .tabular-nums {
+            font-variant-numeric: tabular-nums;
         }
-        .gradient-text {
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-image: linear-gradient(to right, #003366, #0056b3);
-        }
-        @keyframes fadeInUp {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in-up {
-            animation: fadeInUp 0.8s ease-out both;
-        }
+        /* Print Styles */
         @media print {
-            @page {
-                size: A4;
-                margin: 18mm 14mm;
-            }
-            body {
-                background: #ffffff !important;
-            }
-            nav {
-                position: static !important;
-                box-shadow: none !important;
-                background: #ffffff !important;
-            }
-            .hero-bg {
-                background: #ffffff !important;
-                color: #000000 !important;
-            }
+            body { background: white; color: black; }
+            .no-print { display: none !important; }
+            .hero-pattern { background: white !important; color: black !important; padding-top: 2rem !important; min-height: auto !important; }
+            .text-white { color: black !important; }
+            .bg-primary { background: none !important; color: black !important; }
+            .shadow-xl, .shadow-lg, .shadow-soft { box-shadow: none !important; }
         }
     </style>
 </head>
-<body class="font-sans text-gray-700 bg-slate-50">
+<body class="bg-slate-50 text-slate-700 antialiased selection:bg-blue-100 selection:text-blue-900">
+
+    <!-- Floating Print Button -->
+    <button onclick="window.print()" class="no-print fixed bottom-6 right-6 z-50 bg-primary text-white p-4 rounded-full shadow-2xl hover:scale-110 transition duration-300 group flex items-center gap-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+        <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 ease-in-out whitespace-nowrap">Yazdır / PDF</span>
+    </button>
 
     <!-- Navbar -->
-    <nav class="bg-white/90 backdrop-blur-md shadow-md border-b border-white/40 w-full z-50">
-        <div class="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex flex-col gap-2">
-            <div class="flex items-center justify-between w-full">
+    <nav class="glass-nav fixed w-full z-40 transition-all duration-300">
+        <div class="container mx-auto px-4 sm:px-6 py-4">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
                 <div class="flex items-center gap-3">
-                    <!-- Logo / Brand -->
-                    <div class="bg-primary text-white px-3 py-2 rounded-lg font-bold text-base sm:text-xl flex items-center gap-2">
-                        <span class="text-lg">🏨</span>
-                        <span class="leading-tight">
-                            <span class="block">OtelCiro</span>
-                            <span class="block text-[10px] font-normal opacity-80 tracking-wide uppercase">Revenue Management</span>
-                        </span>
+                    <div class="bg-primary text-white w-10 h-10 rounded-lg flex items-center justify-center font-bold text-xl shadow-lg transform hover:rotate-6 transition duration-300">
+                        OC
                     </div>
-                    <span class="text-xs sm:text-sm text-gray-500 hidden md:block">Bosphorus Line</span>
+                    <div class="leading-tight">
+                        <span class="block font-extrabold text-slate-800 text-lg tracking-tight">OtelCiro</span>
+                        <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Revenue Mgmt</span>
+                    </div>
                 </div>
 
-                <div class="flex items-center gap-3">
-                    <!-- Desktop Menu -->
-                    <div class="hidden md:flex space-x-6 text-xs sm:text-sm font-semibold text-gray-600">
-                        <a href="#summary" class="hover:text-primary transition">Özet</a>
-                        <a href="#infrastructure" class="hover:text-primary transition">Altyapı</a>
-                        <a href="#markets" class="hover:text-primary transition">Pazarlar</a>
-                        <a href="#strategy" class="hover:text-primary transition">Strateji</a>
-                        <a href="#financials" class="hover:text-primary transition">Finansal</a>
-                    </div>
-
-                    <!-- Desktop CTA -->
-                    <a href="https://www.otelciro.com" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex bg-primary text-white px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold hover:bg-secondary transition shadow-lg whitespace-nowrap">İletişime Geçin</a>
-
-                    <!-- Mobile Menu Button -->
-                    <button id="mobileNavBtn" class="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 text-gray-600 bg-white/70">
-                        <span class="sr-only">Menüyü aç/kapat</span>
-                        <span class="text-xl">☰</span>
-                    </button>
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8 text-sm font-semibold text-slate-600">
+                    <a href="#ozet" class="hover:text-secondary transition-colors relative group">
+                        Özet
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-secondary transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="#altyapi" class="hover:text-secondary transition-colors relative group">
+                        Altyapı
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-secondary transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="#strateji" class="hover:text-secondary transition-colors relative group">
+                        Strateji
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-secondary transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="#finansal" class="hover:text-secondary transition-colors relative group">
+                        Finansal Tablo
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-secondary transition-all group-hover:w-full"></span>
+                    </a>
                 </div>
+
+                <!-- CTA -->
+                <div class="hidden md:block">
+                    <a href="#contact" class="bg-primary hover:bg-slate-800 text-white px-6 py-2.5 rounded-full text-sm font-bold transition shadow-glow hover:-translate-y-0.5">
+                        İletişime Geçin
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileNavBtn" class="md:hidden text-slate-700 p-2 rounded-lg hover:bg-slate-100 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
             </div>
-
+            
             <!-- Mobile Menu -->
-            <div id="mobileNav" class="md:hidden hidden border-t border-gray-100 pt-2 mt-1 text-sm bg-white/95 rounded-b-xl">
-                <div class="flex flex-col gap-2 py-2">
-                    <a href="#summary" class="py-1 px-1 text-gray-700 hover:text-primary">Özet</a>
-                    <a href="#infrastructure" class="py-1 px-1 text-gray-700 hover:text-primary">Altyapı</a>
-                    <a href="#markets" class="py-1 px-1 text-gray-700 hover:text-primary">Pazarlar</a>
-                    <a href="#strategy" class="py-1 px-1 text-gray-700 hover:text-primary">Strateji</a>
-                    <a href="#financials" class="py-1 px-1 text-gray-700 hover:text-primary">Finansal</a>
-                    <a href="https://www.otelciro.com" target="_blank" rel="noopener noreferrer" class="mt-2 w-full inline-flex items-center justify-center bg-primary text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-secondary transition shadow">İletişime Geçin</a>
+            <div id="mobileNav" class="hidden md:hidden mt-4 pb-4 border-t border-slate-100 bg-white/95 backdrop-blur-md rounded-b-2xl shadow-xl absolute left-0 w-full px-4">
+                <div class="flex flex-col space-y-3 mt-4 pb-4">
+                    <a href="#ozet" class="block px-4 py-3 text-slate-600 hover:bg-blue-50 hover:text-blue-600 rounded-xl font-medium transition">Özet</a>
+                    <a href="#altyapi" class="block px-4 py-3 text-slate-600 hover:bg-blue-50 hover:text-blue-600 rounded-xl font-medium transition">Altyapı</a>
+                    <a href="#strateji" class="block px-4 py-3 text-slate-600 hover:bg-blue-50 hover:text-blue-600 rounded-xl font-medium transition">Strateji</a>
+                    <a href="#finansal" class="block px-4 py-3 text-slate-600 hover:bg-blue-50 hover:text-blue-600 rounded-xl font-medium transition">Finansal</a>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <header class="hero-bg py-24 sm:py-28 flex items-center justify-center text-white text-center px-4 relative">
-        <div class="max-w-4xl z-10 animate-fade-in-up bg-white/5 backdrop-blur-sm rounded-3xl border border-white/10 px-4 sm:px-8 py-8 sm:py-10">
-            <h2 class="text-xl md:text-2xl font-light mb-1 tracking-widest uppercase">Otelciro.com Sunar</h2>
-            <p class="text-[11px] sm:text-xs tracking-[0.25em] uppercase text-blue-200 mb-4">Satış &amp; Gelir Yönetimi Teklifi</p>
-            <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">Fimka Hotel<br><span class="text-blue-300">Gelecek Vizyonu</span></h1>
-            <p class="text-base sm:text-lg md:text-xl mb-8 sm:mb-10 opacity-90 max-w-2xl mx-auto">Online satış kanallarını optimize etmek, otelin doluluğunu ve ADR’sini yükseltmek ve dijital dönüşümü tamamlamak için hazırlanmış kapsamlı stratejik iş birliği teklifi.</p>
-            <div class="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 max-w-md mx-auto">
-                <a href="#infrastructure" class="bg-white text-primary px-6 sm:px-8 py-3 rounded-full font-bold hover:bg-gray-100 transition shadow-xl w-full sm:w-auto">Teklifi İncele</a>
-                <a href="#financials" class="border-2 border-white text-white px-6 sm:px-8 py-3 rounded-full font-bold hover:bg-white hover:text-primary transition w-full sm:w-auto">Projeksiyonlar</a>
+    <header class="hero-pattern min-h-[90vh] flex items-center justify-center relative overflow-hidden pt-20">
+        <!-- Abstract Shapes -->
+        <div class="absolute top-1/4 left-10 w-72 h-72 bg-blue-600/30 rounded-full blur-[100px] animate-blob mix-blend-screen"></div>
+        <div class="absolute bottom-1/4 right-10 w-96 h-96 bg-purple-600/30 rounded-full blur-[100px] animate-blob animation-delay-2000 mix-blend-screen"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[120px]"></div>
+
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <div class="animate-fade-in-up" style="animation-delay: 0.1s;">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-blue-200 text-xs font-bold uppercase tracking-widest mb-8 backdrop-blur-md shadow-lg">
+                    <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+                    Otelciro.com Sunar
+                </div>
+                
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 leading-tight tracking-tight drop-shadow-2xl">
+                    Fimka Hotel <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-indigo-200 to-purple-300">Gelecek Vizyonu</span>
+                </h1>
+                
+                <p class="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto mb-12 font-medium leading-relaxed drop-shadow-md">
+                    Laleli piyasasında maksimum doluluk ve optimize edilmiş ADR ile dijital dönüşümü başlatıyoruz. Kapsamlı stratejik iş birliği teklifimiz hazır.
+                </p>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-5">
+                    <a href="#finansal" class="bg-white text-primary px-8 py-4 rounded-full font-bold text-sm hover:bg-blue-50 transition shadow-xl hover:shadow-2xl transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                        <span>Projeksiyonları İncele</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                    </a>
+                    <a href="#strateji" class="glass-card text-white px-8 py-4 rounded-full font-bold text-sm hover:bg-white/10 transition flex items-center justify-center gap-2">
+                        <span>Stratejik Plan</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a>
+                </div>
             </div>
-        </div>
-        <!-- Scroll Down Indicator -->
-        <div class="absolute bottom-10 animate-bounce">
-            <span class="text-2xl">⌄</span>
         </div>
     </header>
 
-    <!-- 1. Executive Summary -->
-    <section id="summary" class="py-16 sm:py-20 bg-gradient-to-b from-white to-gray-50">
-        <div class="container mx-auto px-4 sm:px-6 max-w-5xl text-center">
-            <h2 class="text-3xl font-bold text-primary mb-8 relative inline-block">
-                Yönetici Özeti
-                <span class="absolute bottom-0 left-0 w-full h-1 bg-secondary transform scale-x-50"></span>
-            </h2>
-            <p class="text-lg text-gray-600 leading-relaxed mb-6">
-                Otelciro.com olarak, Fimka Hotel'in İstanbul Laleli piyasasındaki potansiyelini maksimize etmek, doluluk oranlarını optimize etmek ve Karlılığı (GOP) artırmak amacıyla bu stratejik iş birliği teklifini hazırladık. Hedefimiz, operasyonel iş yükünüzü hafifletecek doğru araçları önererek otelinizi global satış kanallarında en üst sıralara taşımaktır.
-            </p>
-
-            <!-- Otelciro kısa KPI şeridi -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-10">
-                <div class="bg-gray-50 rounded-xl py-3 px-4 border border-gray-100">
-                    <p class="text-xs text-gray-500 uppercase tracking-wide">Yönetilen Portföy</p>
-                    <p class="text-xl font-bold text-primary">25+ Otel</p>
-                    <p class="text-[11px] text-gray-500 mt-1">İstanbul ve tatil bölgelerinde aktif gelir yönetimi.</p>
-                </div>
-                <div class="bg-gray-50 rounded-xl py-3 px-4 border border-gray-100">
-                    <p class="text-xs text-gray-500 uppercase tracking-wide">Satış Kanalları</p>
-                    <p class="text-xl font-bold text-primary">15+ OTA & B2B</p>
-                    <p class="text-[11px] text-gray-500 mt-1">Booking, Expedia, Agoda, Hotelbeds vb. entegre yapı.</p>
-                </div>
-                <div class="bg-gray-50 rounded-xl py-3 px-4 border border-gray-100">
-                    <p class="text-xs text-gray-500 uppercase tracking-wide">Gelir Etkisi</p>
-                    <p class="text-xl font-bold text-primary">+%15–25</p>
-                    <p class="text-[11px] text-gray-500 mt-1">Benzer şehir otellerinde ilk 6–12 ay ortalama artış.</p>
-                </div>
-            </div>
-            <div class="grid md:grid-cols-3 gap-8 mt-12">
-                <div class="p-6 bg-light rounded-xl card-hover">
-                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 text-primary text-2xl">
-                        <span>🚀</span>
-                    </div>
-                    <h3 class="font-bold text-xl mb-2">Performans</h3>
-                    <p class="text-sm text-gray-500">Doluluk oranlarını ve ADR'yi optimize ederek maksimum ciro.</p>
-                </div>
-                <div class="p-6 bg-light rounded-xl card-hover">
-                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 text-primary text-2xl">
-                        <span>🌍</span>
-                    </div>
-                    <h3 class="font-bold text-xl mb-2">Global Erişim</h3>
-                    <p class="text-sm text-gray-500">7 farklı global satış kanalına tam entegrasyon.</p>
-                </div>
-                <div class="p-6 bg-light rounded-xl card-hover">
-                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 text-primary text-2xl">
-                        <span>📈</span>
-                    </div>
-                    <h3 class="font-bold text-xl mb-2">Strateji</h3>
-                    <p class="text-sm text-gray-500">Dinamik fiyatlandırma ve sezonluk özel kurgular.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 1.5 Fimka Hotel Kısa Profil -->
-    <section class="py-12 sm:py-16 bg-gray-50/60 border-y border-gray-100">
-        <div class="container mx-auto px-4 sm:px-6 max-w-6xl flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
-            <div class="lg:w-1/2">
-                <h2 class="text-2xl sm:text-3xl font-bold text-primary mb-4">Fimka Hotel&apos;in Konumu & Pozisyonu</h2>
-                <p class="text-sm sm:text-base text-gray-600 mb-4">
-                    Laleli bölgesinde, ticaret ve turizm trafiğinin tam ortasında konumlanan Fimka Hotel; doğru kanal kurgusu ve dinamik fiyatlandırma ile hem <strong>yüksek doluluk</strong> hem de <strong>sağlıklı ADR</strong> yakalayabilecek bir şehir oteli profiline sahiptir.
-                </p>
-                <div class="flex flex-wrap gap-2 mb-4">
-                    <span class="px-3 py-1 rounded-full bg-primary/5 text-primary text-[11px] font-semibold uppercase tracking-wide">Laleli Şehir Oteli</span>
-                    <span class="px-3 py-1 rounded-full bg-secondary/10 text-secondary text-[11px] font-semibold uppercase tracking-wide">BB Konsept</span>
-                    <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-semibold uppercase tracking-wide">Ticaret & Leisure Karışık Pazar</span>
-                </div>
-                <p class="text-xs sm:text-sm text-gray-500">
-                    Otelciro olarak, bu profilin güçlü yanlarını öne çıkarıp; zayıf alanlarda (içerik skoru, kanal dağılımı, fiyat paritesi vb.) hızlı aksiyon planları ile Fimka&apos;yı bölgesinde <strong>ilk tercih edilen</strong> şehir otellerinden biri haline getirmeyi hedefliyoruz.
+    <!-- Executive Summary -->
+    <section id="ozet" class="py-24 bg-white relative">
+        <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-slate-50 to-white"></div>
+        <div class="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl font-extrabold text-primary mb-4">Yönetici Özeti</h2>
+                <div class="w-24 h-1.5 bg-accent mx-auto rounded-full"></div>
+                <p class="mt-6 text-slate-600 text-lg max-w-2xl mx-auto leading-relaxed">
+                    Fimka Hotel'in potansiyelini, doğru teknoloji ve agresif satış stratejileriyle birleştirerek <span class="text-primary font-bold">"yüksek doluluk, sürdürülebilir gelir"</span> modeline geçiriyoruz.
                 </p>
             </div>
 
-            <div class="lg:w-1/2 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col justify-between">
-                    <div>
-                        <p class="text-[11px] text-gray-500 uppercase tracking-wide mb-1">Oda Sayısı</p>
-                        <p class="text-2xl font-bold text-primary">28</p>
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:shadow-soft transition-all duration-300 group hover:-translate-y-2">
+                    <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-blue-600 mb-6 shadow-sm group-hover:scale-110 transition duration-300 border border-slate-100">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                     </div>
-                    <p class="mt-3 text-[11px] text-gray-500">Şehir oteli ölçeğinde; doğru kanal karması ile yüksek doluluk için ideal kapasite.</p>
-                </div>
-                <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col justify-between">
-                    <div>
-                        <p class="text-[11px] text-gray-500 uppercase tracking-wide mb-1">Bölge Dinamiği</p>
-                        <p class="text-2xl font-bold text-primary">Laleli</p>
-                    </div>
-                    <p class="mt-3 text-[11px] text-gray-500">Ticaret, toptancı ve grup segmentlerine yakın; talep akışının yıl geneline yayıldığı bir hat.</p>
-                </div>
-                <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col justify-between">
-                    <div>
-                        <p class="text-[11px] text-gray-500 uppercase tracking-wide mb-1">Öncelikli Hedef</p>
-                        <p class="text-xl font-bold text-primary">Doluluk + ADR</p>
-                    </div>
-                    <p class="mt-3 text-[11px] text-gray-500">Dinamik fiyatlandırma ile doluluğu kaybetmeden oda başı geliri yukarı taşımak.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 2. Sistemotel Infrastructure -->
-    <section id="infrastructure" class="py-16 sm:py-20 bg-gray-50">
-        <div class="container mx-auto px-4 sm:px-6 max-w-6xl">
-            <div class="flex flex-col md:flex-row items-center gap-12">
-                <div class="md:w-1/2">
-                    <div class="inline-block bg-blue-100 text-primary px-3 py-1 rounded-full text-xs font-bold mb-4">
-                        <span class="mr-2">💡</span>Danışman Tavsiyesi
-                    </div>
-                    <h2 class="text-3xl font-bold text-primary mb-6">Operasyonel Verimlilik İçin Öneri</h2>
-                    <p class="text-gray-600 mb-6">
-                        Otelinizin satış kanallarını yönetirken iş yükünüzü hafifletmek ve yasal süreçleri otomatize etmek adına, piyasadaki mevcut yazılımlar arasından <strong>Sistemotel</strong>'i kullanmanızı öneriyoruz. Otelciro olarak, bu sistemin kurulumu ve optimizasyonu konusunda size rehberlik edeceğiz.
+                    <h3 class="text-2xl font-bold text-slate-800 mb-3">Performans</h3>
+                    <p class="text-slate-500 leading-relaxed">
+                        Laleli bölgesindeki ticaret ve turizm trafiğini analiz ederek, dinamik fiyatlandırma ile doluluğu <strong>%90</strong> bandına taşıyoruz.
                     </p>
-                    <ul class="space-y-4">
-                        <li class="flex items-start">
-                            <span class="text-blue-500 mt-1 mr-3">✔️</span>
-                            <div>
-                                <h4 class="font-bold text-gray-800">Neden Bu Sistemi Öneriyoruz?</h4>
-                                <p class="text-sm text-gray-500">Kanal yönetimi, E-Fatura ve KBS gibi süreçleri tek panelde topladığı ve maliyet/performans oranı yüksek olduğu için.</p>
+                </div>
+
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:shadow-soft transition-all duration-300 group hover:-translate-y-2">
+                    <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-indigo-600 mb-6 shadow-sm group-hover:scale-110 transition duration-300 border border-slate-100">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-3">Global Dağıtım</h3>
+                    <p class="text-slate-500 leading-relaxed">
+                        Sadece Booking.com değil; <strong>Expedia, Agoda, Trip.com</strong> ve B2B toptancılar (Hotelbeds) ile pazar çeşitliliği sağlıyoruz.
+                    </p>
+                </div>
+
+                <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:shadow-soft transition-all duration-300 group hover:-translate-y-2">
+                    <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-accent mb-6 shadow-sm group-hover:scale-110 transition duration-300 border border-slate-100">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-3">Kârlılık</h3>
+                    <p class="text-slate-500 leading-relaxed">
+                        Yüksek sezonlarda (Nisan-Ekim) ADR'yi yukarı çekerek, düşük sezonlarda ise sürümden kazanarak toplam <strong>ciroyu artırıyoruz.</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Infrastructure & Recommendation -->
+    <section id="altyapi" class="py-24 bg-slate-50">
+        <div class="container mx-auto px-4 sm:px-6 max-w-6xl">
+            <div class="bg-white rounded-[2rem] shadow-soft overflow-hidden flex flex-col lg:flex-row border border-slate-100">
+                <div class="lg:w-1/2 p-12 flex flex-col justify-center">
+                    <div class="inline-flex items-center gap-2 text-accent font-bold text-xs uppercase tracking-wider mb-6 bg-amber-50 px-3 py-1.5 rounded-full w-fit">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                        Danışman Tavsiyesi
+                    </div>
+                    <h2 class="text-4xl font-extrabold text-primary mb-6">Operasyonel Verimlilik: Sistemotel</h2>
+                    <p class="text-slate-600 mb-8 leading-relaxed text-lg">
+                        Kanal yönetimi, E-Fatura, KBS ve web sitesi rezervasyon motorunu tek bir panelden yönetmek için <strong>Sistemotel</strong> yazılımını öneriyoruz. Bu seçim, operasyonel hataları sıfıra indirirken personel maliyetinden tasarruf sağlar.
+                    </p>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center text-slate-700 font-medium">
+                            <div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mr-3 text-green-600 flex-shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                             </div>
+                            Kanal Yöneticisi (Channel Manager) Dahil
                         </li>
-                        <li class="flex items-start">
-                            <span class="text-blue-500 mt-1 mr-3">✔️</span>
-                            <div>
-                                <h4 class="font-bold text-gray-800">Bizim Rolümüz Nedir?</h4>
-                                <p class="text-sm text-gray-500">Biz bu yazılımı satmıyoruz; sadece sizin adınıza en doğru kurulumu yapıyor ve sistemin verimli çalışmasını sağlıyoruz.</p>
+                        <li class="flex items-center text-slate-700 font-medium">
+                            <div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mr-3 text-green-600 flex-shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                             </div>
+                            Web Sitesi & Rezervasyon Motoru Dahil
+                        </li>
+                        <li class="flex items-center text-slate-700 font-medium">
+                            <div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mr-3 text-green-600 flex-shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            Bulut Tabanlı (Her yerden erişim)
                         </li>
                     </ul>
+                    <div class="p-5 bg-blue-50 border border-blue-100 rounded-2xl flex items-start gap-4">
+                        <svg class="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <p class="text-blue-800 text-sm font-medium leading-relaxed">
+                            <strong>Not:</strong> Yazılım maliyeti (~800 USD) doğrudan sağlayıcıya ödenir. Biz kurulum ve optimizasyonu sizin adınıza <strong>ücretsiz</strong> üstleniyoruz.
+                        </p>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 bg-slate-100 flex items-center justify-center p-12 relative overflow-hidden">
+                    <!-- Background blobs -->
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-blue-200/50 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                    <div class="absolute bottom-0 left-0 w-64 h-64 bg-purple-200/50 rounded-full blur-3xl -ml-16 -mb-16"></div>
+                    
+                    <!-- Cost Card -->
+                    <div class="relative w-full max-w-sm bg-white/80 backdrop-blur-xl border border-white/60 p-8 rounded-3xl shadow-xl hover:shadow-2xl transition duration-500">
+                        <div class="flex justify-between items-center mb-6">
+                            <div class="font-bold text-slate-800 text-lg">Yıllık Maliyet Öngörüsü</div>
+                            <span class="bg-green-100 text-green-700 text-xs px-2.5 py-1 rounded-full font-bold uppercase tracking-wide">Ekonomik</span>
+                        </div>
+                        <div class="space-y-5">
+                            <div class="flex justify-between items-center text-sm border-b border-slate-200 pb-3">
+                                <span class="text-slate-500 font-medium">Lisans Bedeli</span>
+                                <span class="font-bold text-slate-800 text-base">~800 USD</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm border-b border-slate-200 pb-3">
+                                <span class="text-slate-500 font-medium">Kurulum & Entegrasyon</span>
+                                <span class="font-bold text-green-600 text-base">Ücretsiz (Hediye)</span>
+                            </div>
+                            <div class="flex justify-between items-center pt-2">
+                                <span class="text-slate-800 font-bold">Toplam</span>
+                                <span class="font-extrabold text-2xl text-primary">~800 USD<span class="text-sm text-slate-400 font-normal ml-1">/yıl</span></span>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-100 text-center">
+                            <p class="text-xs text-slate-400">Piyasadaki en iyi fiyat/performans oranı.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Strategy Grid -->
+    <section id="strateji" class="py-24 bg-primary text-white relative overflow-hidden">
+        <!-- Abstract bg lines -->
+        <div class="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"></div>
+
+        <div class="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
+            <div class="mb-16 text-center">
+                <h2 class="text-4xl font-extrabold mb-4">Stratejik Eylem Planı</h2>
+                <p class="text-slate-400 text-lg max-w-2xl mx-auto">Fimka Hotel'i pazarda yeniden konumlandırmak için izleyeceğimiz 4 adımlı yol haritası.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Step 1 -->
+                <div class="bg-white/5 backdrop-blur-lg border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition duration-300 group">
+                    <div class="text-4xl font-black text-blue-400 mb-5 opacity-80 group-hover:opacity-100 transition transform group-hover:translate-x-2">01</div>
+                    <h3 class="font-bold text-xl mb-3 text-white">Booking.com & OTA</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">İçerik skoru %100'e çıkarılacak. Oda tipleri (Standart vs Deluxe) ayrıştırılarak Upsell potansiyeli yaratılacak.</p>
+                </div>
+                <!-- Step 2 -->
+                <div class="bg-white/5 backdrop-blur-lg border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition duration-300 group">
+                    <div class="text-4xl font-black text-amber-400 mb-5 opacity-80 group-hover:opacity-100 transition transform group-hover:translate-x-2">02</div>
+                    <h3 class="font-bold text-xl mb-3 text-white">Fiyat Paritesi</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">Tüm kanallarda tutarlı fiyat yönetimi. Metasearch (Google Hotel Ads) uyumluluğu ile direkt rezervasyon görünürlüğü.</p>
+                </div>
+                <!-- Step 3 -->
+                <div class="bg-white/5 backdrop-blur-lg border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition duration-300 group">
+                    <div class="text-4xl font-black text-purple-400 mb-5 opacity-80 group-hover:opacity-100 transition transform group-hover:translate-x-2">03</div>
+                    <h3 class="font-bold text-xl mb-3 text-white">Pazar Çeşitliliği</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">Ostrovok (Rusya/BDT) ve Trip.com (Asya) entegrasyonları ile Laleli'nin doğal pazarına doğrudan erişim.</p>
+                </div>
+                <!-- Step 4 -->
+                <div class="bg-white/5 backdrop-blur-lg border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition duration-300 group">
+                    <div class="text-4xl font-black text-green-400 mb-5 opacity-80 group-hover:opacity-100 transition transform group-hover:translate-x-2">04</div>
+                    <h3 class="font-bold text-xl mb-3 text-white">Kış Stratejisi</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">Kasım-Şubat döneminde B2B acentelere özel "Yarım Pansiyon" veya paket fiyatlarla doluluk garantisi.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Financial Projection (THE CORE UPDATE) -->
+    <section id="finansal" class="py-24 bg-slate-50">
+        <div class="container mx-auto px-4 sm:px-6 max-w-7xl">
+            <div class="text-center mb-16">
+                <span class="text-accent font-bold tracking-wider uppercase text-xs bg-amber-50 px-3 py-1 rounded-full border border-amber-100">Tahmini Bütçe</span>
+                <h2 class="text-4xl font-black text-primary mt-4">Finansal Projeksiyon (28 Oda)</h2>
+                <p class="text-slate-500 mt-4 text-lg">Belirtilen yeni doluluk hedeflerine göre revize edilmiş yıllık gelir tablosu.</p>
+            </div>
+
+            <!-- Financial Summary Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col justify-between h-full hover:shadow-lg transition duration-300 group">
+                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Yıllık Ort. Doluluk</div>
+                    <div class="text-4xl font-black text-primary tabular-nums group-hover:text-blue-600 transition">%84</div>
+                    <div class="text-green-500 text-xs font-bold mt-3 flex items-center bg-green-50 w-fit px-2 py-1 rounded-full">
+                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                        Yüksek Sezon Etkisi
+                    </div>
                 </div>
                 
-                <!-- Informational Card -->
-                <div class="md:w-1/2 relative">
-                    <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
-                        <div class="flex items-center justify-between mb-6 border-b pb-4">
-                            <div>
-                                <h3 class="font-bold text-gray-700 text-lg">Öngörülen Altyapı Maliyeti</h3>
-                                <p class="text-xs text-gray-400">3. Parti Yazılım Gideri</p>
-                            </div>
-                            <div class="bg-gray-100 p-2 rounded-lg text-gray-500">
-                                <span class="text-xl">🧮</span>
-                            </div>
-                        </div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col justify-between h-full hover:shadow-lg transition duration-300 group">
+                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Toplam Satılan Oda</div>
+                    <div class="text-4xl font-black text-primary tabular-nums group-hover:text-blue-600 transition">8,606</div>
+                    <div class="text-slate-400 text-xs mt-3 font-medium">Geceleme</div>
+                </div>
 
-                        <div class="flex flex-col gap-4 mb-6">
-                            <div class="flex justify-between items-center text-sm">
-                                <span class="text-gray-600">Sistemotel Yıllık Lisans</span>
-                                <span class="font-bold text-gray-800">~800 USD</span>
-                            </div>
-                            <div class="flex justify-between items-center text-sm">
-                                <span class="text-gray-600">Web Sitesi Modülü</span>
-                                <span class="text-green-600 font-bold">Dahil</span>
-                            </div>
-                            <div class="flex justify-between items-center text-sm">
-                                <span class="text-gray-600">Entegrasyon Kurulumu</span>
-                                <span class="text-green-600 font-bold">Dahil</span>
-                            </div>
-                        </div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col justify-between h-full hover:shadow-lg transition duration-300 group">
+                    <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Ortalama ADR</div>
+                    <div class="text-4xl font-black text-primary tabular-nums group-hover:text-blue-600 transition">$64.83</div>
+                    <div class="text-slate-400 text-xs mt-3 font-medium">Dolar Bazlı</div>
+                </div>
 
-                        <div class="bg-blue-50 rounded-lg p-4 border border-blue-100">
-                            <div class="flex items-start gap-3">
-                                <span class="text-blue-500 mt-1">ℹ️</span>
-                                <p class="text-xs text-blue-800 leading-relaxed">
-                                    <strong>Bilgilendirme:</strong> Bu tutar, doğrudan yazılım sağlayıcısı firmaya ödenir. Otelciro.com bu ödemeye aracılık etmez, sadece sizin için en uygun paketi seçmenize yardımcı olur.
-                                </p>
-                            </div>
-                        </div>
+                <div class="bg-gradient-to-br from-primary to-slate-900 text-white p-8 rounded-3xl shadow-xl flex flex-col justify-between h-full transform hover:scale-[1.02] transition duration-300 border border-slate-700 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                    <div class="relative z-10">
+                        <div class="text-blue-200 text-xs font-bold uppercase tracking-wider mb-2">Toplam Ciro Hedefi</div>
+                        <div class="text-4xl font-black text-amber-400 tabular-nums tracking-tight">$563,252</div>
+                        <div class="text-blue-200 text-xs mt-3 font-medium opacity-80">Yıllık Tahmin</div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- 3. Target Markets -->
-    <section id="markets" class="py-16 sm:py-20 bg-primary text-white">
-        <div class="container mx-auto px-4 sm:px-6 max-w-6xl">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl font-bold mb-4">Hedef Pazarlar & Satış Kanalları</h2>
-                <p class="text-blue-200">Fimka Hotel'in misafir portföyünü çeşitlendirmek için stratejik kanal yönetimi.</p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Card 1 -->
-                <div class="bg-white/10 backdrop-blur-md p-6 rounded-lg border border-white/20 hover:bg-white/20 transition">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-bold text-xl">Booking.com</h3>
-                        <span class="text-2xl text-blue-300">🌍</span>
-                    </div>
-                    <p class="text-sm text-gray-300"><strong>Pazar:</strong> Avrupa & Global</p>
-                    <p class="text-xs text-gray-400 mt-2">Ana hacim kanalı, özellikle AB ülkeleri için.</p>
+            <!-- Detailed Table -->
+            <div class="bg-white rounded-3xl shadow-soft overflow-hidden border border-slate-100 relative">
+                <!-- Sticky Header container requires explicit height/overflow handling usually, but simple sticky th works well -->
+                <div class="overflow-x-auto max-h-[600px] scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
+                    <table class="w-full text-sm text-left border-collapse">
+                        <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+                            <tr>
+                                <th class="px-8 py-5 text-left w-32">Dönem</th>
+                                <th class="px-6 py-5 text-center">Oda Kapasite</th>
+                                <th class="px-6 py-5 text-center">Doluluk (%)</th>
+                                <th class="px-6 py-5 text-center">Satılan Gece</th>
+                                <th class="px-6 py-5 text-right">ADR ($)</th>
+                                <th class="px-8 py-5 text-right">Aylık Ciro ($)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <!-- Ocak -->
+                            <tr class="hover:bg-blue-50/40 transition duration-200 group">
+                                <td class="px-8 py-5 font-bold text-slate-800 group-hover:text-primary">Ocak</td>
+                                <td class="px-6 py-5 text-center text-slate-500 tabular-nums">28</td>
+                                <td class="px-6 py-5 text-center font-bold text-blue-600 tabular-nums bg-blue-50/50 rounded-lg mx-2">%70</td>
+                                <td class="px-6 py-5 text-center text-slate-700 tabular-nums font-medium">607.6</td>
+                                <td class="px-6 py-5 text-right text-slate-600 tabular-nums">$55.00</td>
+                                <td class="px-8 py-5 text-right font-bold text-slate-800 tabular-nums">$33,418.00</td>
+                            </tr>
+                            <!-- Şubat -->
+                            <tr class="hover:bg-blue-50/40 transition duration-200 group">
+                                <td class="px-8 py-5 font-bold text-slate-800 group-hover:text-primary">Şubat</td>
+                                <td class="px-6 py-5 text-center text-slate-500 tabular-nums">28</td>
+                                <td class="px-6 py-5 text-center font-bold text-blue-600 tabular-nums bg-blue-50/50 rounded-lg">%75</td>
+                                <td class="px-6 py-5 text-center text-slate-700 tabular-nums font-medium">630</td>
+                                <td class="px-6 py-5 text-right text-slate-600 tabular-nums">$55.00</td>
+                                <td class="px-8 py-5 text-right font-bold text-slate-800 tabular-nums">$34,650.00</td>
+                            </tr>
+                            <!-- Mart -->
+                            <tr class="hover:bg-blue-50/40 transition duration-200 group">
+                                <td class="px-8 py-5 font-bold text-slate-800 group-hover:text-primary">Mart</td>
+                                <td class="px-6 py-5 text-center text-slate-500 tabular-nums">28</td>
+                                <td class="px-6 py-5 text-center font-bold text-blue-600 tabular-nums bg-blue-50/50 rounded-lg">%80</td>
+                                <td class="px-6 py-5 text-center text-slate-700 tabular-nums font-medium">694.4</td>
+                                <td class="px-6 py-5 text-right text-slate-600 tabular-nums">$58.00</td>
+                                <td class="px-8 py-5 text-right font-bold text-slate-800 tabular-nums">$40,275.20</td>
+                            </tr>
+                            <!-- Nisan -->
+                            <tr class="hover:bg-amber-50/40 transition duration-200 group bg-amber-50/10">
+                                <td class="px-8 py-5 font-bold text-slate-800 group-hover:text-primary">Nisan</td>
+                                <td class="px-6 py-5 text-center text-slate-500 tabular-nums">28</td>
+                                <td class="px-6 py-5 text-center font-bold text-amber-600 tabular-nums bg-amber-50 rounded-lg">%90</td>
+                                <td class="px-6 py-5 text-center text-slate-700 tabular-nums font-medium">756</td>
+                                <td class="px-6 py-5 text-right text-slate-600 tabular-nums">$70.00</td>
+                                <td class="px-8 py-5 text-right font-bold text-slate-800 tabular-nums">$52,920.00</td>
+                            </tr>
+                            <!-- Mayıs -->
+                            <tr class="hover:bg-amber-50/40 transition duration-200 group bg-amber-50/10">
+                                <td class="px-8 py-5 font-bold text-slate-800 group-hover:text-primary">Mayıs</td>
+                                <td class="px-6 py-5 text-center text-slate-500 tabular-nums">28</td>
+                                <td class="px-6 py-5 text-center font-bold text-amber-600 tabular-nums bg-amber-50 rounded-lg">%85</td>
+                                <td class="px-6 py-5 text-center text-slate-700 tabular-nums font-medium">737.8</td>
+                                <td class="px-6 py-5 text-right text-slate-600 tabular-nums">$65.00</td>
+                                <td class="px-8 py-5 text-right font-bold text-slate-800 tabular-nums">$47,957.00</td>
+                            </tr>
+                            <!-- Haziran -->
+                            <tr class="hover:bg-blue-50/40 transition duration-200 group">
+                                <td class="px-8 py-5 font-bold text-slate-800 group-hover:text-primary">Haziran</td>
+                                <td class="px-6 py-5 text-center text-slate-500 tabular-nums">28</td>
+                                <td class="px-6 py-5 text-center font-bold text-blue-600 tabular-nums bg-blue-50/50 rounded-lg">%85</td>
+                                <td class="px-6 py-5 text-center text-slate-700 tabular-nums font-medium">714</td>
+                                <td class="px-6 py-5 text-right text-slate-600 tabular-nums">$65.00</td>
+                                <td class="px-8 py-5 text-right font-bold text-slate-800 tabular-nums">$46,410.00</td>
+                            </tr>
+                            <!-- Temmuz -->
+                            <tr class="hover:bg-green-50/40 transition duration-200 group bg-green-50/10">
+                                <td class="px-8 py-5 font-bold text-slate-800 group-hover:text-primary">Temmuz</td>
+                                <td class="px-6 py-5 text-center text-slate-500 tabular-nums">28</td>
+                                <td class="px-6 py-5 text-center font-bold text-green-600 tabular-nums bg-green-50 rounded-lg">%90</td>
+                                <td class="px-6 py-5 text-center text-slate-700 tabular-nums font-medium">781.2</td>
+                                <td class="px-6 py-5 text-right text-slate-600 tabular-nums">$75.00</td>
+                                <td class="px-8 py-5 text-right font-bold text-slate-800 tabular-nums">$58,590.00</td>
+                            </tr>
+                            <!-- Ağustos -->
+                            <tr class="hover:bg-green-50/40 transition duration-200 group bg-green-50/10">
+                                <td class="px-8 py-5 font-bold text-slate-800 group-hover:text-primary">Ağustos</td>
+                                <td class="px-6 py-5 text-center text-slate-500 tabular-nums">28</td>
+                                <td class="px-6 py-5 text-center font-bold text-green-600 tabular-nums bg-green-50 rounded-lg">%90</td>
+                                <td class="px-6 py-5 text-center text-slate-700 tabular-nums font-medium">781.2</td>
+                                <td class="px-6 py-5 text-right text-slate-600 tabular-nums">$75.00</td>
+                                <td class="px-8 py-5 text-right font-bold text-slate-800 tabular-nums">$58,590.00</td>
+                            </tr>
+                            <!-- Eylül -->
+                            <tr class="hover:bg-green-50/40 transition duration-200 group bg-green-50/10">
+                                <td class="px-8 py-5 font-bold text-slate-800 group-hover:text-primary">Eylül</td>
+                                <td class="px-6 py-5 text-center text-slate-500 tabular-nums">28</td>
+                                <td class="px-6 py-5 text-center font-bold text-green-600 tabular-nums bg-green-50 rounded-lg">%90</td>
+                                <td class="px-6 py-5 text-center text-slate-700 tabular-nums font-medium">756</td>
+                                <td class="px-6 py-5 text-right text-slate-600 tabular-nums">$75.00</td>
+                                <td class="px-8 py-5 text-right font-bold text-slate-800 tabular-nums">$56,700.00</td>
+                            </tr>
+                            <!-- Ekim -->
+                            <tr class="hover:bg-green-50/40 transition duration-200 group bg-green-50/10">
+                                <td class="px-8 py-5 font-bold text-slate-800 group-hover:text-primary">Ekim</td>
+                                <td class="px-6 py-5 text-center text-slate-500 tabular-nums">28</td>
+                                <td class="px-6 py-5 text-center font-bold text-green-600 tabular-nums bg-green-50 rounded-lg">%90</td>
+                                <td class="px-6 py-5 text-center text-slate-700 tabular-nums font-medium">781.2</td>
+                                <td class="px-6 py-5 text-right text-slate-600 tabular-nums">$75.00</td>
+                                <td class="px-8 py-5 text-right font-bold text-slate-800 tabular-nums">$58,590.00</td>
+                            </tr>
+                            <!-- Kasım -->
+                            <tr class="hover:bg-blue-50/40 transition duration-200 group">
+                                <td class="px-8 py-5 font-bold text-slate-800 group-hover:text-primary">Kasım</td>
+                                <td class="px-6 py-5 text-center text-slate-500 tabular-nums">28</td>
+                                <td class="px-6 py-5 text-center font-bold text-blue-600 tabular-nums bg-blue-50/50 rounded-lg">%80</td>
+                                <td class="px-6 py-5 text-center text-slate-700 tabular-nums font-medium">672</td>
+                                <td class="px-6 py-5 text-right text-slate-600 tabular-nums">$55.00</td>
+                                <td class="px-8 py-5 text-right font-bold text-slate-800 tabular-nums">$36,960.00</td>
+                            </tr>
+                            <!-- Aralık (Trende göre) -->
+                            <tr class="hover:bg-blue-50/40 transition duration-200 group">
+                                <td class="px-8 py-5 font-bold text-slate-800 group-hover:text-primary">Aralık</td>
+                                <td class="px-6 py-5 text-center text-slate-500 tabular-nums">28</td>
+                                <td class="px-6 py-5 text-center font-bold text-blue-600 tabular-nums bg-blue-50/50 rounded-lg">%80</td>
+                                <td class="px-6 py-5 text-center text-slate-700 tabular-nums font-medium">694.4</td>
+                                <td class="px-6 py-5 text-right text-slate-600 tabular-nums">$55.00</td>
+                                <td class="px-8 py-5 text-right font-bold text-slate-800 tabular-nums">$38,192.00</td>
+                            </tr>
+                        </tbody>
+                        <tfoot class="bg-slate-50 font-bold text-slate-800 border-t-2 border-slate-200 sticky bottom-0 shadow-[0_-5px_10px_rgba(0,0,0,0.05)]">
+                            <tr>
+                                <td class="px-8 py-6 text-lg">GENEL TOPLAM</td>
+                                <td class="px-6 py-6 text-center tabular-nums text-base"></td>
+                                <td class="px-6 py-6 text-center text-blue-600 tabular-nums text-base bg-white/50">%84</td>
+                                <td class="px-6 py-6 text-center tabular-nums text-base">8,605.8</td>
+                                <td class="px-6 py-6 text-right tabular-nums text-base">Ort. $64.83</td>
+                                <td class="px-8 py-6 text-right text-2xl text-primary tabular-nums tracking-tight">$563,252.20</td>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
-
-                <!-- Card 2 -->
-                <div class="bg-white/10 backdrop-blur-md p-6 rounded-lg border border-white/20 hover:bg-white/20 transition">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-bold text-xl">Expedia</h3>
-                        <span class="text-2xl text-yellow-400">✈️</span>
-                    </div>
-                    <p class="text-sm text-gray-300"><strong>Pazar:</strong> K. Amerika & Paket</p>
-                    <p class="text-xs text-gray-400 mt-2">ABD, Kanada ve Uçak+Otel paket satışları.</p>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="bg-white/10 backdrop-blur-md p-6 rounded-lg border border-white/20 hover:bg-white/20 transition">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-bold text-xl">Agoda & Ctrip</h3>
-                        <span class="text-2xl text-red-400">🌏</span>
-                    </div>
-                    <p class="text-sm text-gray-300"><strong>Pazar:</strong> Asya Pasifik</p>
-                    <p class="text-xs text-gray-400 mt-2">Çin, Kore ve Japonya pazarı için kritik.</p>
-                </div>
-
-                <!-- Card 4 -->
-                <div class="bg-white/10 backdrop-blur-md p-6 rounded-lg border border-white/20 hover:bg-white/20 transition">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-bold text-xl">Ostrovok</h3>
-                        <span class="text-2xl text-cyan-300">❄️</span>
-                    </div>
-                    <p class="text-sm text-gray-300"><strong>Pazar:</strong> BDT & Rusya</p>
-                    <p class="text-xs text-gray-400 mt-2">Rusya ve Türki Cumhuriyetler'den gelen ticaret trafiği.</p>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                <div class="bg-white/10 backdrop-blur-md p-6 rounded-lg border border-white/20 hover:bg-white/20 transition md:col-span-1">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-bold text-xl">Hotelbeds</h3>
-                        <span class="text-2xl text-green-400">🤝</span>
-                    </div>
-                    <p class="text-sm text-gray-300"><strong>Pazar:</strong> B2B Toptan</p>
-                </div>
-                <div class="bg-white/10 backdrop-blur-md p-6 rounded-lg border border-white/20 hover:bg-white/20 transition md:col-span-2">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-bold text-xl">eDreams ODIGEO</h3>
-                        <span class="text-2xl text-purple-400">📨</span>
-                    </div>
-                    <p class="text-sm text-gray-300"><strong>Pazar:</strong> Avrupa Uçuş Odaklı (Opodo, GO Voyages)</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 4. Strategic Plan -->
-    <section id="strategy" class="py-16 sm:py-20 bg-white">
-        <div class="container mx-auto px-4 sm:px-6 max-w-6xl">
-            <h2 class="text-3xl font-bold text-primary mb-12 text-center">Stratejik Eylem Planı</h2>
-            
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- Strategy 1 -->
-                <div class="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-blue-600 relative overflow-hidden group">
-                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-100 rounded-full opacity-50 group-hover:scale-150 transition duration-500"></div>
-                    <h3 class="text-xl font-bold mb-4 z-10 relative">Booking.com Optimizasyonu</h3>
-                    <ul class="text-gray-600 text-sm space-y-3 z-10 relative">
-                        <li><span class="text-blue-600 mr-2">➜</span><strong>Oda Tipi Yapısı:</strong> Standart ve Deluxe farkları belirginleştirilecek.</li>
-                        <li><span class="text-blue-600 mr-2">➜</span><strong>İçerik Skoru:</strong> %100 Görünürlük puanı hedeflenecek.</li>
-                        <li><span class="text-blue-600 mr-2">➜</span><strong>ADR Artışı:</strong> Dinamik fiyat makasları ile ortalama fiyat yükseltilecek.</li>
-                    </ul>
-                </div>
-
-                <!-- Strategy 2 -->
-                <div class="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-purple-600 relative overflow-hidden group">
-                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-purple-100 rounded-full opacity-50 group-hover:scale-150 transition duration-500"></div>
-                    <h3 class="text-xl font-bold mb-4 z-10 relative">Fiyat Paritesi & Promosyon</h3>
-                    <ul class="text-gray-600 text-sm space-y-3 z-10 relative">
-                        <li><span class="text-purple-600 mr-2">➜</span><strong>Bulk Fiyat:</strong> 12 aylık baz fiyat girişi.</li>
-                        <li><span class="text-purple-600 mr-2">➜</span><strong>Ranking:</strong> Özel promosyonlar (Mobile Rate) ile sıralama artışı.</li>
-                        <li><span class="text-purple-600 mr-2">➜</span><strong>Parite:</strong> Tüm kanallarda tutarlı fiyat yönetimi.</li>
-                    </ul>
-                </div>
-
-                <!-- Strategy 3 -->
-                <div class="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-orange-500 relative overflow-hidden group">
-                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-orange-100 rounded-full opacity-50 group-hover:scale-150 transition duration-500"></div>
-                    <h3 class="text-xl font-bold mb-4 z-10 relative">Kış Sezonu: Yarım Pansiyon</h3>
-                    <ul class="text-gray-600 text-sm space-y-3 z-10 relative">
-                        <li><span class="text-orange-500 mr-2">➜</span><strong>Pazar:</strong> BDT/Ortadoğu misafirleri için akşam yemeği çözümü.</li>
-                        <li><span class="text-orange-500 mr-2">➜</span><strong>Hedef:</strong> Düşük sezonda doluluğu artırmak.</li>
-                        <li><span class="text-orange-500 mr-2">➜</span><strong>Ek Gelir:</strong> Kişi başı harcamayı maksimize etmek.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 4.5 Otelciro Hizmet Özeti (Kısa & Grafik Bazlı) -->
-    <section class="py-12 sm:py-16 bg-white border-y border-gray-100">
-        <div class="container mx-auto px-4 sm:px-6 max-w-6xl">
-            <div class="text-center mb-10">
-                <h2 class="text-2xl sm:text-3xl font-bold text-primary mb-3">Fimka’da Neleri Üstleneceğiz?</h2>
-                <p class="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
-                    İstanbul ve diğer şehirlerde yönettiğimiz şehir otellerinde uyguladığımız modeli, Fimka Hotel için de kısa ve ölçülebilir bir çerçeveye oturtuyoruz.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                <!-- Kanal Yönetimi -->
-                <div class="bg-gray-50 rounded-2xl p-5 border border-gray-100 flex flex-col gap-2">
-                    <div class="flex items-center justify-between mb-1">
-                        <span class="text-lg">📡</span>
-                        <span class="text-[11px] text-gray-500 uppercase tracking-wide">Günlük Takip</span>
-                    </div>
-                    <h3 class="font-semibold text-sm sm:text-base text-gray-800">Kanal Yönetimi & İçerik</h3>
-                    <p class="text-xs text-gray-500">Booking.com, Expedia, Agoda, Ostrovok vb. kanallarda oda tipleri, fotoğraflar, içerik skoru ve parite takibi.</p>
-                </div>
-
-                <!-- Dinamik Fiyatlandırma -->
-                <div class="bg-gray-50 rounded-2xl p-5 border border-gray-100 flex flex-col gap-2">
-                    <div class="flex items-center justify-between mb-1">
-                        <span class="text-lg">📊</span>
-                        <span class="text-[11px] text-gray-500 uppercase tracking-wide">Sezon & Event Bazlı</span>
-                    </div>
-                    <h3 class="font-semibold text-sm sm:text-base text-gray-800">Dinamik Fiyat &amp; Promosyon</h3>
-                    <p class="text-xs text-gray-500">Dinamik fiyatlandırma ile otelin doluluk oranlarını yükseltirken ADR&apos;yi de kontrollü şekilde artırıyor, piyasadaki rakip ve talep verilerini mümkün olduğunca toplayarak karar veriyoruz.</p>
-                </div>
-
-                <!-- Raporlama & Toplantı -->
-                <div class="bg-gray-50 rounded-2xl p-5 border border-gray-100 flex flex-col gap-2">
-                    <div class="flex items-center justify-between mb-1">
-                        <span class="text-lg">📑</span>
-                        <span class="text-[11px] text-gray-500 uppercase tracking-wide">Aylık</span>
-                    </div>
-                    <h3 class="font-semibold text-sm sm:text-base text-gray-800">Raporlama & Gelir Toplantısı</h3>
-                    <p class="text-xs text-gray-500">Doluluk, ADR, RevPAR ve kanal kırılımları ile aylık performans raporu + aksiyon planı.</p>
-                </div>
-
-                <!-- B2B & Ajanslar -->
-                <div class="bg-gray-50 rounded-2xl p-5 border border-gray-100 flex flex-col gap-2">
-                    <div class="flex items-center justify-between mb-1">
-                        <span class="text-lg">🤝</span>
-                        <span class="text-[11px] text-gray-500 uppercase tracking-wide">Kurumsal</span>
-                    </div>
-                    <h3 class="font-semibold text-sm sm:text-base text-gray-800">B2B Ajans & Kurumsal Satış</h3>
-                    <p class="text-xs text-gray-500">Yurtiçi/yurtdışı acenteler, tur operatörleri ve kurumsal firmalarla fiyat, allotment ve stop-sale süreç yönetimi.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 5. Financials -->
-    <section id="financials" class="py-16 sm:py-20 bg-gradient-to-b from-gray-50 to-white">
-        <div class="container mx-auto px-4 sm:px-6 max-w-7xl">
-            <div class="flex flex-col items-center mb-12">
-                <h2 class="text-3xl font-bold text-primary">Finansal Projeksiyon & Gelir Tablosu</h2>
-                <p class="text-gray-500 mt-2">28 Oda Kapasitesi ile Yıllık Tahmini Veriler</p>
-            </div>
-
-            <!-- Grafikler kaldırıldı -->
-
-            <!-- Summary Card -->
-            <div class="bg-primary text-white rounded-2xl p-8 shadow-xl flex flex-col md:flex-row justify-around items-center text-center gap-6 md:gap-10 flex-wrap">
-                <div class="mb-6 md:mb-0">
-                    <p class="text-blue-200 text-sm uppercase tracking-wider">Yıllık Toplam Geceleme</p>
-                    <p class="text-4xl font-bold">7,998</p>
-                </div>
-                <div class="mb-6 md:mb-0">
-                    <p class="text-blue-200 text-sm uppercase tracking-wider">Yıllık Ortalama Doluluk</p>
-                    <p class="text-4xl font-bold">%78</p>
-                </div>
-                <div class="mb-6 md:mb-0">
-                    <p class="text-blue-200 text-sm uppercase tracking-wider">Ortalama ADR</p>
-                    <p class="text-4xl font-bold">€64.00</p>
-                </div>
-                <div>
-                    <p class="text-accent text-sm uppercase tracking-wider font-bold">Yıllık Ciro Hedefi</p>
-                    <p class="text-5xl font-bold">€522,230</p>
-                </div>
-            </div>
-
-            <!-- Detailed Table (Collapsible on mobile) -->
-            <div class="mt-12 overflow-x-auto bg-white rounded-xl shadow-lg">
-                <table class="min-w-full text-xs sm:text-sm text-left text-gray-500">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-100">
-                        <tr>
-                            <th class="px-4 sm:px-6 py-3">Ay</th>
-                            <th class="px-4 sm:px-6 py-3">Kapasite</th>
-                            <th class="px-4 sm:px-6 py-3">Doluluk</th>
-                            <th class="px-4 sm:px-6 py-3">Satılan Gece</th>
-                            <th class="px-4 sm:px-6 py-3">ADR (€)</th>
-                            <th class="px-6 py-3 text-right">Brüt Gelir (€)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Data Rows -->
-                        <tr class="bg-white border-b hover:bg-gray-50"><td class="px-4 sm:px-6 py-4 font-medium text-gray-900">Ocak</td><td>28</td><td>%65</td><td>564.2</td><td>€55.00</td><td class="text-right">€31,031.00</td></tr>
-                        <tr class="bg-gray-50 border-b hover:bg-gray-100"><td class="px-4 sm:px-6 py-4 font-medium text-gray-900">Şubat</td><td>28</td><td>%65</td><td>546.0</td><td>€55.00</td><td class="text-right">€30,030.00</td></tr>
-                        <tr class="bg-white border-b hover:bg-gray-50"><td class="px-4 sm:px-6 py-4 font-medium text-gray-900">Mart</td><td>28</td><td>%70</td><td>607.6</td><td>€58.00</td><td class="text-right">€35,240.80</td></tr>
-                        <tr class="bg-gray-50 border-b hover:bg-gray-100"><td class="px-4 sm:px-6 py-4 font-medium text-gray-900">Nisan</td><td>28</td><td>%70</td><td>588.0</td><td>€60.00</td><td class="text-right">€35,280.00</td></tr>
-                        <tr class="bg-white border-b hover:bg-gray-50"><td class="px-4 sm:px-6 py-4 font-medium text-gray-900">Mayıs</td><td>28</td><td>%85</td><td>737.8</td><td>€65.00</td><td class="text-right">€47,957.00</td></tr>
-                        <tr class="bg-gray-50 border-b hover:bg-gray-100"><td class="px-4 sm:px-6 py-4 font-medium text-gray-900">Haziran</td><td>28</td><td>%70</td><td>588.0</td><td>€65.00</td><td class="text-right">€38,220.00</td></tr>
-                        <tr class="bg-white border-b hover:bg-gray-50"><td class="px-4 sm:px-6 py-4 font-medium text-gray-900">Temmuz</td><td>28</td><td>%85</td><td>737.8</td><td>€70.00</td><td class="text-right">€51,646.00</td></tr>
-                        <tr class="bg-gray-50 border-b hover:bg-gray-100"><td class="px-4 sm:px-6 py-4 font-medium text-gray-900">Ağustos</td><td>28</td><td>%90</td><td>781.2</td><td>€75.00</td><td class="text-right">€58,590.00</td></tr>
-                        <tr class="bg-white border-b hover:bg-gray-50"><td class="px-4 sm:px-6 py-4 font-medium text-gray-900">Eylül</td><td>28</td><td>%90</td><td>756.0</td><td>€75.00</td><td class="text-right">€56,700.00</td></tr>
-                        <tr class="bg-gray-50 border-b hover:bg-gray-100"><td class="px-4 sm:px-6 py-4 font-medium text-gray-900">Ekim</td><td>28</td><td>%95</td><td>824.6</td><td>€70.00</td><td class="text-right">€57,722.00</td></tr>
-                        <tr class="bg-white border-b hover:bg-gray-50"><td class="px-4 sm:px-6 py-4 font-medium text-gray-900">Kasım</td><td>28</td><td>%80</td><td>672.0</td><td>€60.00</td><td class="text-right">€40,320.00</td></tr>
-                        <tr class="bg-gray-50 border-b hover:bg-gray-100"><td class="px-4 sm:px-6 py-4 font-medium text-gray-900">Aralık</td><td>28</td><td>%70</td><td>607.6</td><td>€65.00</td><td class="text-right">€39,494.00</td></tr>
-                    </tbody>
-                </table>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer id="contact" class="bg-dark text-white py-12">
-        <div class="container mx-auto px-4 sm:px-6">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-6 md:mb-0 text-center md:text-left">
-                    <div class="text-2xl font-bold mb-2">Otelciro <span class="text-secondary text-base font-normal">Bosphorus Line</span></div>
-                    <p class="text-gray-400 text-sm">Turizm Organizasyon Emlak Taşımacılık<br>İç ve Dış Ticaret Limited Şirketi</p>
-                </div>
+    <footer id="contact" class="bg-primary text-white py-20 border-t border-slate-800 relative overflow-hidden">
+         <div class="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-700 via-primary to-primary"></div>
+        <div class="container mx-auto px-4 sm:px-6 relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-start gap-12">
                 
-                <div class="flex flex-col gap-4 text-center md:text-right">
-                    <div class="flex items-center justify-center md:justify-end gap-3 group cursor-pointer">
-                        <div class="w-8 h-8 rounded-full bg-secondary flex items-center justify-center group-hover:bg-white group-hover:text-primary transition">
-                            <span>📞</span>
-                        </div>
-                        <span class="text-gray-300 hover:text-white transition">+90 501 332 43 00</span>
+                <!-- Brand Info -->
+                <div class="md:w-1/3">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="bg-white/10 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xl">OC</div>
+                        <span class="text-2xl font-bold tracking-tight">OtelCiro.com</span>
                     </div>
-                    <div class="flex items-center justify-center md:justify-end gap-3 group cursor-pointer">
-                        <div class="w-8 h-8 rounded-full bg-secondary flex items-center justify-center group-hover:bg-white group-hover:text-primary transition">
-                            <span>✉️</span>
-                        </div>
-                        <span class="text-gray-300 hover:text-white transition">info@otelciro.com</span>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-8 max-w-xs">
+                        Şehir otelleri için özel olarak tasarlanmış veri odaklı gelir yönetimi stratejileri ile cironuzu maksimize edin.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-secondary transition-all hover:-translate-y-1 text-slate-300 hover:text-white">
+                            <span class="sr-only">LinkedIn</span>
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-secondary transition-all hover:-translate-y-1 text-slate-300 hover:text-white">
+                            <span class="sr-only">Instagram</span>
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        </a>
                     </div>
-                     <div class="flex items-center justify-center md:justify-end gap-3 group cursor-pointer">
-                        <div class="w-8 h-8 rounded-full bg-secondary flex items-center justify-center group-hover:bg-white group-hover:text-primary transition">
-                            <span>📍</span>
-                        </div>
-                        <span class="text-gray-300 text-xs hover:text-white transition">Cevizlik Mah. İstanbul Cad. Hamurcu No:12<br>İç Kapı No:26 Bakırköy/İstanbul</span>
-                    </div>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="md:w-1/3 md:text-right">
+                    <h4 class="text-lg font-bold mb-6 text-white border-b border-slate-700 pb-2 inline-block">İletişim</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-center justify-start md:justify-end text-slate-300 group">
+                            <span class="mr-3 group-hover:text-white transition">+90 501 332 43 00</span>
+                            <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-white transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                            </div>
+                        </li>
+                        <li class="flex items-center justify-start md:justify-end text-slate-300 group">
+                            <span class="mr-3 group-hover:text-white transition">info@otelciro.com</span>
+                            <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-white transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            </div>
+                        </li>
+                        <li class="flex items-start justify-start md:justify-end text-slate-300 text-left md:text-right group">
+                            <span class="mr-3 text-sm group-hover:text-white transition">Cevizlik Mah. İstanbul Cad.<br>Hamurcu No:12/26 Bakırköy</span>
+                            <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-white transition mt-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <hr class="border-gray-800 my-8">
-            <div class="text-center text-gray-600 text-sm">
-                &copy; 2025 Otelciro.com. Tüm hakları saklıdır.
+            
+            <div class="border-t border-slate-800 mt-16 pt-8 text-center">
+                <p class="text-slate-500 text-sm">
+                    &copy; 2025 Otelciro.com <span class="text-slate-700 mx-2">|</span> Bosphorus Line. Tüm hakları saklıdır.
+                </p>
             </div>
         </div>
     </footer>
 
-    <!-- Scripts (Chart'lar kaldırıldı, sadece mobil menü için JS) -->
     <script>
-        const mobileNav = document.getElementById('mobileNav');
+        // Mobile Navigation Toggle
         const mobileNavBtn = document.getElementById('mobileNavBtn');
-        if (mobileNav && mobileNavBtn) {
+        const mobileNav = document.getElementById('mobileNav');
+
+        if (mobileNavBtn && mobileNav) {
             mobileNavBtn.addEventListener('click', () => {
                 mobileNav.classList.toggle('hidden');
+                // Icon toggle logic could go here
             });
         }
+
+        // Sticky Navbar Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 20) {
+                nav.classList.add('shadow-lg', 'bg-white/95');
+                nav.classList.remove('py-4');
+                nav.classList.add('py-2');
+            } else {
+                nav.classList.remove('shadow-lg', 'bg-white/95');
+                nav.classList.add('py-4');
+                nav.classList.remove('py-2');
+            }
+        });
     </script>
 </body>
 </html>
