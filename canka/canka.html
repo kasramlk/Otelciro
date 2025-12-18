@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OtelCiro | Yatırımcı Performans Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cyan-500: #06b6d4;
+            --blue-500: #3b82f6;
+        }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #020617;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* --- Hero Section Styles --- */
+        .grid-bg {
+            background-image: linear-gradient(rgba(6,182,212,0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(6,182,212,0.05) 1px, transparent 1px);
+            background-size: 64px 64px;
+        }
+
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.2;
+            pointer-events: none;
+            transition: transform 0.2s ease-out;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 0.5; }
+        }
+        .pulse-effect {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: rgba(6, 182, 212, 0.2);
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes gradient-move {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animate-gradient {
+            background-size: 200% auto;
+            animation: gradient-move 3s ease infinite;
+        }
+
+        /* --- Reporting Dashboard Styles --- */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(6, 182, 212, 0.3);
+        }
+
+        .btn-active { 
+            background: linear-gradient(to bottom right, #22d3ee, #2563eb);
+            color: white;
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+        }
+        .btn-inactive { 
+            background: rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
+        }
+
+        .chart-container { position: relative; height: 300px; width: 100%; }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+
+        /* Mock Chart Bar Transitions */
+        .mock-bar {
+            transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- HERO SECTION -->
+    <section class="relative min-h-screen flex items-center overflow-hidden">
+        <!-- Parallax Background -->
+        <div class="absolute inset-0 grid-bg opacity-40"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-950 via-transparent to-slate-950"></div>
+        
+        <!-- Interactive Orbs -->
+        <div id="orb1" class="glow-orb" style="top: 20%; left: 10%; width: 600px; height: 600px; background: #06b6d4;"></div>
+        <div id="orb2" class="glow-orb" style="bottom: 10%; right: 5%; width: 600px; height: 600px; background: #3b82f6;"></div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full z-10">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                
+                <!-- Left Content -->
+                <div class="space-y-8">
+                    <!-- Badge -->
+                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-cyan-500/10 backdrop-blur-xl rounded-full text-cyan-400 text-sm font-medium border border-cyan-500/20 relative overflow-hidden">
+                        <div class="pulse-effect"></div>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        <span>Türkiye'nin İlk AI-Native Otel Yönetim Ortağı</span>
+                    </div>
+
+                    <!-- Headline -->
+                    <h1 class="text-5xl lg:text-7xl font-bold text-white leading-[1.1]">
+                        Otelciro: Gelir Stratejinizi 
+                        <span class="block bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent animate-gradient py-2">
+                            Tasarlar, Uygular, Büyütür
+                        </span>
+                    </h1>
+
+                    <!-- Description -->
+                    <p class="text-xl text-slate-400 leading-relaxed max-w-xl">
+                        Yatırımcılarımız için global uzman ekibimizle, otelinize özel gelir stratejileri oluşturuyor ve uçtan uca yönetiyoruz. Sıfır teknoloji maliyetiyle maksimum karlılığa ulaşın.
+                    </p>
+
+                    <!-- CTAs -->
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#dashboard" class="group relative px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-xl shadow-lg shadow-cyan-500/30 flex items-center justify-center gap-2 transition-transform hover:scale-105">
+                            <span>Performans Raporunu İncele</span>
+                            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </a>
+                        <div class="flex items-center gap-2 text-slate-400 text-sm ml-2">
+                            <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                            <span>Canlı Veri Takibi</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Visual (Dynamic Mock Dashboard) -->
+                <div class="relative group">
+                    <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-3xl blur-3xl opacity-50 group-hover:opacity-80 transition-opacity"></div>
+                    
+                    <div class="relative bg-slate-900/80 backdrop-blur-2xl rounded-3xl border border-white/10 overflow-hidden shadow-2xl transition-transform duration-500 hover:rotate-1">
+                        <!-- Browser Header -->
+                        <div class="bg-slate-800/50 border-b border-white/5 px-4 py-3 flex items-center gap-2">
+                            <div class="flex gap-1.5">
+                                <div class="w-2.5 h-2.5 rounded-full bg-red-500/70"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/70"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-green-500/70"></div>
+                            </div>
+                            <div class="flex-1 mx-4 bg-slate-950/50 rounded px-3 py-1 text-[10px] text-slate-500 flex items-center gap-2">
+                                <span>🔒</span> analytics.otelciro.com/live
+                            </div>
+                        </div>
+
+                        <!-- Content Mock -->
+                        <div class="p-6 space-y-4">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2">
+                                    <div id="mock-initials" class="w-8 h-8 bg-cyan-500 rounded flex items-center justify-center font-bold text-xs text-white uppercase tracking-tighter">CH</div>
+                                    <span id="mock-hotel-name" class="text-xs font-bold text-slate-300">Otel Yükleniyor...</span>
+                                </div>
+                                <div class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full animate-pulse">CANLI VERİ</div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-3">
+                                <div class="bg-white/5 p-3 rounded-xl border border-white/5">
+                                    <div class="text-[9px] text-slate-500 uppercase font-bold mb-1">Ciro</div>
+                                    <div id="mock-stat-rev" class="text-sm font-black text-cyan-400">€0</div>
+                                </div>
+                                <div class="bg-white/5 p-3 rounded-xl border border-white/5">
+                                    <div class="text-[9px] text-slate-500 uppercase font-bold mb-1">Doluluk</div>
+                                    <div id="mock-stat-occ" class="text-sm font-black text-blue-400">0%</div>
+                                </div>
+                                <div class="bg-white/5 p-3 rounded-xl border border-white/5">
+                                    <div class="text-[9px] text-slate-500 uppercase font-bold mb-1">ADR</div>
+                                    <div id="mock-stat-adr" class="text-sm font-black text-emerald-400">€0</div>
+                                </div>
+                            </div>
+
+                            <div class="h-32 bg-white/5 rounded-xl border border-white/5 relative p-4">
+                                <div class="flex items-end justify-between h-full gap-1.5">
+                                    <div id="mock-bar-1" class="mock-bar w-full bg-cyan-500/40 rounded-t" style="height: 20%;"></div>
+                                    <div id="mock-bar-2" class="mock-bar w-full bg-blue-500/40 rounded-t" style="height: 40%;"></div>
+                                    <div id="mock-bar-3" class="mock-bar w-full bg-cyan-500/60 rounded-t" style="height: 60%;"></div>
+                                    <div id="mock-bar-4" class="mock-bar w-full bg-blue-500/40 rounded-t" style="height: 30%;"></div>
+                                    <div id="mock-bar-5" class="mock-bar w-full bg-emerald-500/40 rounded-t" style="height: 50%;"></div>
+                                </div>
+                                <div class="absolute bottom-1 left-4 right-4 flex justify-between">
+                                    <span class="text-[7px] text-slate-600 font-bold uppercase">Kas</span>
+                                    <span class="text-[7px] text-slate-600 font-bold uppercase">Ara</span>
+                                    <span class="text-[7px] text-slate-600 font-bold uppercase">Oca</span>
+                                    <span class="text-[7px] text-slate-600 font-bold uppercase">Şub</span>
+                                    <span class="text-[7px] text-slate-600 font-bold uppercase">Mar</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- REPORTING SECTION -->
+    <section id="dashboard" class="relative z-10 max-w-7xl mx-auto px-4 md:px-8 -mt-20">
+        <!-- Switcher -->
+        <div class="flex justify-center mb-10">
+            <div class="bg-slate-900/80 p-1.5 rounded-2xl border border-white/10 backdrop-blur-xl flex gap-2">
+                <button id="btn-canka" onclick="switchHotel('canka')" class="px-8 py-3 rounded-xl text-sm font-bold transition-all btn-active">
+                    Canka Hotel
+                </button>
+                <button id="btn-aydin" onclick="switchHotel('aydin')" class="px-8 py-3 rounded-xl text-sm font-bold transition-all btn-inactive">
+                    By Aydın Suites
+                </button>
+            </div>
+        </div>
+
+        <div class="mb-8">
+            <p id="opt-start-text" class="text-slate-400 text-sm font-medium italic text-center max-w-2xl mx-auto"></p>
+        </div>
+
+        <!-- KPI Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div class="glass-card p-6 rounded-3xl flex flex-col">
+                <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center text-blue-400 mb-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Toplam Satış Hacmi</p>
+                <h3 id="stat-total-sales" class="text-3xl font-black text-white mb-3 tracking-tighter">0 EUR</h3>
+                <div class="mt-auto pt-3 border-t border-white/5 text-[10px] text-slate-400 font-medium">
+                    <span class="text-blue-400 block font-bold mb-1 uppercase tracking-tighter">Yatırım Notu:</span>
+                    Dönem boyu sisteme giren toplam nakit potansiyelidir.
+                </div>
+            </div>
+
+            <div class="glass-card p-6 rounded-3xl flex flex-col">
+                <div class="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center text-cyan-400 mb-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                </div>
+                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Kasım ADR (Ortalama Fiyat)</p>
+                <h3 id="stat-adr" class="text-3xl font-black text-white mb-3 tracking-tighter">0 EUR</h3>
+                <div class="mt-auto pt-3 border-t border-white/5 text-[10px] text-slate-400 font-medium">
+                    <span class="text-cyan-400 block font-bold mb-1 uppercase tracking-tighter">Yatırım Notu:</span>
+                    Oda başına elde edilen günlük net gelir verimliliği.
+                </div>
+            </div>
+
+            <div class="glass-card p-6 rounded-3xl flex flex-col">
+                <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center text-emerald-400 mb-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                </div>
+                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Kasım Doluluk</p>
+                <h3 id="stat-occupancy" class="text-3xl font-black text-white mb-3 tracking-tighter">% 0</h3>
+                <div class="mt-auto pt-3 border-t border-white/5 text-[10px] text-slate-400 font-medium">
+                    <span class="text-emerald-400 block font-bold mb-1 uppercase tracking-tighter">Yatırım Notu:</span>
+                    Stoktaki odaların ranta dönme oranıdır.
+                </div>
+            </div>
+
+            <div class="glass-card p-6 rounded-3xl flex flex-col">
+                <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center text-amber-400 mb-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                </div>
+                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Kasım Kesinleşen Ciro</p>
+                <h3 id="stat-nov-rev" class="text-3xl font-black text-white mb-3 tracking-tighter">0 EUR</h3>
+                <div class="mt-auto pt-3 border-t border-white/5 text-[10px] text-slate-400 font-medium">
+                    <span class="text-amber-400 block font-bold mb-1 uppercase tracking-tighter">Yatırım Notu:</span>
+                    Kasım ayı boyunca konaklayan misafir oda geliridir.
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <div class="glass-card p-8 rounded-[2.5rem]">
+                <h4 class="text-lg font-bold text-white mb-8 tracking-tight">Kanal Bazlı Yatırım Dağılımı</h4>
+                <div class="chart-container">
+                    <canvas id="channelChart"></canvas>
+                </div>
+                <div class="mt-6 p-4 bg-white/5 rounded-2xl border border-white/5 text-[11px] text-slate-400">
+                    <strong class="text-blue-400 block mb-1 uppercase tracking-tighter">Yatırımcı Analizi:</strong>
+                    Rezervasyonların geldiği kaynakların güvenli ve dengeli dağılımını gösterir.
+                </div>
+            </div>
+
+            <div class="glass-card p-8 rounded-[2.5rem]">
+                <h4 class="text-lg font-bold text-white mb-8 tracking-tight">Gelecek Dönem Nakit Akışı</h4>
+                <div class="chart-container">
+                    <canvas id="stayChart"></canvas>
+                </div>
+                <div class="mt-6 p-4 bg-white/5 rounded-2xl border border-white/5 text-[11px] text-slate-400">
+                    <strong class="text-emerald-400 block mb-1 uppercase tracking-tighter">Yatırımcı Analizi:</strong>
+                    İleriye dönük aylar için şimdiden garantilenmiş doluluk ve nakit hacmini temsil eder.
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Summary -->
+        <div class="glass-card p-8 md:p-12 rounded-[3rem] relative overflow-hidden group">
+            <div class="absolute -bottom-24 -right-24 w-64 h-64 bg-cyan-500/10 rounded-full blur-[80px]"></div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10">
+                <div class="space-y-6">
+                    <h3 class="text-3xl font-black text-white leading-tight">Yatırım Özeti & Strateji</h3>
+                    <p id="summary-text" class="text-slate-400 leading-relaxed font-medium italic"></p>
+                    <div class="flex gap-4 pt-4">
+                        <div class="px-6 py-4 bg-blue-600/10 rounded-2xl border border-blue-500/20">
+                            <span class="block text-[10px] text-blue-400 uppercase font-bold tracking-widest mb-1">Kasım Net Gelir</span>
+                            <span id="footer-rev" class="text-2xl font-black text-white italic">0 €</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-black/40 p-8 rounded-3xl border border-white/5 backdrop-blur-md">
+                    <h4 class="text-white font-bold mb-6 flex items-center gap-2 uppercase text-xs tracking-widest">
+                        Yatırımcı Kritik Notlar
+                    </h4>
+                    <ul class="space-y-4 text-sm font-medium text-slate-400">
+                        <li class="flex gap-3">
+                            <span class="text-cyan-400 font-bold">•</span>
+                            <span><strong>Booking.com:</strong> Ana gelir motorumuz olup %75+ pazar payını korumaktayız.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="text-cyan-400 font-bold">•</span>
+                            <span><strong>Gelecek Projeksiyonu:</strong> 2026 Q1 dönemine şimdiden ciddi bir hacim aktarılmış olup düşük sezon riski azaltılmıştır.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="text-center py-20 text-slate-600 text-[10px] uppercase font-bold tracking-[0.5em] opacity-40">
+        Otelciro Yatırımcı İlişkileri | Istanbul Performance
+    </footer>
+
+    <script>
+        const hotelData = {
+            canka: {
+                name: "Canka Hotel Şişli Nişantaşı",
+                initials: "CH",
+                optText: "Yatırım optimizasyon başlangıcımız: 13 Kasım 2025",
+                totalSales: 32064,
+                novMetrics: { revenue: 31734, adr: 44.26, occupancy: 85 },
+                channels: {
+                    labels: ['Booking.com', 'Ostrovok', 'Expedia', 'Ctrip', 'Odamax'],
+                    values: [24688, 6726, 710, 157, 52]
+                },
+                stayMonths: {
+                    labels: ['Kasım 25', 'Aralık 25', 'Ocak 26', 'Şub-Mar 26'],
+                    values: [5318, 2747, 2764, 2308]
+                },
+                mockTrend: [50, 25, 25, 20, 15] // Relative heights for mock chart
+            },
+            aydin: {
+                name: "By Aydın Suites Cihangir",
+                initials: "BA",
+                optText: "Bu yatırımda optimizasyon süreci aylar öncesinden beri profesyonelce yönetilmektedir.",
+                totalSales: 32385,
+                novMetrics: { revenue: 26000, adr: 60.00, occupancy: 81.41 },
+                channels: {
+                    labels: ['Booking.com', 'Expedia', 'Agoda+', 'Ctrip', 'Ostrovok'],
+                    values: [25000, 3314, 2252, 1074, 800]
+                },
+                stayMonths: {
+                    labels: ['Kasım 25', 'Aralık 25', 'Ocak 26', 'Şubat 26', 'Mart+ 26'],
+                    values: [7330, 14000, 2171, 1047, 5400]
+                },
+                mockTrend: [35, 95, 20, 10, 50] // December spike for By Aydın
+            }
+        };
+
+        let channelChart, stayChart;
+
+        function updateElement(id, text) {
+            const el = document.getElementById(id);
+            if (el) el.innerText = text;
+        }
+
+        function initCharts() {
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.color = '#64748b';
+
+            const ctx1 = document.getElementById('channelChart');
+            if (ctx1) {
+                channelChart = new Chart(ctx1.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            data: [],
+                            backgroundColor: ['#2563eb', '#06b6d4', '#10b981', '#f59e0b', '#8b5cf6'],
+                            borderWidth: 5,
+                            borderColor: 'rgba(2, 6, 23, 0.8)',
+                            hoverOffset: 15
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { usePointStyle: true, padding: 25, font: { weight: 'bold', size: 10 } } }
+                        },
+                        cutout: '75%'
+                    }
+                });
+            }
+
+            const ctx2 = document.getElementById('stayChart');
+            if (ctx2) {
+                stayChart = new Chart(ctx2.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Hacim (EUR)',
+                            data: [],
+                            backgroundColor: (c) => {
+                                const gradient = c.chart.ctx.createLinearGradient(0, 0, 0, 400);
+                                gradient.addColorStop(0, '#06b6d4');
+                                gradient.addColorStop(1, 'rgba(6, 182, 212, 0.05)');
+                                return gradient;
+                            },
+                            borderRadius: 10,
+                            barThickness: 32
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.03)', drawBorder: false } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+        }
+
+        function switchHotel(key) {
+            const current = hotelData[key];
+            if (!current) return;
+            
+            // Toggle Buttons
+            const btnCanka = document.getElementById('btn-canka');
+            const btnAydin = document.getElementById('btn-aydin');
+            if (btnCanka && btnAydin) {
+                btnCanka.className = `px-8 py-3 rounded-xl text-sm font-bold transition-all ${key === 'canka' ? 'btn-active' : 'btn-inactive'}`;
+                btnAydin.className = `px-8 py-3 rounded-xl text-sm font-bold transition-all ${key === 'aydin' ? 'btn-active' : 'btn-inactive'}`;
+            }
+            
+            // Update Main KPI Section
+            updateElement('opt-start-text', current.optText);
+            updateElement('stat-total-sales', current.totalSales.toLocaleString() + " EUR");
+            updateElement('stat-adr', current.novMetrics.adr + " EUR");
+            updateElement('stat-occupancy', "% " + current.novMetrics.occupancy);
+            updateElement('stat-nov-rev', current.novMetrics.revenue.toLocaleString() + " EUR");
+            updateElement('footer-rev', current.novMetrics.revenue.toLocaleString() + " €");
+            
+            // Update Mock Dashboard (Hero Section)
+            updateElement('mock-hotel-name', current.name);
+            updateElement('mock-initials', current.initials);
+            updateElement('mock-stat-rev', "€" + (current.novMetrics.revenue / 1000).toFixed(1) + "k");
+            updateElement('mock-stat-occ', current.novMetrics.occupancy + "%");
+            updateElement('mock-stat-adr', "€" + current.novMetrics.adr);
+
+            // Update Mock Bars (Animation)
+            current.mockTrend.forEach((val, i) => {
+                const bar = document.getElementById(`mock-bar-${i+1}`);
+                if (bar) bar.style.height = val + "%";
+            });
+            
+            // Update Summary
+            const summary = `${current.name} bünyesindeki yatırımınız, optimizasyon aksiyonlarımız sayesinde ${current.totalSales.toLocaleString()} EUR tutarında toplam satış hacmine ulaşmıştır. Kasım ayındaki doluluk ve fiyat dengesi, yatırım verimliliğini %${current.novMetrics.occupancy} seviyesinde tutmuştur.`;
+            updateElement('summary-text', summary);
+
+            // Update Real Charts
+            if (channelChart) {
+                channelChart.data.labels = current.channels.labels;
+                channelChart.data.datasets[0].data = current.channels.values;
+                channelChart.update();
+            }
+
+            if (stayChart) {
+                stayChart.data.labels = current.stayMonths.labels;
+                stayChart.data.datasets[0].data = current.stayMonths.values;
+                stayChart.update();
+            }
+        }
+
+        // Mouse Parallax
+        document.addEventListener('mousemove', (e) => {
+            const orb1 = document.getElementById('orb1');
+            const orb2 = document.getElementById('orb2');
+            const x = (e.clientX / window.innerWidth - 0.5) * 40;
+            const y = (e.clientY / window.innerHeight - 0.5) * 40;
+            if (orb1) orb1.style.transform = `translate(${x}px, ${y}px)`;
+            if (orb2) orb2.style.transform = `translate(${-x}px, ${-y}px)`;
+        });
+
+        window.onload = () => {
+            initCharts();
+            switchHotel('canka');
+        };
+    </script>
+</body>
+</html>
