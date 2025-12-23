@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wineport Ağva | Gelişmiş Yatırımcı Paneli</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM (React 18) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Prop-types -->
+    <script src="https://unpkg.com/prop-types/prop-types.min.js"></script>
+
+    <!-- Recharts (Stable Version 2.12.7) -->
+    <script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        b: {
+                            navy: '#003580',
+                            blue: '#006CE4',
+                            sky: '#EBF3FF',
+                            yellow: '#FFB700',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #F3F4F6; color: #1F2937; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+        /* Heatmap Grid */
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+            gap: 6px;
+        }
+        
+        /* Table Sticky Header */
+        .table-sticky-header th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: #F9FAFB; /* gray-50 */
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- Console Warning Suppression ---
+        const originalConsoleError = console.error;
+        console.error = (...args) => {
+            if (typeof args[0] === 'string' && /defaultProps/.test(args[0])) {
+                return;
+            }
+            originalConsoleError(...args);
+        };
+
+        const { useState, useMemo, useEffect, useRef } = React;
+        const Recharts = window.Recharts || {};
+        const { 
+            BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, 
+            PieChart, Pie, Cell, ComposedChart, Area
+        } = Recharts;
+
+        // --- RAW DATA ---
+        const RAW_TRANSACTIONS = [{"id": "7947467", "name": "Misafir 7947467", "date": "22.12.2025", "checkin": "10.01.2026", "checkout": "11.01.2026", "amount": 14663.7, "currency": "TRY", "channel": "Direct", "nights": 1, "checkin_raw": "2026-01-10T00:00:00"}, {"id": "7940563", "name": "Misafir 7940563", "date": "20.12.2025", "checkin": "26.12.2025", "checkout": "27.12.2025", "amount": 10138.0, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2025-12-26T00:00:00"}, {"id": "7939287", "name": "Misafir 7939287", "date": "20.12.2025", "checkin": "12.01.2026", "checkout": "13.01.2026", "amount": 9366.0, "currency": "TRY", "channel": "Setur", "nights": 1, "checkin_raw": "2026-01-12T00:00:00"}, {"id": "7939219", "name": "Misafir 7939219", "date": "20.12.2025", "checkin": "12.01.2026", "checkout": "13.01.2026", "amount": 9366.0, "currency": "TRY", "channel": "Setur", "nights": 1, "checkin_raw": "2026-01-12T00:00:00"}, {"id": "7938937", "name": "Misafir 7938937", "date": "20.12.2025", "checkin": "12.01.2026", "checkout": "13.01.2026", "amount": 9366.0, "currency": "TRY", "channel": "Setur", "nights": 1, "checkin_raw": "2026-01-12T00:00:00"}, {"id": "7938916", "name": "Misafir 7938916", "date": "20.12.2025", "checkin": "12.01.2026", "checkout": "13.01.2026", "amount": 7024.98, "currency": "TRY", "channel": "Setur", "nights": 1, "checkin_raw": "2026-01-12T00:00:00"}, {"id": "7938521", "name": "Misafir 7938521", "date": "20.12.2025", "checkin": "20.12.2025", "checkout": "21.12.2025", "amount": 14866.7, "currency": "TRY", "channel": "Direct", "nights": 1, "checkin_raw": "2025-12-20T00:00:00"}, {"id": "7928063", "name": "Misafir 7928063", "date": "17.12.2025", "checkin": "19.12.2025", "checkout": "21.12.2025", "amount": 26189.6, "currency": "TRY", "channel": "Direct", "nights": 2, "checkin_raw": "2025-12-19T00:00:00"}, {"id": "7927158", "name": "Misafir 7927158", "date": "16.12.2025", "checkin": "02.01.2026", "checkout": "03.01.2026", "amount": 11586.0, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2026-01-02T00:00:00"}, {"id": "7926431", "name": "Misafir 7926431", "date": "16.12.2025", "checkin": "02.01.2026", "checkout": "04.01.2026", "amount": 25294.1, "currency": "TRY", "channel": "Direct", "nights": 2, "checkin_raw": "2026-01-02T00:00:00"}, {"id": "7923313", "name": "Misafir 7923313", "date": "15.12.2025", "checkin": "20.12.2025", "checkout": "21.12.2025", "amount": 376.66, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2025-12-20T00:00:00"}, {"id": "7919912", "name": "Misafir 7919912", "date": "14.12.2025", "checkin": "16.12.2025", "checkout": "17.12.2025", "amount": 224.2, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2025-12-16T00:00:00"}, {"id": "7919099", "name": "Misafir 7919099", "date": "14.12.2025", "checkin": "27.12.2025", "checkout": "28.12.2025", "amount": 11726.9, "currency": "TRY", "channel": "JollyTur", "nights": 1, "checkin_raw": "2025-12-27T00:00:00"}, {"id": "7916506", "name": "Misafir 7916506", "date": "13.12.2025", "checkin": "03.01.2026", "checkout": "04.01.2026", "amount": 16910.3, "currency": "TRY", "channel": "Direct", "nights": 1, "checkin_raw": "2026-01-03T00:00:00"}, {"id": "7915835", "name": "Misafir 7915835", "date": "13.12.2025", "checkin": "17.01.2026", "checkout": "18.01.2026", "amount": 14981.5, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2026-01-17T00:00:00"}, {"id": "7914529", "name": "Misafir 7914529", "date": "13.12.2025", "checkin": "20.12.2025", "checkout": "21.12.2025", "amount": 18567.0, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2025-12-20T00:00:00"}, {"id": "7899664", "name": "Misafir 7899664", "date": "09.12.2025", "checkin": "27.12.2025", "checkout": "28.12.2025", "amount": 28081.5, "currency": "TRY", "channel": "JollyTur", "nights": 1, "checkin_raw": "2025-12-27T00:00:00"}, {"id": "7892591", "name": "Misafir 7892591", "date": "07.12.2025", "checkin": "09.12.2025", "checkout": "11.12.2025", "amount": 795.42, "currency": "EUR", "channel": "Expedia", "nights": 2, "checkin_raw": "2025-12-09T00:00:00"}, {"id": "7891738", "name": "Misafir 7891738", "date": "07.12.2025", "checkin": "07.12.2025", "checkout": "08.12.2025", "amount": 22592.7, "currency": "TRY", "channel": "Direct", "nights": 1, "checkin_raw": "2025-12-07T00:00:00"}, {"id": "7886029", "name": "Misafir 7886029", "date": "05.12.2025", "checkin": "14.12.2025", "checkout": "16.12.2025", "amount": 24330.6, "currency": "TRY", "channel": "Google", "nights": 2, "checkin_raw": "2025-12-14T00:00:00"}, {"id": "7878390", "name": "Misafir 7878390", "date": "03.12.2025", "checkin": "03.01.2026", "checkout": "04.01.2026", "amount": 14981.5, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2026-01-03T00:00:00"}, {"id": "7875343", "name": "Misafir 7875343", "date": "02.12.2025", "checkin": "05.12.2025", "checkout": "06.12.2025", "amount": 12165.3, "currency": "TRY", "channel": "Direct", "nights": 1, "checkin_raw": "2025-12-05T00:00:00"}, {"id": "7861959", "name": "Misafir 7861959", "date": "29.11.2025", "checkin": "20.12.2025", "checkout": "21.12.2025", "amount": 265.07, "currency": "EUR", "channel": "BookingCom", "nights": 1, "checkin_raw": "2025-12-20T00:00:00"}, {"id": "7859317", "name": "Misafir 7859317", "date": "28.11.2025", "checkin": "10.01.2026", "checkout": "12.01.2026", "amount": 706.54, "currency": "EUR", "channel": "BookingCom", "nights": 2, "checkin_raw": "2026-01-10T00:00:00"}, {"id": "7854565", "name": "Misafir 7854565", "date": "27.11.2025", "checkin": "28.11.2025", "checkout": "29.11.2025", "amount": 134.54, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2025-11-28T00:00:00"}, {"id": "7846836", "name": "Misafir 7846836", "date": "25.11.2025", "checkin": "27.11.2025", "checkout": "28.11.2025", "amount": 8146.35, "currency": "TRY", "channel": "Direct", "nights": 1, "checkin_raw": "2025-11-27T00:00:00"}, {"id": "7843083", "name": "Misafir 7843083", "date": "24.11.2025", "checkin": "30.11.2025", "checkout": "01.12.2025", "amount": 204.99, "currency": "EUR", "channel": "BookingCom", "nights": 1, "checkin_raw": "2025-11-30T00:00:00"}, {"id": "7842678", "name": "Misafir 7842678", "date": "24.11.2025", "checkin": "26.11.2025", "checkout": "28.11.2025", "amount": 377.18, "currency": "EUR", "channel": "Expedia", "nights": 2, "checkin_raw": "2025-11-26T00:00:00"}, {"id": "7841932", "name": "Misafir 7841932", "date": "24.11.2025", "checkin": "06.12.2025", "checkout": "07.12.2025", "amount": 19809.2, "currency": "TRY", "channel": "JollyTur", "nights": 1, "checkin_raw": "2025-12-06T00:00:00"}, {"id": "7841123", "name": "Misafir 7841123", "date": "24.11.2025", "checkin": "28.11.2025", "checkout": "29.11.2025", "amount": 217.48, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2025-11-28T00:00:00"}, {"id": "7839701", "name": "Misafir 7839701", "date": "23.11.2025", "checkin": "11.12.2025", "checkout": "13.12.2025", "amount": 269.06, "currency": "EUR", "channel": "BookingCom", "nights": 2, "checkin_raw": "2025-12-11T00:00:00"}, {"id": "7833163", "name": "Misafir 7833163", "date": "21.11.2025", "checkin": "12.12.2025", "checkout": "13.12.2025", "amount": 8954.4, "currency": "TRY", "channel": "Setur", "nights": 1, "checkin_raw": "2025-12-12T00:00:00"}, {"id": "7831703", "name": "Misafir 7831703", "date": "21.11.2025", "checkin": "21.11.2025", "checkout": "22.11.2025", "amount": 227.6, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2025-11-21T00:00:00"}, {"id": "7829048", "name": "Misafir 7829048", "date": "20.11.2025", "checkin": "10.02.2026", "checkout": "12.02.2026", "amount": 22036.7, "currency": "TRY", "channel": "Setur", "nights": 2, "checkin_raw": "2026-02-10T00:00:00"}, {"id": "7823723", "name": "Misafir 7823723", "date": "19.11.2025", "checkin": "23.01.2026", "checkout": "25.01.2026", "amount": 37479.2, "currency": "TRY", "channel": "Direct", "nights": 2, "checkin_raw": "2026-01-23T00:00:00"}, {"id": "7822602", "name": "Misafir 7822602", "date": "19.11.2025", "checkin": "23.11.2025", "checkout": "24.11.2025", "amount": 10427.4, "currency": "TRY", "channel": "Direct", "nights": 1, "checkin_raw": "2025-11-23T00:00:00"}, {"id": "7821461", "name": "Misafir 7821461", "date": "19.11.2025", "checkin": "20.11.2025", "checkout": "21.11.2025", "amount": 8146.35, "currency": "TRY", "channel": "Google", "nights": 1, "checkin_raw": "2025-11-20T00:00:00"}, {"id": "7813737", "name": "Misafir 7813737", "date": "17.11.2025", "checkin": "17.11.2025", "checkout": "18.11.2025", "amount": 158.51, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2025-11-17T00:00:00"}, {"id": "7813518", "name": "Misafir 7813518", "date": "16.11.2025", "checkin": "22.11.2025", "checkout": "23.11.2025", "amount": 14866.7, "currency": "TRY", "channel": "Direct", "nights": 1, "checkin_raw": "2025-11-22T00:00:00"}, {"id": "7812055", "name": "Misafir 7812055", "date": "16.11.2025", "checkin": "16.11.2025", "checkout": "17.11.2025", "amount": 13298.3, "currency": "TRY", "channel": "Agoda2", "nights": 1, "checkin_raw": "2025-11-16T00:00:00"}, {"id": "7811954", "name": "Misafir 7811954", "date": "16.11.2025", "checkin": "20.11.2025", "checkout": "22.11.2025", "amount": 30776.0, "currency": "TRY", "channel": "Odamax", "nights": 2, "checkin_raw": "2025-11-20T00:00:00"}, {"id": "7806669", "name": "Misafir 7806669", "date": "14.11.2025", "checkin": "14.11.2025", "checkout": "15.11.2025", "amount": 12090.0, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2025-11-14T00:00:00"}, {"id": "7805868", "name": "Misafir 7805868", "date": "14.11.2025", "checkin": "21.11.2025", "checkout": "23.11.2025", "amount": 20592.9, "currency": "TRY", "channel": "Direct", "nights": 2, "checkin_raw": "2025-11-21T00:00:00"}, {"id": "7802440", "name": "Misafir 7802440", "date": "13.11.2025", "checkin": "02.01.2026", "checkout": "03.01.2026", "amount": 224.2, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2026-01-02T00:00:00"}, {"id": "7801887", "name": "Misafir 7801887", "date": "13.11.2025", "checkin": "15.11.2025", "checkout": "16.11.2025", "amount": 15788.2, "currency": "TRY", "channel": "Direct", "nights": 1, "checkin_raw": "2025-11-15T00:00:00"}, {"id": "7800374", "name": "Misafir 7800374", "date": "13.11.2025", "checkin": "26.12.2025", "checkout": "27.12.2025", "amount": 8146.35, "currency": "TRY", "channel": "Direct", "nights": 1, "checkin_raw": "2025-12-26T00:00:00"}, {"id": "7797340", "name": "Misafir 7797340", "date": "12.11.2025", "checkin": "15.11.2025", "checkout": "16.11.2025", "amount": 13437.6, "currency": "TRY", "channel": "Agoda2", "nights": 1, "checkin_raw": "2025-11-15T00:00:00"}, {"id": "7793878", "name": "Misafir 7793878", "date": "11.11.2025", "checkin": "18.11.2025", "checkout": "19.11.2025", "amount": 271.85, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2025-11-18T00:00:00"}, {"id": "7792980", "name": "Misafir 7792980", "date": "11.11.2025", "checkin": "21.11.2025", "checkout": "22.11.2025", "amount": 266.92, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2025-11-21T00:00:00"}, {"id": "7790229", "name": "Misafir 7790229", "date": "10.11.2025", "checkin": "13.11.2025", "checkout": "14.11.2025", "amount": 12165.3, "currency": "TRY", "channel": "Direct", "nights": 1, "checkin_raw": "2025-11-13T00:00:00"}, {"id": "7789867", "name": "Misafir 7789867", "date": "10.11.2025", "checkin": "11.11.2025", "checkout": "14.11.2025", "amount": 30956.8, "currency": "TRY", "channel": "Direct", "nights": 3, "checkin_raw": "2025-11-11T00:00:00"}, {"id": "7789689", "name": "Misafir 7789689", "date": "10.11.2025", "checkin": "10.11.2025", "checkout": "11.11.2025", "amount": 130.93, "currency": "EUR", "channel": "BookingCom", "nights": 1, "checkin_raw": "2025-11-10T00:00:00"}, {"id": "7789681", "name": "Misafir 7789681", "date": "10.11.2025", "checkin": "12.11.2025", "checkout": "14.11.2025", "amount": 25828.0, "currency": "TRY", "channel": "Odamax", "nights": 2, "checkin_raw": "2025-11-12T00:00:00"}, {"id": "7789320", "name": "Misafir 7789320", "date": "10.11.2025", "checkin": "10.11.2025", "checkout": "12.11.2025", "amount": 25828.0, "currency": "TRY", "channel": "Odamax", "nights": 2, "checkin_raw": "2025-11-10T00:00:00"}, {"id": "7786024", "name": "Misafir 7786024", "date": "09.11.2025", "checkin": "01.01.2026", "checkout": "03.01.2026", "amount": 28656.0, "currency": "TRY", "channel": "Agoda2", "nights": 2, "checkin_raw": "2026-01-01T00:00:00"}, {"id": "7784383", "name": "Misafir 7784383", "date": "09.11.2025", "checkin": "10.11.2025", "checkout": "11.11.2025", "amount": 13517.0, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2025-11-10T00:00:00"}, {"id": "7782186", "name": "Misafir 7782186", "date": "08.11.2025", "checkin": "14.11.2025", "checkout": "16.11.2025", "amount": 32711.8, "currency": "TRY", "channel": "Odamax", "nights": 2, "checkin_raw": "2025-11-14T00:00:00"}, {"id": "7781769", "name": "Misafir 7781769", "date": "08.11.2025", "checkin": "12.11.2025", "checkout": "13.11.2025", "amount": 6154.04, "currency": "TRY", "channel": "JollyTur", "nights": 1, "checkin_raw": "2025-11-12T00:00:00"}, {"id": "7780740", "name": "Misafir 7780740", "date": "08.11.2025", "checkin": "15.11.2025", "checkout": "16.11.2025", "amount": 257.23, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2025-11-15T00:00:00"}, {"id": "7773129", "name": "Misafir 7773129", "date": "06.11.2025", "checkin": "02.01.2026", "checkout": "03.01.2026", "amount": 9655.0, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2026-01-02T00:00:00"}, {"id": "7770425", "name": "Misafir 7770425", "date": "05.11.2025", "checkin": "02.01.2026", "checkout": "03.01.2026", "amount": 7241.5, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2026-01-02T00:00:00"}, {"id": "7770314", "name": "Misafir 7770314", "date": "05.11.2025", "checkin": "02.01.2026", "checkout": "03.01.2026", "amount": 215.5, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2026-01-02T00:00:00"}, {"id": "7769552", "name": "Misafir 7769552", "date": "05.11.2025", "checkin": "07.11.2025", "checkout": "08.11.2025", "amount": 9993.15, "currency": "TRY", "channel": "Direct", "nights": 1, "checkin_raw": "2025-11-07T00:00:00"}, {"id": "7762498", "name": "Misafir 7762498", "date": "03.11.2025", "checkin": "08.11.2025", "checkout": "09.11.2025", "amount": 15788.2, "currency": "TRY", "channel": "Direct", "nights": 1, "checkin_raw": "2025-11-08T00:00:00"}, {"id": "7761561", "name": "Misafir 7761561", "date": "03.11.2025", "checkin": "19.12.2025", "checkout": "21.12.2025", "amount": 18487.9, "currency": "TRY", "channel": "JollyTur", "nights": 2, "checkin_raw": "2025-12-19T00:00:00"}, {"id": "7757805", "name": "Misafir 7757805", "date": "02.11.2025", "checkin": "09.11.2025", "checkout": "11.11.2025", "amount": 21627.2, "currency": "TRY", "channel": "Odamax", "nights": 2, "checkin_raw": "2025-11-09T00:00:00"}, {"id": "7755337", "name": "Misafir 7755337", "date": "01.11.2025", "checkin": "12.11.2025", "checkout": "14.11.2025", "amount": 25876.0, "currency": "TRY", "channel": "Odamax", "nights": 2, "checkin_raw": "2025-11-12T00:00:00"}, {"id": "7754231", "name": "Misafir 7754231", "date": "01.11.2025", "checkin": "03.11.2025", "checkout": "04.11.2025", "amount": 10331.2, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2025-11-03T00:00:00"}, {"id": "7754167", "name": "Misafir 7754167", "date": "01.11.2025", "checkin": "08.11.2025", "checkout": "09.11.2025", "amount": 14034.0, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2025-11-08T00:00:00"}, {"id": "7752655", "name": "Misafir 7752655", "date": "31.10.2025", "checkin": "02.11.2025", "checkout": "03.11.2025", "amount": 183.59, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2025-11-02T00:00:00"}, {"id": "7750972", "name": "Misafir 7750972", "date": "31.10.2025", "checkin": "08.11.2025", "checkout": "09.11.2025", "amount": 12804.8, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2025-11-08T00:00:00"}, {"id": "7748000", "name": "Misafir 7748000", "date": "30.10.2025", "checkin": "06.12.2025", "checkout": "07.12.2025", "amount": 14059.8, "currency": "TRY", "channel": "Direct", "nights": 1, "checkin_raw": "2025-12-06T00:00:00"}, {"id": "7747730", "name": "Misafir 7747730", "date": "30.10.2025", "checkin": "08.11.2025", "checkout": "09.11.2025", "amount": 355.15, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2025-11-08T00:00:00"}, {"id": "7746283", "name": "Misafir 7746283", "date": "30.10.2025", "checkin": "22.11.2025", "checkout": "23.11.2025", "amount": 10806.2, "currency": "TRY", "channel": "JollyTur", "nights": 1, "checkin_raw": "2025-11-22T00:00:00"}, {"id": "7745446", "name": "Misafir 7745446", "date": "30.10.2025", "checkin": "30.10.2025", "checkout": "02.11.2025", "amount": 36431.2, "currency": "TRY", "channel": "Odamax", "nights": 3, "checkin_raw": "2025-10-30T00:00:00"}, {"id": "7742844", "name": "Misafir 7742844", "date": "29.10.2025", "checkin": "31.10.2025", "checkout": "02.11.2025", "amount": 22449.4, "currency": "TRY", "channel": "Odamax", "nights": 2, "checkin_raw": "2025-10-31T00:00:00"}, {"id": "7741464", "name": "Misafir 7741464", "date": "28.10.2025", "checkin": "23.01.2026", "checkout": "24.01.2026", "amount": 12322.6, "currency": "TRY", "channel": "Direct", "nights": 1, "checkin_raw": "2026-01-23T00:00:00"}, {"id": "7741278", "name": "Misafir 7741278", "date": "28.10.2025", "checkin": "28.11.2025", "checkout": "29.11.2025", "amount": 10847.8, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2025-11-28T00:00:00"}, {"id": "7740563", "name": "Misafir 7740563", "date": "28.10.2025", "checkin": "08.11.2025", "checkout": "10.11.2025", "amount": 19942.0, "currency": "TRY", "channel": "Odamax", "nights": 2, "checkin_raw": "2025-11-08T00:00:00"}, {"id": "7740561", "name": "Misafir 7740561", "date": "28.10.2025", "checkin": "29.10.2025", "checkout": "30.10.2025", "amount": 9059.88, "currency": "TRY", "channel": "Tatilbudur", "nights": 1, "checkin_raw": "2025-10-29T00:00:00"}, {"id": "7738354", "name": "Misafir 7738354", "date": "28.10.2025", "checkin": "30.10.2025", "checkout": "31.10.2025", "amount": 15967.3, "currency": "TRY", "channel": "Direct", "nights": 1, "checkin_raw": "2025-10-30T00:00:00"}, {"id": "7738329", "name": "Misafir 7738329", "date": "28.10.2025", "checkin": "03.11.2025", "checkout": "04.11.2025", "amount": 15967.3, "currency": "TRY", "channel": "Direct", "nights": 1, "checkin_raw": "2025-11-03T00:00:00"}, {"id": "7736550", "name": "Misafir 7736550", "date": "27.10.2025", "checkin": "30.10.2025", "checkout": "31.10.2025", "amount": 196.2, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2025-10-30T00:00:00"}, {"id": "7732852", "name": "Misafir 7732852", "date": "26.10.2025", "checkin": "30.10.2025", "checkout": "01.11.2025", "amount": 20637.9, "currency": "TRY", "channel": "Direct", "nights": 2, "checkin_raw": "2025-10-30T00:00:00"}, {"id": "7732162", "name": "Misafir 7732162", "date": "26.10.2025", "checkin": "30.10.2025", "checkout": "31.10.2025", "amount": 168.29, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2025-10-30T00:00:00"}, {"id": "7730558", "name": "Misafir 7730558", "date": "26.10.2025", "checkin": "29.10.2025", "checkout": "30.10.2025", "amount": 10592.7, "currency": "TRY", "channel": "Agoda2", "nights": 1, "checkin_raw": "2025-10-29T00:00:00"}, {"id": "7726021", "name": "Misafir 7726021", "date": "25.10.2025", "checkin": "28.10.2025", "checkout": "29.10.2025", "amount": 201.83, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2025-10-28T00:00:00"}, {"id": "7723527", "name": "Misafir 7723527", "date": "24.10.2025", "checkin": "28.10.2025", "checkout": "29.10.2025", "amount": 201.83, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2025-10-28T00:00:00"}, {"id": "7723454", "name": "Misafir 7723454", "date": "24.10.2025", "checkin": "09.11.2025", "checkout": "10.11.2025", "amount": 13584.9, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2025-11-09T00:00:00"}, {"id": "7723130", "name": "Misafir 7723130", "date": "24.10.2025", "checkin": "26.10.2025", "checkout": "29.10.2025", "amount": 30413.9, "currency": "TRY", "channel": "Odamax", "nights": 3, "checkin_raw": "2025-10-26T00:00:00"}, {"id": "7722889", "name": "Misafir 7722889", "date": "24.10.2025", "checkin": "28.10.2025", "checkout": "29.10.2025", "amount": 188.62, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2025-10-28T00:00:00"}, {"id": "7719714", "name": "Misafir 7719714", "date": "23.10.2025", "checkin": "28.10.2025", "checkout": "29.10.2025", "amount": 8289.78, "currency": "TRY", "channel": "Agoda2", "nights": 1, "checkin_raw": "2025-10-28T00:00:00"}, {"id": "7719326", "name": "Misafir 7719326", "date": "23.10.2025", "checkin": "24.10.2025", "checkout": "25.10.2025", "amount": 12320.0, "currency": "TRY", "channel": "Agoda2", "nights": 1, "checkin_raw": "2025-10-24T00:00:00"}, {"id": "7714436", "name": "Misafir 7714436", "date": "22.10.2025", "checkin": "22.10.2025", "checkout": "24.10.2025", "amount": 22014.1, "currency": "TRY", "channel": "Tatilbudur", "nights": 2, "checkin_raw": "2025-10-22T00:00:00"}, {"id": "7714018", "name": "Misafir 7714018", "date": "22.10.2025", "checkin": "01.11.2025", "checkout": "02.11.2025", "amount": 13122.5, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2025-11-01T00:00:00"}, {"id": "7712377", "name": "Misafir 7712377", "date": "21.10.2025", "checkin": "23.10.2025", "checkout": "25.10.2025", "amount": 20417.9, "currency": "TRY", "channel": "Setur", "nights": 2, "checkin_raw": "2025-10-23T00:00:00"}, {"id": "7711955", "name": "Misafir 7711955", "date": "21.10.2025", "checkin": "29.10.2025", "checkout": "31.10.2025", "amount": 18653.9, "currency": "TRY", "channel": "Odamax", "nights": 2, "checkin_raw": "2025-10-29T00:00:00"}, {"id": "7711109", "name": "Misafir 7711109", "date": "21.10.2025", "checkin": "31.05.2026", "checkout": "01.06.2026", "amount": 7274.98, "currency": "TRY", "channel": "Tatilbudur", "nights": 1, "checkin_raw": "2026-05-31T00:00:00"}, {"id": "7710688", "name": "Misafir 7710688", "date": "21.10.2025", "checkin": "01.11.2025", "checkout": "02.11.2025", "amount": 16309.6, "currency": "TRY", "channel": "JollyTur", "nights": 1, "checkin_raw": "2025-11-01T00:00:00"}, {"id": "7708543", "name": "Misafir 7708543", "date": "20.10.2025", "checkin": "27.10.2025", "checkout": "28.10.2025", "amount": 11624.6, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2025-10-27T00:00:00"}, {"id": "7707083", "name": "Misafir 7707083", "date": "20.10.2025", "checkin": "25.10.2025", "checkout": "26.10.2025", "amount": 12623.8, "currency": "TRY", "channel": "JollyTur", "nights": 1, "checkin_raw": "2025-10-25T00:00:00"}, {"id": "7706876", "name": "Misafir 7706876", "date": "20.10.2025", "checkin": "25.10.2025", "checkout": "26.10.2025", "amount": 28119.6, "currency": "TRY", "channel": "Direct", "nights": 1, "checkin_raw": "2025-10-25T00:00:00"}, {"id": "7706691", "name": "Misafir 7706691", "date": "20.10.2025", "checkin": "26.10.2025", "checkout": "28.10.2025", "amount": 23249.2, "currency": "TRY", "channel": "Odamax", "nights": 2, "checkin_raw": "2025-10-26T00:00:00"}, {"id": "7706517", "name": "Misafir 7706517", "date": "20.10.2025", "checkin": "24.10.2025", "checkout": "25.10.2025", "amount": 10592.7, "currency": "TRY", "channel": "Agoda2", "nights": 1, "checkin_raw": "2025-10-24T00:00:00"}, {"id": "7704189", "name": "Misafir 7704189", "date": "19.10.2025", "checkin": "28.10.2025", "checkout": "29.10.2025", "amount": 11241.8, "currency": "TRY", "channel": "JollyTur", "nights": 1, "checkin_raw": "2025-10-28T00:00:00"}, {"id": "7703143", "name": "Misafir 7703143", "date": "19.10.2025", "checkin": "08.11.2025", "checkout": "12.11.2025", "amount": 50511.2, "currency": "TRY", "channel": "Odamax", "nights": 4, "checkin_raw": "2025-11-08T00:00:00"}, {"id": "7703129", "name": "Misafir 7703129", "date": "19.10.2025", "checkin": "08.11.2025", "checkout": "12.11.2025", "amount": 50511.2, "currency": "TRY", "channel": "Odamax", "nights": 4, "checkin_raw": "2025-11-08T00:00:00"}, {"id": "7702851", "name": "Misafir 7702851", "date": "19.10.2025", "checkin": "20.10.2025", "checkout": "21.10.2025", "amount": 9993.15, "currency": "TRY", "channel": "Direct", "nights": 1, "checkin_raw": "2025-10-20T00:00:00"}, {"id": "7701413", "name": "Misafir 7701413", "date": "18.10.2025", "checkin": "13.11.2025", "checkout": "15.11.2025", "amount": 15641.1, "currency": "TRY", "channel": "Direct", "nights": 2, "checkin_raw": "2025-11-13T00:00:00"}, {"id": "7700210", "name": "Misafir 7700210", "date": "18.10.2025", "checkin": "18.10.2025", "checkout": "19.10.2025", "amount": 11924.8, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2025-10-18T00:00:00"}, {"id": "7698228", "name": "Misafir 7698228", "date": "18.10.2025", "checkin": "18.10.2025", "checkout": "20.10.2025", "amount": 32182.1, "currency": "TRY", "channel": "Odamax", "nights": 2, "checkin_raw": "2025-10-18T00:00:00"}, {"id": "7697704", "name": "Misafir 7697704", "date": "17.10.2025", "checkin": "25.10.2025", "checkout": "27.10.2025", "amount": 24724.3, "currency": "TRY", "channel": "Direct", "nights": 2, "checkin_raw": "2025-10-25T00:00:00"}, {"id": "7696029", "name": "Misafir 7696029", "date": "17.10.2025", "checkin": "18.10.2025", "checkout": "19.10.2025", "amount": 12113.5, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2025-10-18T00:00:00"}, {"id": "7696023", "name": "Misafir 7696023", "date": "17.10.2025", "checkin": "29.10.2025", "checkout": "30.10.2025", "amount": 8289.78, "currency": "TRY", "channel": "Agoda2", "nights": 1, "checkin_raw": "2025-10-29T00:00:00"}, {"id": "7695310", "name": "Misafir 7695310", "date": "17.10.2025", "checkin": "08.11.2025", "checkout": "09.11.2025", "amount": 15086.5, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2025-11-08T00:00:00"}, {"id": "7693543", "name": "Misafir 7693543", "date": "16.10.2025", "checkin": "25.10.2025", "checkout": "26.10.2025", "amount": 291.53, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2025-10-25T00:00:00"}, {"id": "7691721", "name": "Misafir 7691721", "date": "16.10.2025", "checkin": "22.10.2025", "checkout": "23.10.2025", "amount": 6227.69, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2025-10-22T00:00:00"}, {"id": "7691665", "name": "Misafir 7691665", "date": "16.10.2025", "checkin": "18.10.2025", "checkout": "20.10.2025", "amount": 27410.8, "currency": "TRY", "channel": "Direct", "nights": 2, "checkin_raw": "2025-10-18T00:00:00"}, {"id": "7686438", "name": "Misafir 7686438", "date": "15.10.2025", "checkin": "22.11.2025", "checkout": "23.11.2025", "amount": 13765.2, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2025-11-22T00:00:00"}, {"id": "7681956", "name": "Misafir 7681956", "date": "14.10.2025", "checkin": "18.10.2025", "checkout": "19.10.2025", "amount": 13376.9, "currency": "TRY", "channel": "Tatilbudur", "nights": 1, "checkin_raw": "2025-10-18T00:00:00"}, {"id": "7674947", "name": "Misafir 7674947", "date": "12.10.2025", "checkin": "18.10.2025", "checkout": "19.10.2025", "amount": 13707.2, "currency": "TRY", "channel": "Tatilbudur", "nights": 1, "checkin_raw": "2025-10-18T00:00:00"}, {"id": "7673215", "name": "Misafir 7673215", "date": "11.10.2025", "checkin": "12.10.2025", "checkout": "13.10.2025", "amount": 260.66, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2025-10-12T00:00:00"}, {"id": "7670801", "name": "Misafir 7670801", "date": "11.10.2025", "checkin": "12.10.2025", "checkout": "14.10.2025", "amount": 643.5, "currency": "EUR", "channel": "BookingCom", "nights": 2, "checkin_raw": "2025-10-12T00:00:00"}, {"id": "7670651", "name": "Misafir 7670651", "date": "11.10.2025", "checkin": "18.10.2025", "checkout": "19.10.2025", "amount": 12113.5, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2025-10-18T00:00:00"}, {"id": "7666876", "name": "Misafir 7666876", "date": "10.10.2025", "checkin": "18.10.2025", "checkout": "19.10.2025", "amount": 9485.42, "currency": "TRY", "channel": "JollyTur", "nights": 1, "checkin_raw": "2025-10-18T00:00:00"}, {"id": "7666657", "name": "Misafir 7666657", "date": "10.10.2025", "checkin": "10.11.2025", "checkout": "11.11.2025", "amount": 9816.59, "currency": "TRY", "channel": "JollyTur", "nights": 1, "checkin_raw": "2025-11-10T00:00:00"}, {"id": "7655661", "name": "Misafir 7655661", "date": "07.10.2025", "checkin": "28.10.2025", "checkout": "30.10.2025", "amount": 27410.8, "currency": "TRY", "channel": "Direct", "nights": 2, "checkin_raw": "2025-10-28T00:00:00"}, {"id": "7655103", "name": "Misafir 7655103", "date": "07.10.2025", "checkin": "08.10.2025", "checkout": "11.10.2025", "amount": 927.66, "currency": "EUR", "channel": "Expedia", "nights": 3, "checkin_raw": "2025-10-08T00:00:00"}, {"id": "7654556", "name": "Misafir 7654556", "date": "07.10.2025", "checkin": "31.10.2025", "checkout": "01.11.2025", "amount": 6310.66, "currency": "TRY", "channel": "JollyTur", "nights": 1, "checkin_raw": "2025-10-31T00:00:00"}, {"id": "7653886", "name": "Misafir 7653886", "date": "07.10.2025", "checkin": "13.10.2025", "checkout": "15.10.2025", "amount": 13816.8, "currency": "TRY", "channel": "Agoda2", "nights": 2, "checkin_raw": "2025-10-13T00:00:00"}, {"id": "7651687", "name": "Misafir 7651687", "date": "06.10.2025", "checkin": "12.10.2025", "checkout": "13.10.2025", "amount": 7461.76, "currency": "TRY", "channel": "Tatilbudur", "nights": 1, "checkin_raw": "2025-10-12T00:00:00"}, {"id": "7649104", "name": "Misafir 7649104", "date": "06.10.2025", "checkin": "01.11.2025", "checkout": "02.11.2025", "amount": 15252.4, "currency": "TRY", "channel": "Tatilbudur", "nights": 1, "checkin_raw": "2025-11-01T00:00:00"}, {"id": "7645896", "name": "Misafir 7645896", "date": "05.10.2025", "checkin": "16.10.2025", "checkout": "17.10.2025", "amount": 10548.3, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2025-10-16T00:00:00"}, {"id": "7642624", "name": "Misafir 7642624", "date": "04.10.2025", "checkin": "05.10.2025", "checkout": "06.10.2025", "amount": 12320.0, "currency": "TRY", "channel": "Agoda2", "nights": 1, "checkin_raw": "2025-10-05T00:00:00"}, {"id": "7637323", "name": "Misafir 7637323", "date": "03.10.2025", "checkin": "03.10.2025", "checkout": "04.10.2025", "amount": 254.23, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2025-10-03T00:00:00"}, {"id": "7634853", "name": "Misafir 7634853", "date": "02.10.2025", "checkin": "31.12.2025", "checkout": "02.01.2026", "amount": 1551.84, "currency": "EUR", "channel": "BookingCom", "nights": 2, "checkin_raw": "2025-12-31T00:00:00"}, {"id": "7634275", "name": "Misafir 7634275", "date": "02.10.2025", "checkin": "18.10.2025", "checkout": "19.10.2025", "amount": 378.44, "currency": "EUR", "channel": "Expedia", "nights": 1, "checkin_raw": "2025-10-18T00:00:00"}, {"id": "7632236", "name": "Misafir 7632236", "date": "02.10.2025", "checkin": "02.10.2025", "checkout": "03.10.2025", "amount": 6908.39, "currency": "TRY", "channel": "Agoda2", "nights": 1, "checkin_raw": "2025-10-02T00:00:00"}, {"id": "7630675", "name": "Misafir 7630675", "date": "01.10.2025", "checkin": "27.10.2025", "checkout": "28.10.2025", "amount": 6908.39, "currency": "TRY", "channel": "Agoda2", "nights": 1, "checkin_raw": "2025-10-27T00:00:00"}, {"id": "7628600", "name": "Misafir 7628600", "date": "01.10.2025", "checkin": "05.10.2025", "checkout": "06.10.2025", "amount": 17742.5, "currency": "TRY", "channel": "Odamax", "nights": 1, "checkin_raw": "2025-10-05T00:00:00"}];
+        
+        const OCCUPANCY_DATA = {"2025-10-02": 1, "2025-10-03": 1, "2025-10-04": 0, "2025-10-05": 2, "2025-10-06": 0, "2025-10-07": 0, "2025-10-08": 1, "2025-10-09": 1, "2025-10-10": 1, "2025-10-11": 0, "2025-10-12": 3, "2025-10-13": 2, "2025-10-14": 1, "2025-10-15": 0, "2025-10-16": 1, "2025-10-17": 0, "2025-10-18": 9, "2025-10-19": 2, "2025-10-20": 1, "2025-10-21": 0, "2025-10-22": 2, "2025-10-23": 2, "2025-10-24": 3, "2025-10-25": 4, "2025-10-26": 3, "2025-10-27": 4, "2025-10-28": 7, "2025-10-29": 5, "2025-10-30": 6, "2025-10-31": 4, "2025-11-01": 5, "2025-11-02": 1, "2025-11-03": 2, "2025-11-04": 0, "2025-11-05": 0, "2025-11-06": 0, "2025-11-07": 1, "2025-11-08": 8, "2025-11-09": 5, "2025-11-10": 7, "2025-11-11": 4, "2025-11-12": 4, "2025-11-13": 5, "2025-11-14": 3, "2025-11-15": 4, "2025-11-16": 1, "2025-11-17": 1, "2025-11-18": 1, "2025-11-19": 0, "2025-11-20": 2, "2025-11-21": 4, "2025-11-22": 4, "2025-11-23": 1, "2025-11-24": 0, "2025-11-25": 0, "2025-11-26": 1, "2025-11-27": 2, "2025-11-28": 3, "2025-11-29": 0, "2025-11-30": 1, "2025-12-01": 0, "2025-12-02": 0, "2025-12-03": 0, "2025-12-04": 0, "2025-12-05": 1, "2025-12-06": 2, "2025-12-07": 1, "2025-12-08": 0, "2025-12-09": 1, "2025-12-10": 1, "2025-12-11": 1, "2025-12-12": 2, "2025-12-13": 0, "2025-12-14": 1, "2025-12-15": 1, "2025-12-16": 1, "2025-12-17": 0, "2025-12-18": 0, "2025-12-19": 2, "2025-12-20": 6, "2025-12-21": 0, "2025-12-22": 0, "2025-12-23": 0, "2025-12-24": 0, "2025-12-25": 0, "2025-12-26": 2, "2025-12-27": 2, "2025-12-28": 0, "2025-12-29": 0, "2025-12-30": 0, "2025-12-31": 1, "2026-01-01": 2, "2026-01-02": 7, "2026-01-03": 3, "2026-01-04": 0, "2026-01-05": 0, "2026-01-06": 0, "2026-01-07": 0, "2026-01-08": 0, "2026-01-09": 0, "2026-01-10": 2, "2026-01-11": 1, "2026-01-12": 4, "2026-01-13": 0, "2026-01-14": 0, "2026-01-15": 0, "2026-01-16": 0, "2026-01-17": 1, "2026-01-18": 0, "2026-01-19": 0, "2026-01-20": 0, "2026-01-21": 0, "2026-01-22": 0, "2026-01-23": 2, "2026-01-24": 1, "2026-01-25": 0, "2026-01-26": 0, "2026-01-27": 0, "2026-01-28": 0, "2026-01-29": 0, "2026-01-30": 0, "2026-01-31": 0, "2026-02-01": 0, "2026-02-02": 0, "2026-02-03": 0, "2026-02-04": 0, "2026-02-05": 0, "2026-02-06": 0, "2026-02-07": 0, "2026-02-08": 0, "2026-02-09": 0, "2026-02-10": 1, "2026-02-11": 1, "2026-02-12": 0, "2026-02-13": 0, "2026-02-14": 0, "2026-02-15": 0, "2026-02-16": 0, "2026-02-17": 0, "2026-02-18": 0, "2026-02-19": 0, "2026-02-20": 0, "2026-02-21": 0, "2026-02-22": 0, "2026-02-23": 0, "2026-02-24": 0, "2026-02-25": 0, "2026-02-26": 0, "2026-02-27": 0, "2026-02-28": 0, "2026-03-01": 0, "2026-03-02": 0, "2026-03-03": 0, "2026-03-04": 0, "2026-03-05": 0, "2026-03-06": 0, "2026-03-07": 0, "2026-03-08": 0, "2026-03-09": 0, "2026-03-10": 0, "2026-03-11": 0, "2026-03-12": 0, "2026-03-13": 0, "2026-03-14": 0, "2026-03-15": 0, "2026-03-16": 0, "2026-03-17": 0, "2026-03-18": 0, "2026-03-19": 0, "2026-03-20": 0, "2026-03-21": 0, "2026-03-22": 0, "2026-03-23": 0, "2026-03-24": 0, "2026-03-25": 0, "2026-03-26": 0, "2026-03-27": 0, "2026-03-28": 0, "2026-03-29": 0, "2026-03-30": 0, "2026-03-31": 0, "2026-04-01": 0, "2026-04-02": 0, "2026-04-03": 0, "2026-04-04": 0, "2026-04-05": 0, "2026-04-06": 0, "2026-04-07": 0, "2026-04-08": 0, "2026-04-09": 0, "2026-04-10": 0, "2026-04-11": 0, "2026-04-12": 0, "2026-04-13": 0, "2026-04-14": 0, "2026-04-15": 0, "2026-04-16": 0, "2026-04-17": 0, "2026-04-18": 0, "2026-04-19": 0, "2026-04-20": 0, "2026-04-21": 0, "2026-04-22": 0, "2026-04-23": 0, "2026-04-24": 0, "2026-04-25": 0, "2026-04-26": 0, "2026-04-27": 0, "2026-04-28": 0, "2026-04-29": 0, "2026-04-30": 0, "2026-05-01": 0, "2026-05-02": 0, "2026-05-03": 0, "2026-05-04": 0, "2026-05-05": 0, "2026-05-06": 0, "2026-05-07": 0, "2026-05-08": 0, "2026-05-09": 0, "2026-05-10": 0, "2026-05-11": 0, "2026-05-12": 0, "2026-05-13": 0, "2026-05-14": 0, "2026-05-15": 0, "2026-05-16": 0, "2026-05-17": 0, "2026-05-18": 0, "2026-05-19": 0, "2026-05-20": 0, "2026-05-21": 0, "2026-05-22": 0, "2026-05-23": 0, "2026-05-24": 0, "2026-05-25": 0, "2026-05-26": 0, "2026-05-27": 0, "2026-05-28": 0, "2026-05-29": 0, "2026-05-30": 0, "2026-05-31": 1, "2026-06-01": 0};
+
+        const BENCHMARK_DATA = [
+            { month: 'Ekim', wineport: 265, compset: 104, market: 80 },
+            { month: 'Kasım', wineport: 214, compset: 121, market: 76 },
+            { month: 'Aralık', wineport: 387, compset: 122, market: 76 },
+        ];
+
+        const COMPETITOR_SET = [
+            "Agva Gizemli Nehir Hotel", "Beyaz Ev Agva - Adult only +15", "Agva Greenline Guesthouse (Adult +12)",
+            "Dachas Cove Hotel", "Lethe Exclusive Hotel", "Park Mandalin Hotel - Adult only",
+            "Ağva Mints Hotel Adult Only", "Ağva Acquaverde Otel", "Tranquilla River Lodge", "Ağva Piassa Otel"
+        ];
+
+        const COLORS = {
+            navy: '#003580', blue: '#006CE4', yellow: '#FFB700', green: '#008009', red: '#D4111E', lightBlue: '#EBF3FF', grey: '#6B6B6B'
+        };
+
+        // --- INLINE ICON COMPONENTS ---
+        const IconWrapper = ({ children, size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>{children}</svg>
+        );
+        const LayoutDashboard = (props) => <IconWrapper {...props}><rect width="7" height="9" x="3" y="3" rx="1" /><rect width="7" height="5" x="14" y="3" rx="1" /><rect width="7" height="9" x="14" y="12" rx="1" /><rect width="7" height="5" x="3" y="16" rx="1" /></IconWrapper>;
+        const TrendingUp = (props) => <IconWrapper {...props}><polyline points="22 7 13.5 15.5 8.5 10.5 2 17" /><polyline points="16 7 22 7 22 13" /></IconWrapper>;
+        const Globe = (props) => <IconWrapper {...props}><circle cx="12" cy="12" r="10" /><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /><path d="M2 12h20" /></IconWrapper>;
+        const Users = (props) => <IconWrapper {...props}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></IconWrapper>;
+        const CalendarDays = (props) => <IconWrapper {...props}><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" /><path d="M8 14h.01" /><path d="M12 14h.01" /><path d="M16 14h.01" /><path d="M8 18h.01" /><path d="M12 18h.01" /><path d="M16 18h.01" /></IconWrapper>;
+        const Wallet = (props) => <IconWrapper {...props}><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1" /><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4" /></IconWrapper>;
+        const Hotel = (props) => <IconWrapper {...props}><path d="M10 22v-6.57" /><path d="M12 11h.01" /><path d="M12 7h.01" /><path d="M14 15.43V22" /><path d="M15 16a5 5 0 0 0-6 0" /><path d="M16 11h.01" /><path d="M16 7h.01" /><path d="M8 11h.01" /><path d="M8 7h.01" /><rect x="4" y="2" width="16" height="20" rx="2" /></IconWrapper>;
+        const ArrowUpRight = (props) => <IconWrapper {...props}><path d="M7 7h10v10" /><path d="M7 17 17 7" /></IconWrapper>;
+        const ArrowDownRight = (props) => <IconWrapper {...props}><path d="m7 7 10 10" /><path d="M17 7v10H7" /></IconWrapper>;
+        const Menu = (props) => <IconWrapper {...props}><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" /></IconWrapper>;
+        const X = (props) => <IconWrapper {...props}><path d="M18 6 6 18" /><path d="m6 6 12 12" /></IconWrapper>;
+        const Info = (props) => <IconWrapper {...props}><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></IconWrapper>;
+        const FileSpreadsheet = (props) => <IconWrapper {...props}><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M8 13h2" /><path d="M14 13h2" /><path d="M8 17h2" /><path d="M14 17h2" /></IconWrapper>;
+
+        // --- COMPONENTS ---
+
+        const Sidebar = ({ isOpen, toggleSidebar, activeSection }) => {
+            const scrollToSection = (id) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (window.innerWidth < 768) {
+                        toggleSidebar();
+                    }
+                }
+            };
+
+            const NavItem = ({ id, icon: Icon, label }) => {
+                const isActive = activeSection === id;
+                return (
+                    <div 
+                        onClick={() => scrollToSection(id)} 
+                        className={`flex items-center space-x-3 px-4 py-3 rounded-xl cursor-pointer transition-all duration-200 
+                        ${isActive ? 'bg-b-blue text-white shadow-md transform translate-x-1' : 'text-blue-100 hover:bg-blue-900/30 hover:text-white'}`}
+                    >
+                        <Icon size={20} className={isActive ? 'text-white' : 'text-blue-200'} />
+                        <span className="font-medium">{label}</span>
+                    </div>
+                );
+            };
+
+            return (
+                <>
+                    {isOpen && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden" onClick={toggleSidebar}></div>}
+                    <div className={`fixed left-0 top-0 h-screen w-64 bg-b-navy text-white shadow-2xl z-50 transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:flex flex-col border-r border-blue-900`}>
+                        <div className="p-8 border-b border-blue-900/50 flex justify-between items-center bg-blue-900/20">
+                            <div>
+                                <h1 className="text-2xl font-bold tracking-tight text-white">WINEPORT</h1>
+                                <p className="text-blue-200 text-sm font-light tracking-wide">AĞVA HOTEL</p>
+                            </div>
+                            <button onClick={toggleSidebar} className="md:hidden text-white hover:text-b-yellow transition-colors"><X size={24} /></button>
+                        </div>
+                        <nav className="flex-1 p-6 space-y-2 overflow-y-auto">
+                            <NavItem id="overview" icon={LayoutDashboard} label="Genel Bakış" />
+                            <NavItem id="heatmap" icon={CalendarDays} label="Doluluk (Isı Haritası)" />
+                            <NavItem id="trends" icon={TrendingUp} label="Trend Analizi" />
+                            <NavItem id="transactions" icon={FileSpreadsheet} label="İşlem Listesi" />
+                        </nav>
+                        <div className="p-6 mt-auto">
+                            <div className="bg-blue-900/40 p-4 rounded-xl border border-blue-800/50">
+                                <p className="text-[10px] uppercase tracking-widest text-blue-300 font-bold mb-1">Rapor Dönemi</p>
+                                <p className="text-sm font-semibold text-white">01/10/2025 - 23/12/2025</p>
+                                <div className="mt-3 flex items-center text-xs text-green-300 bg-green-900/30 w-fit px-2 py-1 rounded-full border border-green-800/30">
+                                    <span className="w-1.5 h-1.5 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+                                    Canlı Veri
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            );
+        };
+
+        const KPICard = ({ title, value, subtext, icon: Icon }) => (
+            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 relative overflow-hidden group">
+                <div className="flex justify-between items-start z-10 relative">
+                    <div>
+                        <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">{title}</p>
+                        <h3 className="text-2xl font-bold text-gray-800 group-hover:text-b-blue transition-colors">{value}</h3>
+                        {subtext && <p className="text-xs text-gray-400 mt-2 font-medium">{subtext}</p>}
+                    </div>
+                    <div className="p-3 bg-b-sky rounded-xl text-b-blue group-hover:scale-110 transition-transform duration-300"><Icon size={24} /></div>
+                </div>
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-b-blue to-b-yellow transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+            </div>
+        );
+
+        const Heatmap = () => {
+            return (
+                <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
+                    <div className="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 className="text-lg font-bold text-gray-800">Doluluk Isı Haritası</h3>
+                            <p className="text-sm text-gray-500">Günlük yoğunluk analizi</p>
+                        </div>
+                        <div className="flex items-center space-x-2 text-xs text-gray-500">
+                            <div className="flex items-center"><span className="w-3 h-3 bg-gray-100 rounded mr-1"></span>Boş</div>
+                            <div className="flex items-center"><span className="w-3 h-3 bg-green-200 rounded mr-1"></span>Düşük</div>
+                            <div className="flex items-center"><span className="w-3 h-3 bg-green-400 rounded mr-1"></span>Orta</div>
+                            <div className="flex items-center"><span className="w-3 h-3 bg-green-600 rounded mr-1"></span>Yüksek</div>
+                            <div className="flex items-center"><span className="w-3 h-3 bg-red-700 rounded mr-1"></span>Tam</div>
+                        </div>
+                    </div>
+                    <div className="heatmap-grid">
+                        {Object.entries(OCCUPANCY_DATA).map(([date, count]) => {
+                            let colorClass = "bg-gray-100 text-gray-400";
+                            if (count >= 8) colorClass = "bg-red-700 text-white shadow-sm ring-1 ring-red-800";
+                            else if (count >= 5) colorClass = "bg-green-600 text-white shadow-sm";
+                            else if (count >= 3) colorClass = "bg-green-400 text-white";
+                            else if (count > 0) colorClass = "bg-green-200 text-green-800";
+                            
+                            const day = date.split('-')[2];
+                            return (
+                                <div 
+                                    key={date} 
+                                    className={`h-9 rounded-lg flex items-center justify-center text-xs font-bold transition-all hover:scale-110 hover:z-10 cursor-help ${colorClass}`} 
+                                    title={`${date}: ${count} Oda Dolu`}
+                                >
+                                    {day}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+        };
+
+        const TransactionTable = ({ data }) => {
+            const [searchTerm, setSearchTerm] = useState('');
+            const filteredData = data.filter(item => 
+                item.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                item.channel.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.id.includes(searchTerm)
+            );
+
+            return (
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                    <div className="p-6 border-b border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4 bg-gray-50/50">
+                        <div>
+                            <h3 className="text-lg font-bold text-gray-800">İşlem Hareketleri</h3>
+                            <p className="text-sm text-gray-500">Tüm rezervasyon kayıtları</p>
+                        </div>
+                        <div className="relative w-full md:w-72">
+                            <input 
+                                type="text" 
+                                placeholder="Misafir, ID veya Kanal ara..." 
+                                className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-b-blue/20 focus:border-b-blue transition-all"
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            <svg className="w-4 h-4 absolute left-3.5 top-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                    </div>
+                    <div className="overflow-x-auto max-h-[500px] overflow-y-auto custom-scrollbar">
+                        <table className="w-full text-sm text-left text-gray-500">
+                            <thead className="text-xs text-gray-700 uppercase bg-gray-50/80 backdrop-blur table-sticky-header">
+                                <tr>
+                                    <th className="px-6 py-4 font-bold text-b-navy">ID</th>
+                                    <th className="px-6 py-4 font-bold text-b-navy">Tarih</th>
+                                    <th className="px-6 py-4 font-bold text-b-navy">Misafir</th>
+                                    <th className="px-6 py-4 font-bold text-b-navy">Konaklama</th>
+                                    <th className="px-6 py-4 font-bold text-b-navy text-center">Gece</th>
+                                    <th className="px-6 py-4 font-bold text-b-navy text-right">Tutar</th>
+                                    <th className="px-6 py-4 font-bold text-b-navy">Kanal</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100">
+                                {filteredData.map((row) => (
+                                    <tr key={row.id} className="bg-white hover:bg-blue-50/30 transition-colors group">
+                                        <td className="px-6 py-4 font-medium text-gray-900 group-hover:text-b-blue transition-colors">#{row.id}</td>
+                                        <td className="px-6 py-4 text-xs">{row.date}</td>
+                                        <td className="px-6 py-4 font-medium text-gray-800">{row.name}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-xs">
+                                            <div className="flex flex-col">
+                                                <span className="text-gray-600">Giriş: {row.checkin.slice(0,5)}</span>
+                                                <span className="text-gray-400">Çıkış: {row.checkout.slice(0,5)}</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-center">
+                                            <span className="bg-gray-100 text-gray-600 py-1 px-2.5 rounded-md text-xs font-bold">{row.nights}</span>
+                                        </td>
+                                        <td className="px-6 py-4 text-right font-bold text-gray-900">
+                                            {new Intl.NumberFormat('tr-TR', { style: 'currency', currency: row.currency, maximumFractionDigits: 0 }).format(row.amount)}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                                                row.channel === 'Direct' ? 'bg-green-50 text-green-700 border-green-100' :
+                                                row.channel === 'Odamax' ? 'bg-blue-50 text-blue-700 border-blue-100' :
+                                                'bg-gray-50 text-gray-600 border-gray-200'
+                                            }`}>
+                                                {row.channel}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            );
+        };
+
+        const Dashboard = () => {
+            const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+            const [activeSection, setActiveSection] = useState('overview');
+
+            // --- SCROLL SPY LOGIC ---
+            useEffect(() => {
+                const handleScroll = () => {
+                    const sections = ['overview', 'heatmap', 'trends', 'transactions'];
+                    const scrollPosition = window.scrollY + 100; // Offset for header
+
+                    for (const sectionId of sections) {
+                        const element = document.getElementById(sectionId);
+                        if (element && element.offsetTop <= scrollPosition && (element.offsetTop + element.offsetHeight) > scrollPosition) {
+                            setActiveSection(sectionId);
+                        }
+                    }
+                };
+
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            // --- DYNAMIC CALCULATIONS ---
+            const kpiData = useMemo(() => {
+                const totalTry = RAW_TRANSACTIONS.reduce((sum, r) => sum + (r.currency === 'TRY' ? r.amount : 0), 0);
+                const totalEur = RAW_TRANSACTIONS.reduce((sum, r) => sum + (r.currency === 'EUR' ? r.amount : 0), 0);
+                const eurRes = RAW_TRANSACTIONS.filter(r => r.currency === 'EUR');
+                const avgEurAdr = eurRes.length ? eurRes.reduce((sum, r) => sum + r.amount, 0) / eurRes.reduce((sum, r) => sum + r.nights, 0) : 0;
+                
+                return { revenueTRY: totalTry, revenueEUR: totalEur, totalReservations: RAW_TRANSACTIONS.length, adrEUR: avgEurAdr };
+            }, []);
+
+            const weeklyTrendData = useMemo(() => {
+                const days = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
+                const counts = new Array(7).fill(0);
+                RAW_TRANSACTIONS.forEach(r => {
+                    let dayIndex = new Date(r.checkin_raw).getDay() - 1; 
+                    if (dayIndex === -1) dayIndex = 6; 
+                    counts[dayIndex]++;
+                });
+                return days.map((day, i) => ({ name: day, value: counts[i] }));
+            }, []);
+
+            const channelChartData = useMemo(() => {
+                const counts = {};
+                RAW_TRANSACTIONS.forEach(r => { counts[r.channel] = (counts[r.channel] || 0) + 1; });
+                return Object.entries(counts).map(([name, value]) => ({ name, value })).sort((a,b) => b.value - a.value);
+            }, []);
+
+            const fmtTRY = (val) => new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(val);
+            const fmtEUR = (val) => new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(val);
+
+            // Recharts fallback check
+            if (!window.Recharts || !BarChart) return <div className="min-h-screen flex items-center justify-center text-b-navy font-bold">Panel Yükleniyor...</div>;
+
+            return (
+                <div className="flex min-h-screen bg-[#F3F4F6]">
+                    <Sidebar isOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} activeSection={activeSection} />
+                    
+                    <main className="flex-1 md:ml-64 p-6 md:p-10 w-full transition-all duration-300">
+                        <header className="flex justify-between items-center mb-10 sticky top-0 bg-[#F3F4F6]/90 backdrop-blur z-30 py-4 -mx-6 px-6 md:-mx-10 md:px-10" id="overview">
+                            <div className="flex items-center">
+                                <button className="mr-4 md:hidden text-b-navy p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all" onClick={() => setIsSidebarOpen(true)}><Menu size={24} /></button>
+                                <div>
+                                    <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight">Performans Paneli</h1>
+                                    <div className="flex items-center mt-1">
+                                        <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span>
+                                        <p className="text-sm font-medium text-gray-500">Sistem Çevrimiçi • Son Güncelleme: 23:38</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="hidden md:block">
+                                <button className="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm">
+                                    Raporu İndir
+                                </button>
+                            </div>
+                        </header>
+
+                        {/* KPI Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                            <KPICard title="TOPLAM CİRO (TRY)" value={fmtTRY(kpiData.revenueTRY)} subtext="İç pazar ve doğrudan satışlar" icon={Wallet} />
+                            <KPICard title="TOPLAM CİRO (EUR)" value={fmtEUR(kpiData.revenueEUR)} subtext="Yurt dışı kaynaklı gelirler" icon={Globe} />
+                            <KPICard title="REZERVASYON" value={kpiData.totalReservations} subtext="Onaylı / Aktif Konaklamalar" icon={CalendarDays} />
+                            <KPICard title="ORT. GÜNLÜK FİYAT (EUR)" value={fmtEUR(kpiData.adrEUR)} subtext="Döviz bazlı ortalama (ADR)" icon={TrendingUp} />
+                        </div>
+
+                        {/* HEATMAP */}
+                        <div className="mb-10 scroll-mt-28" id="heatmap">
+                            <Heatmap />
+                        </div>
+
+                        {/* Charts Grid */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10 scroll-mt-28" id="trends">
+                            <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
+                                <h3 className="text-lg font-bold text-gray-800 mb-6">Haftalık Giriş Yoğunluğu</h3>
+                                <div className="h-72">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <BarChart data={weeklyTrendData}>
+                                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                                            <XAxis dataKey="name" tick={{fontSize: 12, fill: '#6B7280'}} axisLine={false} tickLine={false} dy={10} />
+                                            <YAxis hide />
+                                            <Tooltip cursor={{fill: '#F3F4F6'}} contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'}} />
+                                            <Bar dataKey="value" name="Rezervasyon" radius={[6, 6, 0, 0]} barSize={40}>
+                                                {weeklyTrendData.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={index >= 5 ? COLORS.yellow : COLORS.navy} />
+                                                ))}
+                                            </Bar>
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                                <p className="text-xs text-gray-400 text-center mt-4 font-medium">*Sarı barlar hafta sonunu temsil eder.</p>
+                            </div>
+
+                            <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
+                                <h3 className="text-lg font-bold text-gray-800 mb-6">Kanal Dağılımı (Adet)</h3>
+                                <div className="flex items-center h-72">
+                                    <div className="h-full w-1/2">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <PieChart>
+                                                <Pie data={channelChartData} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={4} dataKey="value">
+                                                    {channelChartData.map((entry, index) => (
+                                                        <Cell key={`cell-${index}`} fill={Object.values(COLORS)[index % Object.values(COLORS).length]} stroke="none" />
+                                                    ))}
+                                                </Pie>
+                                                <Tooltip contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'}} />
+                                            </PieChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                    <div className="w-1/2 pl-6 h-64 overflow-y-auto custom-scrollbar pr-2">
+                                        {channelChartData.map((channel, idx) => (
+                                            <div key={idx} className="flex justify-between items-center text-xs border-b border-gray-50 pb-2 mb-2 last:border-0 hover:bg-gray-50 p-1 rounded transition-colors">
+                                                <div className="flex items-center">
+                                                    <span className="w-2.5 h-2.5 rounded-full mr-2 shadow-sm" style={{backgroundColor: Object.values(COLORS)[idx % Object.values(COLORS).length]}}></span>
+                                                    <span className="font-medium text-gray-700 truncate w-24" title={channel.name}>{channel.name}</span>
+                                                </div>
+                                                <span className="font-bold text-b-navy bg-blue-50 px-2 py-0.5 rounded-md">{channel.value}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Competitor Benchmark */}
+                        <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm mb-10">
+                            <div className="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center">
+                                <div>
+                                    <h3 className="text-lg font-bold text-gray-800">Fiyat Rekabeti (ADR)</h3>
+                                    <p className="text-sm text-gray-500">Euro bazında Wineport vs Rakip Seti</p>
+                                </div>
+                                <div className="mt-4 md:mt-0 flex gap-3 text-xs font-bold">
+                                    <div className="flex items-center"><span className="w-3 h-3 bg-b-navy rounded-full mr-2"></span>Wineport</div>
+                                    <div className="flex items-center"><span className="w-3 h-3 bg-b-blue rounded-full mr-2"></span>Rakipler</div>
+                                </div>
+                            </div>
+                            <div className="h-64 mb-6">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={BENCHMARK_DATA} layout="vertical" margin={{top: 0, right: 30, left: 40, bottom: 0}} barGap={4}>
+                                        <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#E5E7EB"/>
+                                        <XAxis type="number" hide />
+                                        <YAxis dataKey="month" type="category" axisLine={false} tickLine={false} width={60} tick={{fontWeight: '600', fill: '#4B5563'}} />
+                                        <Tooltip cursor={{fill: '#F9FAFB'}} formatter={(val) => `${val}€`} contentStyle={{borderRadius: '8px'}} />
+                                        <Bar dataKey="wineport" name="Wineport" fill={COLORS.navy} radius={[0, 4, 4, 0]} barSize={20} />
+                                        <Bar dataKey="compset" name="Rakipler Ort." fill={COLORS.blue} radius={[0, 4, 4, 0]} barSize={20} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
+                            <div className="border-t border-gray-100 pt-4 bg-gray-50/50 -mx-8 -mb-8 px-8 pb-6 rounded-b-2xl">
+                                <div className="flex items-center mb-3 text-b-blue">
+                                    <Info size={16} className="mr-2" />
+                                    <span className="text-xs font-bold uppercase tracking-wider">Rakip Seti Detayı</span>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {COMPETITOR_SET.map((hotel, idx) => (
+                                        <span key={idx} className="text-[10px] font-medium bg-white text-gray-600 px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm hover:shadow-md hover:text-b-blue transition-all cursor-default">{hotel}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Transaction Table */}
+                        <div id="transactions" className="scroll-mt-28">
+                            <TransactionTable data={RAW_TRANSACTIONS} />
+                        </div>
+
+                        <footer className="mt-12 text-center border-t border-gray-200 pt-8 pb-4">
+                            <p className="text-gray-400 text-xs font-medium">Wineport Ağva Yönetim Paneli &copy; 2025</p>
+                            <p className="text-gray-300 text-[10px] mt-1">Gizli Şirket Verisidir • İzinsiz Paylaşılamaz</p>
+                        </footer>
+                    </main>
+                </div>
+            );
+        };
+
+        // --- SAFE INITIALIZATION LOGIC ---
+        function initApp() {
+            const rootElement = document.getElementById('root');
+            if (rootElement) {
+                const root = ReactDOM.createRoot(rootElement);
+                root.render(<Dashboard />);
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
+    </script>
+</body>
+</html>
